@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sanitaire — cours interactif (TPBS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c2230; --ink2:#4a5263; --muted:#7a8294;
+  --paper:#f6f3ec; --card:#ffffff; --line:#e3ddd0; --line2:#d3ccbc;
+  --ef:#2563b8; --ef-bg:#e7f0fb;
+  --ec:#c8372d; --ec-bg:#fcebe9;
+  --evac:#6d6a63; --evac-bg:#efede8;
+  --ok:#1f8a4c; --ok-bg:#e4f4ea;
+  --warn:#b7791f; --warn-bg:#fdf3dc;
+  --bad:#c53030; --bad-bg:#fde8e8;
+  --accent:#0e6f73; --accent-bg:#e2f2f1;
+  --radius:14px;
+  --head:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+h1,h2,h3,h4{font-family:var(--head);line-height:1.2;margin:1.6em 0 .5em;letter-spacing:-.01em}
+h1{font-size:2.1rem;font-weight:800;margin-top:.2em}
+h2{font-size:1.5rem;font-weight:700;padding-top:.4em;border-top:2px solid var(--line)}
+h3{font-size:1.2rem;font-weight:700}
+h4{font-size:1.02rem;font-weight:700;margin:1em 0 .3em}
+p{margin:.6em 0}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+strong{font-weight:700}
+.ef{color:var(--ef);font-weight:700}.ec{color:var(--ec);font-weight:700}.evac{color:var(--evac);font-weight:700}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.side{width:268px;flex:0 0 268px;background:#1c2230;color:#e9e6de;position:sticky;top:0;height:100vh;overflow:auto;padding:22px 16px 30px}
+.brand{font-family:var(--head);font-weight:800;font-size:1.25rem;line-height:1.15;margin:0 6px 4px}
+.brand small{display:block;font-family:var(--body);font-weight:400;font-size:.8rem;color:#a9adb8;margin-top:4px}
+.prog{margin:16px 6px 18px}
+.prog .bar{height:8px;border-radius:6px;background:#2f3647;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ef),#4fb3a9);transition:width .4s}
+.prog .lbl{font-size:.8rem;color:#a9adb8;margin-top:6px}
+.nav{list-style:none;margin:0;padding:0}
+.nav .grp{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#8a90a0;margin:16px 8px 6px}
+.nav a{display:flex;align-items:center;gap:10px;color:#e9e6de;text-decoration:none;padding:8px 10px;border-radius:10px;font-size:.95rem}
+.nav a:hover{background:#2a3142}
+.nav a.on{background:#f6f3ec;color:var(--ink)}
+.nav .num{flex:0 0 26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#2f3647;font-size:.8rem;font-weight:700}
+.nav a.on .num{background:var(--ink);color:#fff}
+.nav a.done .num{background:var(--ok);color:#fff}
+.nav a.done .num::after{content:"✓"}
+.nav a.done .num span{display:none}
+.main{flex:1;min-width:0}
+.topbar{display:none}
+.wrap{max-width:860px;margin:0 auto;padding:34px 28px 80px}
+.view{display:none}.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.kicker{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:700}
+.lead{font-size:1.12rem;color:var(--ink2)}
+
+@media (max-width:900px){
+  .side{position:fixed;left:0;top:0;z-index:30;transform:translateX(-105%);transition:transform .25s;box-shadow:0 0 40px rgba(0,0,0,.3)}
+  .side.open{transform:none}
+  .topbar{display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20;background:#1c2230;color:#fff;padding:10px 14px}
+  .topbar button{background:#2f3647;color:#fff;border:0;border-radius:8px;padding:6px 12px}
+  .topbar .t{font-family:var(--head);font-weight:700;font-size:1rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wrap{padding:22px 16px 70px}
+  body{font-size:16px}
+  h1{font-size:1.7rem}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:25;display:none}
+  .scrim.on{display:block}
+}
+
+/* ---------- blocks ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:16px 0}
+.box{border-radius:var(--radius);padding:14px 18px 14px 18px;margin:18px 0;border:1px solid;position:relative}
+.box>.tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:6px;margin-bottom:4px}
+.box p:first-of-type{margin-top:.2em}
+.box ul{margin:.3em 0;padding-left:1.2em}
+.box.clair{background:var(--ef-bg);border-color:#c5d9f2}.box.clair>.tag{background:var(--ef);color:#fff}
+.box.retenir{background:#fff8de;border-color:#eed98e}.box.retenir>.tag{background:#8a6d00;color:#fff}
+.box.piege{background:var(--bad-bg);border-color:#f3c1c1}.box.piege>.tag{background:var(--bad);color:#fff}
+.box.note{background:#eef0f4;border-color:#d9dde6}.box.note>.tag{background:#5a6274;color:#fff}
+.box.ok{background:var(--ok-bg);border-color:#bfe3cc}.box.ok>.tag{background:var(--ok);color:#fff}
+.oneliner{font-family:var(--head);font-size:1.3rem;font-weight:700;line-height:1.35;background:var(--card);border-left:6px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:18px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.mini h4{margin-top:0}
+.mini .ico{font-size:1.5rem}
+table{border-collapse:collapse;width:100%;font-size:.93rem;background:var(--card);border-radius:12px;overflow:hidden}
+.tbl{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#efebe1;font-family:var(--head);font-weight:700;font-size:.88rem}
+tr:last-child td{border-bottom:0}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.pill.ef{background:var(--ef-bg);color:var(--ef)}.pill.ec{background:var(--ec-bg);color:var(--ec)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.no{background:var(--bad-bg);color:var(--bad)}.pill.mid{background:var(--warn-bg);color:var(--warn)}
+.big{font-family:var(--head);font-weight:800;font-size:1.9rem;line-height:1}
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 44px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.9rem}
+.figure{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:16px 0}
+.figure svg{width:100%;height:auto;display:block}
+.figure .cap{font-size:.85rem;color:var(--muted);margin-top:8px;text-align:center}
+.seg{display:inline-flex;background:#ebe6da;border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-size:.92rem;color:var(--ink2)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.btn{border:0;border-radius:10px;padding:9px 16px;background:var(--ink);color:#fff;font-weight:700}
+.btn.light{background:#ebe6da;color:var(--ink)}
+.btn.acc{background:var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.tool{background:var(--card);border:2px solid var(--accent);border-radius:var(--radius);padding:16px 18px;margin:20px 0}
+.tool>.tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:6px;background:var(--accent);color:#fff}
+.tool h4{margin-top:.4em}
+.tool label{display:block;font-size:.9rem;color:var(--ink2);margin-top:8px}
+.tool input[type=range]{width:100%;accent-color:var(--accent)}
+.tool select,.tool input[type=number]{font:inherit;padding:6px 8px;border:1px solid var(--line2);border-radius:8px;background:#fff}
+.verdict{margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:700}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.warn{background:var(--warn-bg);color:var(--warn)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.out{font-family:var(--head);font-weight:800;font-size:1.6rem}
+.reveal{background:var(--card);border:1px dashed var(--line2);border-radius:12px;padding:12px 14px;margin:10px 0;cursor:pointer}
+.reveal .a{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.reveal.open .a{display:block}
+.reveal .q::after{content:"  ▸ clique pour voir";color:var(--accent);font-size:.82rem;font-weight:700}
+.reveal.open .q::after{content:""}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 0}
+.tabs button{border:1px solid var(--line2);background:#fff;border-radius:999px;padding:6px 14px;font-size:.92rem}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mat{display:none}.mat.on{display:block}
+.idcard{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:center}
+@media (max-width:600px){.idcard{grid-template-columns:1fr}}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:.95rem}
+.kv b{color:var(--ink2);font-weight:700}
+@media (max-width:600px){.kv{grid-template-columns:1fr}}
+.four{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+@media (max-width:640px){.four{grid-template-columns:1fr}}
+.four .mini ul{margin:.2em 0;padding-left:1.1em;font-size:.94rem}
+.ban{background:var(--bad-bg);border:1px solid #f3c1c1;border-radius:10px;padding:8px 12px;margin-top:10px;font-size:.95rem}
+.ban b{color:var(--bad)}
+.endnav{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px;padding-top:18px;border-top:2px solid var(--line)}
+.picto{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.picto .p{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;cursor:pointer;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:background .2s}
+.picto .p svg{width:56px;height:56px}
+.picto .p .m{display:none;font-size:.88rem}
+.picto .p.open{background:var(--accent-bg)}
+.picto .p.open .m{display:block}
+.picto .p .n{font-weight:700;font-size:.9rem}
+.appl{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.appl button{background:#fff;border:1px solid var(--line2);border-radius:10px;padding:10px;text-align:left;font-size:.93rem}
+.appl button.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.appinfo{margin-top:10px;min-height:70px}
+.matrix td,.matrix th{text-align:center}
+.matrix td:first-child,.matrix th:first-child{text-align:left}
+.matrix tr{cursor:pointer}
+.matrix tr.sel td{background:var(--accent-bg)}
+.hl{background:linear-gradient(transparent 60%,#ffe58a 60%)}
+
+/* ---------- house diagram ---------- */
+#house [data-net]{transition:opacity .3s}
+#house .dim{opacity:.13}
+#house .later{opacity:.25}
+#house .now{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.flow{stroke-dasharray:8 7;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-15}}
+.steptext{background:var(--paper);border-radius:10px;padding:10px 14px;margin-top:10px;min-height:76px}
+.steptext b{font-family:var(--head)}
+
+/* ---------- quiz ---------- */
+.quiz{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:18px 0}
+.quiz .qhead{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted);gap:10px}
+.quiz .qbar{height:6px;background:#eee8dc;border-radius:4px;overflow:hidden;margin:8px 0 14px}
+.quiz .qbar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.quiz .qtext{font-family:var(--head);font-weight:700;font-size:1.18rem;line-height:1.35;margin:4px 0 14px}
+.quiz .opts{display:grid;gap:8px}
+.quiz .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;background:#fbfaf7;border:1.5px solid var(--line2);border-radius:10px;padding:10px 12px;font-size:1rem;color:var(--ink)}
+.quiz .opt:hover:not(:disabled){border-color:var(--ink)}
+.quiz .opt .l{flex:0 0 26px;height:26px;border-radius:50%;background:#ebe6da;display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.quiz .opt.good{background:var(--ok-bg);border-color:var(--ok)}
+.quiz .opt.good .l{background:var(--ok);color:#fff}
+.quiz .opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.quiz .opt.wrong .l{background:var(--bad);color:#fff}
+.quiz .opt:disabled{cursor:default}
+.quiz .why{margin-top:12px;padding:10px 14px;border-radius:10px;background:var(--paper);display:none}
+.quiz .why.on{display:block}
+.quiz .why b.g{color:var(--ok)}.quiz .why b.b{color:var(--bad)}
+.quiz .qfoot{display:flex;justify-content:flex-end;margin-top:12px;gap:8px}
+.score{text-align:center;padding:10px 0}
+.score .big{font-size:3rem}
+.missed{margin-top:14px}
+.missed .mq{border-top:1px solid var(--line);padding:10px 0;font-size:.95rem}
+.missed .mq .ra{color:var(--ok);font-weight:700}
+.chtag{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:700;border-radius:6px;padding:1px 8px;font-size:.78rem}
+.hist{font-size:.88rem;color:var(--muted)}
+
+/* ---------- flashcards ---------- */
+.fc-wrap{perspective:1200px;margin:16px auto;max-width:560px}
+.fc{position:relative;height:280px;cursor:pointer;transition:transform .5s;transform-style:preserve-3d}
+.fc.flip{transform:rotateY(180deg)}
+.fc .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;padding:26px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid var(--line)}
+.fc .front{background:var(--card)}
+.fc .front .t{font-family:var(--head);font-weight:800;font-size:1.7rem;line-height:1.2}
+.fc .back{background:#1c2230;color:#f2efe7;transform:rotateY(180deg);font-size:1.05rem}
+.fc .hint{position:absolute;bottom:12px;font-size:.8rem;color:var(--muted)}
+.fc .back .hint{color:#9aa0ad}
+
+/* ---------- glossary ---------- */
+.search{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line2);border-radius:12px;background:#fff;font-size:1rem}
+.gl{margin-top:14px}
+.gl .g{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0}
+.gl .g b{font-family:var(--head);font-size:1.02rem}
+.gl .g .c{display:inline-block;margin-left:6px}
+.gl .letter{font-family:var(--head);font-weight:800;color:var(--accent);margin:18px 0 4px;font-size:1.2rem}
+
+/* ---------- home ---------- */
+.hero{background:#1c2230;color:#f2efe7;border-radius:20px;padding:28px 26px;position:relative;overflow:hidden}
+.hero h1{color:#fff;margin:0 0 .3em}
+.hero p{color:#c9ccd4;max-width:560px}
+.hero svg{position:absolute;right:-20px;bottom:-10px;width:260px;opacity:.9}
+@media (max-width:700px){.hero svg{display:none}}
+.homegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:18px}
+.homegrid a{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;color:var(--ink);transition:transform .15s,border-color .15s}
+.homegrid a:hover{transform:translateY(-2px);border-color:var(--ink)}
+.homegrid a .k{font-size:.78rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.homegrid a .h{font-family:var(--head);font-weight:700;font-size:1.08rem;margin:2px 0 4px}
+.homegrid a .d{font-size:.9rem;color:var(--ink2)}
+.homegrid a.done{border-color:var(--ok)}
+.homegrid a.done .k::after{content:" ✓ compris";color:var(--ok)}
+.markbtn{margin-left:auto}
+.markbtn.done{background:var(--ok)}
+.numgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.numgrid .n{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.numgrid .n .big{font-size:1.5rem}
+.numgrid .n div:last-child{font-size:.88rem;color:var(--ink2);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="topbar"><button id="menuBtn" aria-label="Menu">☰ Menu</button><div class="t" id="topTitle">Sanitaire — cours interactif</div></div>
+<div class="scrim" id="scrim"></div>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand">Sanitaire : les bases<small>TPBS — Cours de technologie 2026-2027 (E. Pesce), version simplifiée</small></div>
+  <div class="prog"><div class="bar"><i id="progBar"></i></div><div class="lbl" id="progLbl">0 / 5 chapitres compris</div></div>
+  <ul class="nav" id="nav">
+    <li><a href="#accueil" data-v="accueil"><span class="num">⌂</span>Accueil</a></li>
+    <li class="grp">Le cours</li>
+    <li><a href="#ch1" data-v="ch1" data-ch="1"><span class="num"><span>1</span></span>La vue d'ensemble</a></li>
+    <li><a href="#ch2" data-v="ch2" data-ch="2"><span class="num"><span>2</span></span>Lire une notice</a></li>
+    <li><a href="#ch3" data-v="ch3" data-ch="3"><span class="num"><span>3</span></span>Hydraulique</a></li>
+    <li><a href="#ch4" data-v="ch4" data-ch="4"><span class="num"><span>4</span></span>Tuyaux d'alimentation</a></li>
+    <li><a href="#ch5" data-v="ch5" data-ch="5"><span class="num"><span>5</span></span>Tuyaux d'évacuation</a></li>
+    <li class="grp">Réviser</li>
+    <li><a href="#resume" data-v="resume"><span class="num">≡</span>Résumé express</a></li>
+    <li><a href="#flashcards" data-v="flashcards"><span class="num">⟲</span>Flashcards</a></li>
+    <li><a href="#qcm" data-v="qcm"><span class="num">?</span>QCM &amp; examen blanc</a></li>
+    <li><a href="#glossaire" data-v="glossaire"><span class="num">A</span>Glossaire</a></li>
+  </ul>
+</aside>
+<main class="main"><div class="wrap">
+
+<!-- ================= ACCUEIL ================= -->
+<section class="view" id="v-accueil">
+  <div class="hero">
+    <div class="kicker" style="color:#7fd1c9">Préparation à l'examen</div>
+    <h1>Le sanitaire, expliqué simplement</h1>
+    <p>Tout ton cours de « Travaux pratiques en base du sanitaire », réécrit pour un débutant : des explications claires, des schémas, des petits outils pour comprendre en manipulant, puis un résumé et plus de 80 questions QCM.</p>
+    <svg viewBox="0 0 260 200" aria-hidden="true"><path d="M20 40 H120 V150 H230" fill="none" stroke="#3b82d6" stroke-width="14" stroke-linecap="round"/><path d="M40 20 H140 V130 H230" fill="none" stroke="#e0574b" stroke-width="14" stroke-linecap="round"/><path d="M20 40 H120 V150 H230" fill="none" stroke="#9cc4f2" stroke-width="3" class="flow"/><path d="M40 20 H140 V130 H230" fill="none" stroke="#f7b0a8" stroke-width="3" class="flow"/></svg>
+  </div>
+
+  <h2>Comment utiliser ce cours</h2>
+  <ol class="steps">
+    <li><b>Lis les 5 chapitres dans l'ordre.</b> Chacun commence par une phrase qui résume tout, puis détaille. Les encadrés <span class="pill ef">En clair</span> donnent une image simple, les <span class="pill mid">À retenir</span> contiennent ce qui tombe à l'examen, les <span class="pill no">Piège</span> les erreurs classiques.</li>
+    <li><b>Joue avec les outils</b> (pression, vitesse, pente…). Bouger un curseur fait mieux comprendre qu'une formule.</li>
+    <li><b>Fais le mini-test</b> à la fin de chaque chapitre, puis clique « J'ai compris ce chapitre ».</li>
+    <li><b>La veille de l'examen :</b> le <a href="#resume">résumé express</a>, les <a href="#flashcards">flashcards</a> et un <a href="#qcm">examen blanc</a> de 20 questions.</li>
+  </ol>
+
+  <div class="homegrid" id="homegrid">
+    <a href="#ch1" data-ch="1"><div class="k">Chapitre 1</div><div class="h">La vue d'ensemble</div><div class="d">Le métier, les 2 réseaux, le chemin de l'eau, siphon, pente, ventilation.</div></a>
+    <a href="#ch2" data-ch="2"><div class="k">Chapitre 2</div><div class="h">Lire une notice technique</div><div class="d">Les parties d'une notice, les cotes, les pouces, les pictogrammes.</div></a>
+    <a href="#ch3" data-ch="3"><div class="k">Chapitre 3</div><div class="h">Hydraulique de base</div><div class="d">Débit, pression, vitesse, Bernoulli et les pannes typiques.</div></a>
+    <a href="#ch4" data-ch="4"><div class="k">Chapitre 4</div><div class="h">Tuyaux d'alimentation</div><div class="d">Cuivre, acier galva, acier noir, PER, multicouche.</div></a>
+    <a href="#ch5" data-ch="5"><div class="k">Chapitre 5</div><div class="h">Tuyaux d'évacuation</div><div class="d">PVC, PEHD, PP, diamètres par appareil, façonnage et fixation.</div></a>
+    <a href="#qcm"><div class="k">Révision</div><div class="h">QCM &amp; examen blanc</div><div class="d">Questions corrigées et expliquées, par chapitre ou au hasard.</div></a>
+  </div>
+
+  <div class="box note"><span class="tag">Bon à savoir</span>
+    <p>Ton cours donne parfois <b>deux valeurs différentes pour la même chose</b> (par exemple la pente : « 1 à 2 cm/m » au chapitre 1 et « 1 à 3 cm/m » dans la synthèse). Ici, j'utilise toujours la valeur de la <b>synthèse du chapitre 6</b>, qui est présentée comme la référence pour l'épreuve. Ces différences sont listées dans le <a href="#resume">résumé</a> : demande à ton professeur laquelle il attend.</p>
+  </div>
+</section>
+
+<!-- ================= CHAPITRE 1 ================= -->
+<section class="view" id="v-ch1">
+  <div class="kicker">Chapitre 1</div>
+  <h1>La plomberie sanitaire : la vue d'ensemble</h1>
+  <div class="oneliner">Le monteur sanitaire fait deux choses : <span class="ef">amener l'eau propre</span> (poussée sous pression) et <span class="evac">évacuer l'eau sale</span> (qui descend toute seule grâce à la pente).</div>
+
+  <div class="box clair"><span class="tag">En clair</span>
+    <p>L'<b>alimentation</b>, c'est comme un tuyau d'arrosage : l'eau est <b>poussée</b>, elle peut monter, tourner, aller partout. L'<b>évacuation</b>, c'est comme une gouttière : l'eau <b>descend toute seule</b>, elle a seulement besoin d'une pente. Ce sont deux mondes séparés, qui ne se mélangent jamais.</p>
+  </div>
+
+  <h2>1.1 Le rôle du monteur en sanitaire</h2>
+  <p>Il travaille dans les maisons, les immeubles, les commerces et les bâtiments publics. Ses 5 missions :</p>
+  <div class="grid2">
+    <div class="mini"><h4>💧 Amener l'eau potable</h4>du réseau public jusqu'à chaque robinet (les « points de puisage »).</div>
+    <div class="mini"><h4>🚽 Évacuer les eaux sales</h4>eaux usées et eaux-vannes vers l'égout.</div>
+    <div class="mini"><h4>🔧 Poser et raccorder les appareils</h4>lavabo, douche, WC, chauffe-eau…</div>
+    <div class="mini"><h4>✅ Contrôler l'étanchéité</h4>tout tester avant la mise en service.</div>
+  </div>
+  <div class="mini" style="margin-top:14px"><h4>🦺 Travailler en sécurité</h4>hygiène, bonnes postures (ergonomie) et équipements de protection individuelle (EPI).</div>
+  <div class="box retenir"><span class="tag">À retenir</span><p>Avant d'apprendre à couper ou assembler un tuyau, il faut <b>comprendre le schéma global</b> : savoir où va chaque eau évite les erreurs (circuits inversés, pente insuffisante, bruits) et aide à trouver les pannes.</p></div>
+
+  <h2>1.2 Une installation sanitaire, c'est quoi ?</h2>
+  <p>C'est l'ensemble des <b>tuyaux</b>, des <b>organes de commande</b> (vannes, clapets), des <b>appareils</b> et des <b>équipements</b> d'un bâtiment. Elle a 3 fonctions :</p>
+  <div class="grid3">
+    <div class="mini"><div class="ico">🧼</div><h4>Hygiène</h4>Distribuer une eau saine et évacuer vite l'eau sale, sans qu'elle stagne.</div>
+    <div class="mini"><div class="ico">🛋️</div><h4>Confort</h4>De l'eau tout le temps, à la bonne température et au bon débit.</div>
+    <div class="mini"><div class="ico">🛡️</div><h4>Sécurité</h4>Protéger l'eau potable : l'eau sale ne doit jamais revenir dans le réseau.</div>
+  </div>
+  <p>Les pièces concernées : salles de bains et de douche, cuisine, WC et lave-mains, buanderie et local technique.</p>
+
+  <h2>1.3 &amp; 1.4 Les deux grands réseaux</h2>
+  <div class="tbl"><table>
+    <tr><th>Réseau</th><th>Comment l'eau avance</th><th>À quoi il sert</th><th>Ce qu'on y trouve</th></tr>
+    <tr><td><span class="ef">1. Alimentation</span> en eau potable</td><td><b>Sous pression</b> (poussée par le réseau)</td><td>Apporter l'eau propre, froide et chaude, aux appareils</td><td>Robinets, mitigeurs, douches, chasses de WC, chauffe-eau</td></tr>
+    <tr><td><span class="evac">2. Évacuation</span> des eaux usées</td><td><b>Par gravité</b> (son propre poids + une pente)</td><td>Emmener les eaux sales vers l'égout</td><td>Siphons, bondes, tuyaux de chute, collecteurs</td></tr>
+  </table></div>
+
+  <div class="figure">
+    <div class="row" style="margin-bottom:10px">
+      <div class="seg" id="houseMode"><button data-m="alim" class="on">💧 Chemin de l'eau potable</button><button data-m="evac">🚽 Chemin de l'eau usée</button></div>
+      <span class="spacer"></span>
+      <button class="btn light" id="hPrev">◀</button><span id="hCount" style="font-weight:700;min-width:44px;text-align:center"></span><button class="btn" id="hNext">Étape suivante ▶</button>
+    </div>
+    <svg id="house" viewBox="0 0 660 400" role="img" aria-label="Schéma d'une maison avec le réseau d'alimentation et le réseau d'évacuation">
+      <!-- structure -->
+      <rect x="0" y="335" width="660" height="65" fill="#e8e1d2"/>
+      <text x="8" y="392" font-size="11" fill="#8b8270">sous la rue</text>
+      <path d="M70 125 L330 30 L590 125" fill="#f3efe6" stroke="#4a4f5c" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="70" y="125" width="520" height="210" fill="#fbfaf6" stroke="#4a4f5c" stroke-width="3"/>
+      <line x1="70" y1="230" x2="590" y2="230" stroke="#4a4f5c" stroke-width="2"/>
+      <rect x="70" y="335" width="520" height="45" fill="#efe9dc" stroke="#4a4f5c" stroke-width="2"/>
+      <text x="300" y="352" font-size="11" fill="#8b8270">cave / sous-sol</text>
+      <text x="80" y="145" font-size="11" fill="#8b8270">étage</text>
+      <text x="80" y="250" font-size="11" fill="#8b8270">rez-de-chaussée</text>
+      <line x1="330" y1="125" x2="330" y2="335" stroke="#d8d1c2" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+      <!-- ALIMENTATION -->
+      <g data-net="alim" data-step="1">
+        <line x1="0" y1="360" x2="95" y2="360" stroke="#2563b8" stroke-width="7"/>
+        <line x1="0" y1="360" x2="95" y2="360" stroke="#bcd6f5" stroke-width="2" class="flow"/>
+        <text x="6" y="352" font-size="11" fill="#2563b8" font-weight="700">réseau public</text>
+      </g>
+      <g data-net="alim" data-step="2">
+        <line x1="95" y1="360" x2="175" y2="360" stroke="#2563b8" stroke-width="6"/>
+        <circle cx="105" cy="360" r="10" fill="#fff" stroke="#1c2230" stroke-width="2.5"/><text x="105" y="364" font-size="10" text-anchor="middle" font-weight="700">C</text>
+        <path d="M124 352 l12 8 l-12 8 z" fill="#1c2230"/>
+        <rect x="145" y="351" width="18" height="18" rx="3" fill="#fff" stroke="#1c2230" stroke-width="2.5"/><text x="154" y="364" font-size="10" text-anchor="middle" font-weight="700">R</text>
+      </g>
+      <g data-net="alim" data-step="3">
+        <line x1="175" y1="360" x2="175" y2="160" stroke="#2563b8" stroke-width="6"/>
+        <line x1="175" y1="160" x2="300" y2="160" stroke="#2563b8" stroke-width="4"/>
+        <line x1="175" y1="285" x2="300" y2="285" stroke="#2563b8" stroke-width="4"/>
+        <rect x="190" y="292" width="26" height="40" rx="6" fill="#fff" stroke="#c8372d" stroke-width="2.5"/>
+        <text x="203" y="316" font-size="9" text-anchor="middle" fill="#c8372d" font-weight="700">ECS</text>
+        <line x1="203" y1="292" x2="203" y2="175" stroke="#c8372d" stroke-width="4"/>
+        <line x1="203" y1="175" x2="292" y2="175" stroke="#c8372d" stroke-width="4"/>
+        <line x1="203" y1="270" x2="292" y2="270" stroke="#c8372d" stroke-width="4"/>
+      </g>
+      <g data-net="alim" data-step="4" font-size="11" font-weight="700">
+        <rect x="235" y="182" width="40" height="12" rx="5" fill="#cfd6df"/><path d="M245 175 v7" stroke="#c8372d" stroke-width="3"/><path d="M265 160 v22" stroke="#2563b8" stroke-width="3"/><text x="255" y="210" text-anchor="middle">lavabo</text>
+        <circle cx="300" cy="160" r="6" fill="#2563b8"/><path d="M300 150 v-10 h-10" fill="none" stroke="#1c2230" stroke-width="2"/><text x="300" y="134" text-anchor="middle">douche</text>
+        <rect x="230" y="296" width="52" height="16" rx="3" fill="#cfd6df"/><path d="M242 270 v26" stroke="#c8372d" stroke-width="3"/><path d="M270 285 v11" stroke="#2563b8" stroke-width="3"/><text x="256" y="327" text-anchor="middle">évier</text>
+        <circle cx="300" cy="285" r="6" fill="#2563b8"/><text x="306" y="304">WC</text>
+      </g>
+      <text data-net="alim" data-step="2" x="98" y="390" font-size="10" fill="#1c2230">C = compteur · ▶ = clapet · R = réducteur</text>
+
+      <!-- EVACUATION -->
+      <g data-net="evac" data-step="1" font-size="11" font-weight="700">
+        <rect x="370" y="190" width="70" height="22" rx="10" fill="#cfd6df"/><text x="405" y="183" text-anchor="middle">baignoire</text>
+        <path d="M470 196 h26 v18 h-26 z" fill="#cfd6df"/><text x="483" y="183" text-anchor="middle">WC</text>
+        <rect x="380" y="292" width="52" height="16" rx="3" fill="#cfd6df"/><text x="406" y="284" text-anchor="middle">évier</text>
+        <path d="M398 222 q0 12 10 12 q10 0 10 -12" fill="none" stroke="#6d6a63" stroke-width="3"/>
+        <path d="M398 318 q0 12 10 12 q10 0 10 -12" fill="none" stroke="#6d6a63" stroke-width="3"/>
+      </g>
+      <g data-net="evac" data-step="2">
+        <line x1="418" y1="222" x2="540" y2="228" stroke="#6d6a63" stroke-width="5"/>
+        <line x1="483" y1="214" x2="483" y2="225" stroke="#6d6a63" stroke-width="6"/>
+        <line x1="418" y1="318" x2="540" y2="324" stroke="#6d6a63" stroke-width="5"/>
+        <text x="440" y="245" font-size="10" fill="#6d6a63">décharge (avec pente)</text>
+      </g>
+      <g data-net="evac" data-step="3">
+        <line x1="540" y1="140" x2="540" y2="358" stroke="#6d6a63" stroke-width="9"/>
+        <text x="550" y="245" font-size="10" fill="#6d6a63" font-weight="700" transform="rotate(90 550 245)">colonne de chute</text>
+      </g>
+      <g data-net="evac" data-step="4">
+        <line x1="540" y1="358" x2="600" y2="364" stroke="#6d6a63" stroke-width="9"/>
+        <text x="470" y="374" font-size="10" fill="#6d6a63" font-weight="700">collecteur</text>
+      </g>
+      <g data-net="evac" data-step="5">
+        <line x1="600" y1="364" x2="660" y2="370" stroke="#6d6a63" stroke-width="10"/>
+        <text x="604" y="392" font-size="11" fill="#6d6a63" font-weight="700">égout</text>
+      </g>
+      <g data-net="evac" data-step="6">
+        <line x1="540" y1="140" x2="540" y2="60" stroke="#6d6a63" stroke-width="9"/>
+        <path d="M528 60 h24" stroke="#6d6a63" stroke-width="4"/>
+        <path d="M540 52 v-14 M533 44 l7 -7 l7 7" stroke="#0e6f73" stroke-width="2.5" fill="none"/>
+        <text x="556" y="58" font-size="10" fill="#0e6f73" font-weight="700">ventilation</text>
+        <text x="556" y="70" font-size="10" fill="#0e6f73" font-weight="700">primaire</text>
+      </g>
+    </svg>
+    <div class="steptext" id="hText"></div>
+  </div>
+
+  <h3>Le chemin de l'eau potable (du réseau au robinet)</h3>
+  <ol class="steps">
+    <li><b>Réseau public :</b> l'eau est traitée, contrôlée et envoyée sous pression par la compagnie des eaux, sous la rue.</li>
+    <li><b>Point de raccordement :</b> elle entre dans le bâtiment par le <b>compteur d'eau</b> et le <b>clapet anti-retour</b> général (qui empêche l'eau de la maison de repartir vers le réseau public). Si la pression est trop forte, on ajoute un <b>réducteur de pression</b> juste après le compteur.</li>
+    <li><b>Distribution intérieure :</b> elle monte par les <b>colonnes montantes</b> et circule dans les conduites secondaires. Une partie passe par le chauffe-eau pour devenir de l'eau chaude sanitaire (ECS).</li>
+    <li><b>Points d'utilisation :</b> robinets de cuisine, douches, baignoires, lave-mains, chasses de WC, lave-linge.</li>
+  </ol>
+
+  <h2>1.5 Les appareils sanitaires</h2>
+  <p>Pour chaque appareil, il faut savoir s'il reçoit <span class="pill ef">EF</span> eau froide seule ou <span class="pill ef">EF</span> + <span class="pill ec">EC</span> eau froide et chaude. <b>Tous</b> les appareils ont une évacuation. Clique sur un appareil :</p>
+  <div class="appl" id="appl"></div>
+  <div class="appinfo card" id="appinfo">← Choisis un appareil.</div>
+
+  <h3>La règle d'or du raccordement : chaude à gauche, froide à droite</h3>
+  <div class="figure">
+    <svg viewBox="0 0 640 230" role="img" aria-label="Eau chaude à gauche et eau froide à droite ; en superposition, eau chaude en haut">
+      <text x="160" y="20" text-anchor="middle" font-size="13" font-weight="700">Face à l'appareil</text>
+      <rect x="40" y="35" width="240" height="160" rx="6" fill="#f3efe6" stroke="#cfc6b3"/>
+      <path d="M115 60 v40" stroke="#c8372d" stroke-width="10" stroke-linecap="round"/>
+      <path d="M205 60 v40" stroke="#2563b8" stroke-width="10" stroke-linecap="round"/>
+      <rect x="95" y="98" width="130" height="22" rx="11" fill="#9aa3b2"/>
+      <rect x="150" y="80" width="20" height="22" rx="4" fill="#6b7383"/>
+      <path d="M160 120 v14 q0 8 -10 8" stroke="#9aa3b2" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <text x="115" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#c8372d">EC</text>
+      <text x="205" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#2563b8">EF</text>
+      <text x="115" y="186" text-anchor="middle" font-size="12" fill="#c8372d" font-weight="700">GAUCHE</text>
+      <text x="205" y="186" text-anchor="middle" font-size="12" fill="#2563b8" font-weight="700">DROITE</text>
+      <path d="M115 156 h90" stroke="#1c2230" stroke-width="1.3"/><path d="M115 151 v10 M205 151 v10" stroke="#1c2230" stroke-width="1.3"/>
+      <text x="160" y="170" text-anchor="middle" font-size="11" font-weight="700">entraxe 150 mm</text>
+      <text x="480" y="20" text-anchor="middle" font-size="13" font-weight="700">Tuyaux superposés (vue de côté)</text>
+      <rect x="350" y="35" width="260" height="160" rx="6" fill="#f3efe6" stroke="#cfc6b3"/>
+      <path d="M370 90 h220" stroke="#c8372d" stroke-width="12" stroke-linecap="round"/>
+      <path d="M370 140 h220" stroke="#2563b8" stroke-width="12" stroke-linecap="round"/>
+      <text x="480" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#c8372d">EC en HAUT</text>
+      <text x="480" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="#2563b8">EF en BAS</text>
+      <path d="M440 106 q6 -8 0 -14 M480 106 q6 -8 0 -14 M520 106 q6 -8 0 -14" stroke="#e08a80" stroke-width="2" fill="none"/>
+      <text x="480" y="180" text-anchor="middle" font-size="11" fill="#4a5263">la chaleur monte : l'EF reste froide</text>
+    </svg>
+    <div class="cap">Norme NBN EN 806-2 / Belgaqua. Repère rouge = chaude, repère bleu = froide.</div>
+  </div>
+  <div class="box retenir"><span class="tag">À retenir</span>
+    <ul>
+      <li>Face à l'appareil : <span class="ec">Eau Chaude à GAUCHE</span> (rouge), <span class="ef">Eau Froide à DROITE</span> (bleu). C'est universel.</li>
+      <li>Tuyaux l'un au-dessus de l'autre : <b>chaude en HAUT, froide en BAS</b>. La chaleur monte, donc elle ne réchauffe pas l'eau froide (une eau froide tiédie favorise les bactéries comme les <b>légionelles</b>).</li>
+      <li><b>Pourquoi c'est si important ?</b> Un mitigeur thermostatique <b>ne fonctionne pas</b> si on inverse chaude et froide, et l'usager risque de se brûler.</li>
+    </ul>
+  </div>
+
+  <h2>1.6 Comment l'eau est évacuée</h2>
+  <p>Après le lavabo, la douche, l'évier ou le WC, l'eau devient une <b>eau usée</b>. Elle doit quitter la maison rapidement. On distingue :</p>
+  <div class="grid3">
+    <div class="mini"><h4>EU — eaux ménagères</h4>Eaux savonneuses : évier, lavabo, douche, baignoire, machines à laver.</div>
+    <div class="mini"><h4>EV — eaux-vannes</h4>Eaux qui contiennent des matières fécales : <b>uniquement les WC</b>.</div>
+    <div class="mini"><h4>EP — eaux pluviales</h4>Eaux de pluie (toits, gouttières).</div>
+  </div>
+  <h3>Le chemin de l'eau usée, étape par étape</h3>
+  <ol class="steps">
+    <li><b>L'appareil :</b> l'eau passe par la <b>bonde</b> puis le <b>siphon</b>.</li>
+    <li><b>La décharge individuelle :</b> le petit tuyau horizontal sous l'appareil, qui mène à la colonne.</li>
+    <li><b>La colonne de chute :</b> le gros tuyau vertical qui traverse les étages.</li>
+    <li><b>Le collecteur principal :</b> le gros tuyau horizontal en cave ou sous le sol, qui rassemble toutes les eaux.</li>
+    <li><b>L'égout public :</b> sous la rue.</li>
+  </ol>
+
+  <h3>Les 3 règles indispensables de l'évacuation</h3>
+  <div class="grid2">
+    <div class="figure" style="margin:0">
+      <svg viewBox="0 0 300 220" role="img" aria-label="Coupe d'un siphon avec sa garde d'eau">
+        <text x="150" y="18" text-anchor="middle" font-size="13" font-weight="700">① Le siphon</text>
+        <path d="M70 30 V140 A50 50 0 0 0 170 140 V95 H250" fill="none" stroke="#6d6a63" stroke-width="26" stroke-linejoin="round"/>
+        <path d="M70 110 V140 A50 50 0 0 0 170 140 V110" fill="none" stroke="#7fb3ea" stroke-width="20"/>
+        <path d="M195 112 H215" stroke="#1c2230" stroke-width="1.2"/>
+        <path d="M205 112 V178" stroke="#1c2230" stroke-width="1.2" marker-start="url(#ar)" marker-end="url(#ar)"/>
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#1c2230"/></marker></defs>
+        <text x="212" y="140" font-size="11" font-weight="700">garde d'eau</text>
+        <text x="212" y="154" font-size="11" font-weight="700">≥ 50 mm</text>
+        <text x="258" y="82" font-size="11" fill="#6d6a63" text-anchor="end">vers l'égout</text>
+        <path d="M150 72 q-8 -8 0 -16 q8 -8 0 -16" stroke="#9a7b2c" stroke-width="2.5" fill="none"/>
+        <path d="M138 86 l24 -24 M138 62 l24 24" stroke="#c53030" stroke-width="3"/>
+        <text x="150" y="212" text-anchor="middle" font-size="11" fill="#4a5263">l'eau bloque les odeurs d'égout</text>
+      </svg>
+    </div>
+    <div class="mini">
+      <h4>① Le siphon</h4>
+      <p>Un tuyau en forme de U qui <b>garde toujours un peu d'eau</b> (la « garde d'eau », <b>au moins 50 mm</b>). Cette eau forme un bouchon : les gaz et les odeurs de l'égout ne remontent pas dans la pièce.</p>
+      <h4>② La pente</h4>
+      <p>L'eau d'évacuation n'a pas de moteur : elle coule grâce à la <b>gravité</b>. Tous les tuyaux horizontaux doivent donc descendre régulièrement : <b>1 à 3 cm par mètre</b> (1 à 3 %).</p>
+      <h4>③ La ventilation</h4>
+      <p>Il faut de l'air dans les tuyaux, sinon l'eau qui descend <b>aspire l'eau des siphons</b>.</p>
+    </div>
+  </div>
+
+  <div class="tool" id="slopeTool"><span class="tag">Outil · la pente</span>
+    <h4>Règle la pente et regarde ce qui se passe</h4>
+    <svg id="slopeSvg" viewBox="0 0 600 140" style="width:100%;height:auto"></svg>
+    <div class="grid2">
+      <div><label>Longueur du tuyau : <b id="slL"></b></label><input type="range" id="slLen" min="1" max="10" step="0.5" value="4"></div>
+      <div><label>Pente : <b id="slP"></b></label><input type="range" id="slPct" min="0" max="6" step="0.5" value="2"></div>
+    </div>
+    <p style="margin-bottom:0">Le bout du tuyau doit être <span class="out" id="slDrop"></span> plus bas que le départ.</p>
+    <div class="verdict" id="slV"></div>
+  </div>
+  <div class="box clair"><span class="tag">En clair · pourquoi pas « plus il y a de pente, mieux c'est » ?</span>
+    <p>Avec une pente <b>trop faible</b>, l'eau stagne et les saletés finissent par boucher le tuyau. Avec une pente <b>trop forte</b>, l'eau file trop vite et « abandonne » les déchets solides derrière elle. Il faut le juste milieu.</p>
+    <p><b>Calcul :</b> dénivelé = longueur × pente. Ex. 4 m à 2 cm/m → 4 × 2 = 8 cm plus bas au bout.</p>
+  </div>
+
+  <h3>La ventilation, expliquée</h3>
+  <p>Quand une grande quantité d'eau descend dans la colonne (une chasse de WC par exemple), elle agit comme un <b>piston</b> : elle pousse l'air devant elle et <b>aspire</b> l'air derrière elle. S'il n'y a pas d'air, c'est l'eau des siphons qui est aspirée (on dit que les siphons sont <b>désiphonnés</b>) : on entend des « glouglous » et les odeurs entrent.</p>
+  <div class="grid2">
+    <div class="mini"><h4>Ventilation primaire</h4>On <b>prolonge la colonne de chute jusqu'au toit</b>, ouverte à l'air libre. L'air entre par là et l'eau s'écoule sans vider les siphons.</div>
+    <div class="mini"><h4>Ventilation secondaire</h4>Un <b>deuxième tuyau d'air, en parallèle</b>, pour les longues canalisations ou les grands bâtiments. Évite les glouglous quand plusieurs appareils se vident en même temps.</div>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Élément</th><th>Rôle simple</th><th>Si c'est mal fait…</th></tr>
+    <tr><td>Siphon</td><td>Garder une réserve d'eau qui bloque les odeurs</td><td>Odeurs d'égout dans la pièce</td></tr>
+    <tr><td>Pente</td><td>Faire glisser l'eau et les déchets vers la sortie</td><td>Tuyau bouché, eau sale qui stagne</td></tr>
+    <tr><td>Ventilation primaire (toit)</td><td>Faire entrer l'air au-dessus de la chute</td><td>Bruit de succion « glouglou », siphons vidés</td></tr>
+    <tr><td>Ventilation secondaire</td><td>Amener de l'air en plus sur les longs circuits</td><td>Refoulement, eau qui ralentit</td></tr>
+  </table></div>
+
+  <div class="box piege"><span class="tag">Pièges d'examen</span>
+    <ul>
+      <li>L'évacuation ne fonctionne <b>jamais</b> sous pression : c'est <b>gravitaire</b>.</li>
+      <li>Ventilation <b>primaire</b> = la colonne prolongée jusqu'au toit. <b>Secondaire</b> = un tuyau d'air <b>en plus</b>, en parallèle.</li>
+      <li>Le WC est alimenté en <b>eau froide seule</b>.</li>
+      <li>Eaux-<b>vannes</b> = WC. Eaux <b>ménagères</b> = tout le reste (savonneuses).</li>
+    </ul>
+  </div>
+  <div class="box retenir"><span class="tag">À retenir — l'essentiel du chapitre 1</span>
+    <ul>
+      <li>Deux réseaux : <span class="ef">alimentation sous pression</span> et <span class="evac">évacuation par gravité</span>.</li>
+      <li>EF + EC : lavabo, douche, baignoire, bidet, évier. EF seule : WC, lave-linge, robinet extérieur.</li>
+      <li>Les 3 règles de l'évacuation : <b>siphon</b> (garde d'eau ≥ 50 mm), <b>pente</b> (1 à 3 cm/m), <b>ventilation</b> (primaire + secondaire).</li>
+      <li>Chaude à gauche, froide à droite. Chaude en haut, froide en bas.</li>
+    </ul>
+  </div>
+  <div id="quiz-ch1"></div>
+  <div class="endnav"><a class="btn light" href="#accueil">◀ Accueil</a><button class="btn markbtn" data-mark="1">J'ai compris ce chapitre</button><a class="btn acc" href="#ch2">Chapitre 2 ▶</a></div>
+</section>
+
+<!-- ================= CHAPITRE 2 ================= -->
+<section class="view" id="v-ch2">
+  <div class="kicker">Chapitre 2</div>
+  <h1>Lire une notice technique d'installation</h1>
+  <div class="oneliner">Sur chantier, on ne travaille jamais « au feeling » : avant de poser quoi que ce soit, on ouvre et on lit la notice du fabricant. Même pour un appareil qu'on connaît.</div>
+
+  <h2>2.1 Pourquoi la notice est indispensable</h2>
+  <p>La notice technique, c'est le <b>mode d'emploi officiel</b> écrit par le fabricant (Geberit, Henco, Comap, Grohe, Viega…). Elle sert à :</p>
+  <div class="grid2">
+    <div class="mini">✔️ <b>Choisir le bon matériel</b> (pression, température, type de fluide).</div>
+    <div class="mini">✔️ <b>Connaître les dimensions exactes</b> avant de percer ou de couper.</div>
+    <div class="mini">✔️ <b>Suivre l'ordre de montage</b> sans oublier de pièce ni de joint.</div>
+    <div class="mini">✔️ <b>Respecter la sécurité</b> de l'installateur et de l'utilisateur.</div>
+  </div>
+  <div class="box piege"><span class="tag">Si on monte sans lire la notice…</span>
+    <ul><li>Fuites, immédiates ou cachées dans les murs.</li><li>Rupture ou arrachement (ex. WC suspendu mal ancré).</li><li><b>Perte automatique de la garantie</b> du fabricant.</li><li>Le client refuse la réception du chantier : tout est à refaire <b>à tes frais</b>.</li></ul>
+  </div>
+
+  <h2>2.2 Les parties d'une notice</h2>
+  <p>Exemple réel du cours : un bâti-support Geberit pour WC suspendu. Clique sur chaque partie :</p>
+  <div id="noticeParts"></div>
+
+  <h2>2.3 Les dimensions et les unités</h2>
+  <div class="box retenir"><span class="tag">À retenir</span><p>Sur les plans et notices : les <b>longueurs</b> et les <b>diamètres</b> sont en <b>millimètres (mm)</b>. Les <b>filetages</b> (et les tuyaux en acier) sont en <b>pouces (")</b>. 1 pouce = 25,4 mm.</p></div>
+  <div class="tbl"><table>
+    <tr><th>Sur la notice</th><th>C'est quoi ?</th><th>Ce que ça veut dire</th></tr>
+    <tr><td><b>16 x 2 mm</b></td><td>Tube multicouche ou PER</td><td>Diamètre <b>extérieur</b> 16 mm, paroi de 2 mm d'épaisseur (donc 12 mm à l'intérieur)</td></tr>
+    <tr><td><b>Ø 110 mm</b></td><td>Tube d'évacuation</td><td>Diamètre extérieur du tuyau de décharge (ex. WC)</td></tr>
+    <tr><td><b>1/2" (15/21)</b></td><td>Filetage gaz</td><td>Raccordement standard du lavabo, de la douche, du bidet</td></tr>
+    <tr><td><b>3/4" (20/27)</b></td><td>Filetage gaz</td><td>Machine à laver, compteur, robinet de jardin</td></tr>
+    <tr><td><b>Entraxe 150 mm</b></td><td>Distance d'axe en axe</td><td>Écart standard entre l'arrivée chaude et l'arrivée froide d'un mitigeur</td></tr>
+    <tr><td><b>+1,00 m</b></td><td>Trait de niveau</td><td>Ligne tracée à 1 m au-dessus du sol fini, pour caler toutes les hauteurs</td></tr>
+  </table></div>
+
+  <div class="figure">
+    <svg viewBox="0 0 640 230" role="img" aria-label="Sol brut, sol fini et trait de niveau à plus 1 mètre">
+      <rect x="40" y="20" width="560" height="160" fill="#fbfaf6" stroke="#cfc6b3"/>
+      <rect x="40" y="180" width="560" height="14" fill="#d4c7a8"/><text x="594" y="191" font-size="11" fill="#6b5a30" text-anchor="end">carrelage / chape</text>
+      <rect x="40" y="194" width="560" height="26" fill="#a9a59c"/><text x="48" y="211" font-size="11" fill="#fff" font-weight="700">dalle béton = SOL BRUT</text>
+      <line x1="40" y1="180" x2="600" y2="180" stroke="#0e6f73" stroke-width="2.5"/>
+      <text x="48" y="174" font-size="11" fill="#0e6f73" font-weight="700">SOL FINI = 0,00 m</text>
+      <line x1="40" y1="70" x2="600" y2="70" stroke="#c8372d" stroke-width="2.5" stroke-dasharray="10 6"/>
+      <text x="48" y="62" font-size="12" fill="#c8372d" font-weight="800">trait de niveau +1,00 m</text>
+      <path d="M520 70 V180" stroke="#1c2230" stroke-width="1.3" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#1c2230"/></marker></defs>
+      <text x="528" y="130" font-size="12" font-weight="700">1,00 m</text>
+      <rect x="300" y="104" width="90" height="16" rx="6" fill="#cfd6df"/><text x="345" y="98" text-anchor="middle" font-size="11">lavabo</text>
+      <path d="M440 120 V180" stroke="#1c2230" stroke-width="1.1" marker-start="url(#ar2)" marker-end="url(#ar2)"/><text x="446" y="154" font-size="11">85 cm</text>
+    </svg>
+    <div class="cap">On mesure toujours depuis le <b>sol fini</b> (une fois le carrelage posé). Le sol brut est 10 à 20 cm plus bas : c'est là que passent les tuyaux.</div>
+  </div>
+
+  <h2>2.4 Les pictogrammes</h2>
+  <p>Les fabricants utilisent des dessins pour donner des ordres rapides. Essaie de deviner, puis <b>clique pour vérifier</b> :</p>
+  <div class="picto" id="picto"></div>
+
+  <h2>2.5 Les 3 étapes universelles d'installation</h2>
+  <ol class="steps">
+    <li><b>Préparation :</b> vérifier que toutes les pièces sont là, contrôler les cotes et les diamètres de passage (ex. le trou de l'évier pour le robinet).</li>
+    <li><b>Pose mécanique :</b> positionner le châssis ou le robinet, <b>de niveau</b>, serré au <b>couple</b> indiqué.</li>
+    <li><b>Raccordement &amp; contrôle :</b> brancher l'eau sans pincer les joints, puis faire le <b>test d'étanchéité sous pression avant de fermer les cloisons</b>.</li>
+  </ol>
+
+  <h2>2.6 Vocabulaire du chapitre</h2>
+  <div class="grid2">
+    <div class="mini"><h4>Vue éclatée</h4>Dessin de l'appareil démonté, chaque pièce séparée, dans l'ordre de montage.</div>
+    <div class="mini"><h4>Entraxe</h4>Distance entre le <b>centre</b> (l'axe) de deux tuyaux ou de deux trous.</div>
+    <div class="mini"><h4>Gabarit de pose</h4>Patron en carton ou plastique fourni avec l'appareil pour marquer les trous au mur.</div>
+    <div class="mini"><h4>Couple de serrage (Nm)</h4>Force maximale pour serrer un écrou sans casser la pièce ni écraser le joint.</div>
+  </div>
+  <div class="box retenir"><span class="tag">À retenir — l'essentiel du chapitre 2</span>
+    <ul>
+      <li><b>Règle n°1 :</b> toujours lire la notice avant de monter, même un appareil connu.</li>
+      <li>Toujours vérifier les <b>diamètres</b>, les <b>entraxes</b> et la <b>hauteur</b> par rapport au trait de niveau (+1,00 m).</li>
+      <li>Respecter l'<b>ordre des pièces</b> et le sens des joints (vue éclatée).</li>
+      <li>N'utiliser que les <b>outils indiqués</b> et respecter les pictogrammes d'interdiction.</li>
+      <li>Toujours <b>tester l'étanchéité avant</b> de carreler ou de fermer une cloison.</li>
+    </ul>
+  </div>
+  <div id="quiz-ch2"></div>
+  <div class="endnav"><a class="btn light" href="#ch1">◀ Chapitre 1</a><button class="btn markbtn" data-mark="2">J'ai compris ce chapitre</button><a class="btn acc" href="#ch3">Chapitre 3 ▶</a></div>
+</section>
+
+<!-- ================= CHAPITRE 3 ================= -->
+<section class="view" id="v-ch3">
+  <div class="kicker">Chapitre 3</div>
+  <h1>Hydraulique de base : débit, pression, vitesse</h1>
+  <div class="oneliner">L'eau doit arriver au robinet <b>en quantité suffisante</b> (le débit), <b>avec assez de force</b> (la pression) et <b>sans faire de bruit</b> (la vitesse).</div>
+
+  <div class="box clair"><span class="tag">En clair · l'image du tuyau d'arrosage</span>
+    <ul>
+      <li><b>Débit (Q)</b> : combien de litres sortent par minute. <i>« Combien d'eau ? »</i></li>
+      <li><b>Pression (P)</b> : avec quelle force l'eau est poussée. <i>« Avec quelle force ? »</i></li>
+      <li><b>Vitesse (v)</b> : à quelle vitesse l'eau avance dans le tuyau. <i>« À quelle allure ? »</i></li>
+    </ul>
+    <p>Quand tu mets ton pouce sur le bout d'un tuyau d'arrosage, le passage devient plus petit : <b>l'eau sort beaucoup plus vite</b>. C'est toute l'idée de la vitesse et de Bernoulli.</p>
+  </div>
+
+  <h2>3.1 Le débit (Q) : « quelle quantité d'eau passe ? »</h2>
+  <p>Le débit, c'est le <b>volume d'eau qui passe pendant un certain temps</b>.</p>
+  <div class="card" style="text-align:center"><span class="big">Q = V / t</span><br><span style="color:var(--ink2)">débit = volume (litres) ÷ temps (minutes)</span></div>
+  <div class="grid3">
+    <div class="mini"><h4>L/min</h4>Litres par minute. La plus utilisée : robinets, douches.</div>
+    <div class="mini"><h4>L/s</h4>Litres par seconde. Calculs d'évacuation et colonnes.</div>
+    <div class="mini"><h4>m³/h</h4>Mètres cubes par heure. Compteur d'eau. <b>1 m³ = 1000 L</b>.</div>
+  </div>
+  <div class="tool"><span class="tag">Outil · le test du seau</span>
+    <h4>Sur chantier, on mesure un débit avec un seau gradué et un chrono</h4>
+    <div class="grid2">
+      <div><label>Litres dans le seau : <b id="bkV"></b></label><input type="range" id="bkVol" min="1" max="20" step="1" value="10"></div>
+      <div><label>Temps pour le remplir : <b id="bkT"></b></label><input type="range" id="bkSec" min="10" max="180" step="5" value="60"></div>
+    </div>
+    <p style="margin-bottom:0">Débit = <span class="out" id="bkQ"></span></p>
+    <div class="verdict ok" id="bkCmp"></div>
+  </div>
+  <div class="numgrid">
+    <div class="n"><div class="big">4–6</div><div>L/min · robinet de lave-mains</div></div>
+    <div class="n"><div class="big">10–12</div><div>L/min · douche classique</div></div>
+    <div class="n"><div class="big">15–20</div><div>L/min · remplissage de baignoire</div></div>
+  </div>
+
+  <h2>3.2 La pression (P) : « avec quelle force l'eau est-elle poussée ? »</h2>
+  <p>La pression, c'est la <b>force</b> que l'eau exerce sur les parois du tuyau (ou sur le clapet d'un robinet). C'est elle qui fait <b>monter l'eau dans les étages</b>.</p>
+  <div class="card" style="text-align:center"><span class="big">P = F / S</span><br><span style="color:var(--ink2)">pression = force ÷ surface</span></div>
+  <div class="box retenir"><span class="tag">À retenir · l'unité du plombier : le bar</span>
+    <p>L'unité officielle est le Pascal (Pa), mais sur chantier et sur les manomètres on parle toujours en <b>bar</b>.</p>
+    <p style="font-family:var(--head);font-weight:800;font-size:1.25rem;margin:.4em 0">1 bar = 100 000 Pa = 10 mètres de colonne d'eau (10 mCE)</p>
+    <p>Autrement dit : <b>1 bar peut faire monter l'eau de 10 mètres</b>. 3 bars → 30 m.</p>
+  </div>
+
+  <div class="tool"><span class="tag">Outil · le manomètre</span>
+    <h4>Bouge la pression et lis le diagnostic</h4>
+    <div class="grid2" style="align-items:center">
+      <svg id="gauge" viewBox="0 0 240 150" style="width:100%;max-width:300px;margin:auto;display:block"></svg>
+      <div>
+        <label>Pression mesurée : <b id="pbV"></b></label>
+        <input type="range" id="pBar" min="0" max="8" step="0.1" value="3">
+        <p style="margin:.4em 0">L'eau peut monter jusqu'à environ <span class="out" id="pH"></span></p>
+      </div>
+    </div>
+    <div class="verdict" id="pVerdict"></div>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Situation</th><th>Valeur</th><th>Ce qu'on observe</th></tr>
+    <tr><td>Pression du réseau public</td><td>2,5 à 8 bars</td><td>Ça dépend de la commune et de la rue</td></tr>
+    <tr><td><b>Idéal dans une maison</b></td><td><b>2,5 à 3,5 bars</b></td><td>Tout fonctionne bien</td></tr>
+    <tr><td>Minimum au robinet le plus haut</td><td>1 bar</td><td>Le strict minimum pour que ça marche</td></tr>
+    <tr><td>Trop faible</td><td>&lt; 1,5 bar</td><td>Filet d'eau à la douche, WC très lent à se remplir</td></tr>
+    <tr><td>Trop forte</td><td>&gt; 4 à 4,5 bars</td><td>Coups de bélier, fuites aux raccords, groupe de sécurité du chauffe-eau abîmé</td></tr>
+  </table></div>
+  <div class="box ok"><span class="tag">La solution</span><p>Pression trop forte → on installe un <b>réducteur de pression juste après le compteur</b>, réglé à environ <b>3 bars</b>. Le cours le présente comme obligatoire dès que la pression de la rue dépasse <b>4 bars</b>.</p></div>
+
+  <h2>3.3 La vitesse (v) : « à quelle allure l'eau avance-t-elle ? »</h2>
+  <p>La vitesse, c'est la distance que l'eau parcourt <b>en une seconde</b>, en <b>mètres par seconde (m/s)</b>.</p>
+  <div class="card" style="text-align:center"><span class="big">v = Q / S</span><br><span style="color:var(--ink2)">vitesse = débit ÷ section (la surface du « trou » du tuyau)</span></div>
+  <div class="box retenir"><span class="tag">La règle d'or</span>
+    <p>Pour un <b>même débit</b> : <b>tuyau plus étroit → l'eau va plus vite</b>. Tuyau plus large → l'eau va moins vite.</p>
+  </div>
+  <div class="tool"><span class="tag">Outil · vitesse dans un tuyau</span>
+    <h4>Choisis un débit et un diamètre intérieur</h4>
+    <svg id="pipeSvg" viewBox="0 0 600 90" style="width:100%;height:auto"></svg>
+    <div class="grid2">
+      <div><label>Débit : <b id="vqV"></b></label><input type="range" id="vQ" min="2" max="30" step="1" value="12"></div>
+      <div><label>Diamètre intérieur du tuyau</label>
+        <div class="seg" id="vD"></div></div>
+    </div>
+    <p style="margin-bottom:0">Vitesse de l'eau : <span class="out" id="vOut"></span></p>
+    <div class="verdict" id="vVerdict"></div>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:0">Essaie une douche (12 L/min) dans un tube de 12 mm intérieur, puis de 16 mm : tu verras pourquoi on ne prend pas toujours le plus petit tuyau.</p>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Où ?</th><th>Vitesse maximale conseillée</th></tr>
+    <tr><td>Distribution dans les pièces de vie (apparente ou encastrée)</td><td><b>1,0 à 1,5 m/s</b></td></tr>
+    <tr><td>Colonnes montantes et sous-sols</td><td>jusqu'à <b>2,0 m/s</b></td></tr>
+    <tr><td>Au-delà de 2 m/s</td><td>Sifflements dans les murs, usure rapide des coudes en cuivre, coups de bélier</td></tr>
+  </table></div>
+
+  <h2>3.4 Le lien entre les trois : Bernoulli</h2>
+  <div class="mini"><b>Daniel Bernoulli</b> (1700-1782), médecin, physicien et mathématicien suisse né aux Pays-Bas. En 1738 il publie <i>Hydrodynamica</i>, qui pose les lois de l'écoulement des liquides. Son idée : dans une conduite, <b>l'énergie totale de l'eau reste constante</b>.</div>
+  <div class="figure">
+    <svg id="venturi" viewBox="0 0 640 210" role="img" aria-label="Effet Venturi : au rétrécissement la vitesse augmente et la pression baisse"></svg>
+    <label style="font-size:.9rem;color:var(--ink2)">Serre le tuyau : diamètre au rétrécissement <b id="vtL"></b></label>
+    <input type="range" id="vtR" min="40" max="100" step="5" value="60" style="width:100%;accent-color:var(--accent)">
+    <div class="cap">Effet Venturi : là où le tuyau rétrécit, l'eau accélère et la pression baisse. Quand il s'élargit, elle ralentit et la pression remonte.</div>
+  </div>
+  <h3>Ce que ça donne en pratique</h3>
+  <ol class="steps">
+    <li><b>Robinet fermé (pression statique) :</b> l'eau est au repos. La pression est <b>maximale</b> et la même partout. Vitesse = 0.</li>
+    <li><b>Robinet ouvert (pression dynamique) :</b> une partie de la pression se transforme en vitesse, une autre est perdue par frottement (les <b>pertes de charge</b>). Le manomètre descend un peu.</li>
+    <li><b>Au passage d'un rétrécissement :</b> la vitesse augmente d'un coup et la pression locale diminue.</li>
+  </ol>
+  <div class="box clair"><span class="tag">En clair · les pertes de charge</span><p>L'eau frotte contre les parois. <b>Plus le tuyau est long, étroit, et plein de coudes</b>, plus elle perd de pression en route. C'est pour ça que le robinet le plus éloigné a souvent moins de pression.</p></div>
+
+  <h2>3.5 Tableau récapitulatif</h2>
+  <div class="tbl"><table>
+    <tr><th>Grandeur</th><th>Symbole</th><th>Formule</th><th>Unité</th><th>On la mesure avec</th><th>Si elle est mauvaise</th></tr>
+    <tr><td>Débit</td><td>Q</td><td>Q = V/t</td><td>L/min, m³/h</td><td>Seau gradué + chrono, compteur</td><td>Inconfort, attente trop longue</td></tr>
+    <tr><td>Pression</td><td>P</td><td>P = F/S</td><td>bar</td><td>Manomètre</td><td>Trop haute : fuites. Trop basse : manque d'eau</td></tr>
+    <tr><td>Vitesse</td><td>v</td><td>v = Q/S</td><td>m/s</td><td>On la calcule (Q/S)</td><td>Trop haute : bruits, sifflements, usure</td></tr>
+  </table></div>
+
+  <h2>3.6 Les pannes typiques : mène l'enquête</h2>
+  <p>Lis le problème, réfléchis, puis clique pour voir la cause.</p>
+  <div class="reveal"><div class="q"><b>Cas n°1 :</b> le client manque d'eau sous la douche. Tu mesures <b>3,5 bars</b> au manomètre (bonne pression), mais le débit reste faible.</div><div class="a">La pression est bonne, donc le problème est un <b>bouchon local</b> : <b>mousseur (filtre) entartré</b> ou <b>flexible de douche écrasé</b>.</div></div>
+  <div class="reveal"><div class="q"><b>Cas n°2 :</b> quand on ouvre le robinet de l'évier, les tuyaux <b>sifflent fort</b>.</div><div class="a">L'eau va <b>trop vite</b> (plus de 2,5 m/s) : le tuyau est <b>trop petit</b> (sous-dimensionné) ou une <b>vanne d'arrêt est à moitié fermée</b>.</div></div>
+  <div class="reveal"><div class="q"><b>Cas n°3 :</b> la soupape du chauffe-eau <b>goutte sans arrêt</b> et les tuyaux <b>claquent</b>.</div><div class="a">La pression du réseau est <b>trop forte</b> (plus de 5 bars). Il faut installer un <b>réducteur de pression réglé à 3 bars après le compteur</b>.</div></div>
+
+  <h3>Vocabulaire du chapitre</h3>
+  <div class="grid2">
+    <div class="mini"><h4>Pression statique</h4>Mesurée quand <b>tous les robinets sont fermés</b> (eau au repos).</div>
+    <div class="mini"><h4>Pression dynamique</h4>Mesurée quand <b>un ou plusieurs robinets sont ouverts</b> (eau en mouvement).</div>
+    <div class="mini"><h4>Coup de bélier</h4>Choc et bruit causés par l'<b>arrêt brutal</b> de l'eau (mitigeur fermé d'un coup, électrovanne).</div>
+    <div class="mini"><h4>Manomètre</h4>Appareil à cadran qui affiche la pression en bars.</div>
+  </div>
+  <div class="box retenir"><span class="tag">À retenir — l'essentiel du chapitre 3</span>
+    <ul>
+      <li>Débit Q = quantité d'eau (L/min). Pression P = force (bar). Vitesse v = rapidité (m/s).</li>
+      <li>1 bar = 10 mCE = 100 000 Pa. Idéal maison : <b>2,5 à 3,5 bars</b>.</li>
+      <li>Vitesse : max <b>1,5 m/s</b> dans les pièces de vie (bruit).</li>
+      <li>Tuyau plus étroit → vitesse ↑ et pression locale ↓ (Bernoulli).</li>
+      <li>Long + étroit + coudes = plus de pertes de charge.</li>
+      <li>Pression de rue &gt; 4 bars → <b>réducteur de pression</b> après le compteur.</li>
+    </ul>
+  </div>
+  <div id="quiz-ch3"></div>
+  <div class="endnav"><a class="btn light" href="#ch2">◀ Chapitre 2</a><button class="btn markbtn" data-mark="3">J'ai compris ce chapitre</button><a class="btn acc" href="#ch4">Chapitre 4 ▶</a></div>
+</section>
+
+<!-- ================= CHAPITRE 4 ================= -->
+<section class="view" id="v-ch4">
+  <div class="kicker">Chapitre 4</div>
+  <h1>Les tuyaux d'alimentation (eau froide et eau chaude sanitaire)</h1>
+  <div class="oneliner">Cinq matériaux à connaître : <b>cuivre, acier galvanisé, acier noir, PER et multicouche</b>. Pour chacun : à quoi il ressemble, ses tailles, comment on le coupe, le plie, l'assemble et le fixe… et ce qui est interdit.</div>
+
+  <p>Un <b>tuyau d'alimentation</b> transporte l'<b>eau potable</b> du réseau de distribution jusqu'aux appareils (lavabo, évier, douche, baignoire, robinet de puisage, réservoir de WC). On choisit le matériau selon 5 critères : <b>résistance mécanique, facilité d'installation, durée de vie, coût, domaine d'utilisation</b>.</p>
+  <p>Sur chantier, tu dois savoir <b>identifier un tuyau, reconnaître ses dimensions, comprendre pourquoi il a été choisi et lire sa notice</b>. Sinon impossible de commander le bon matériel, de bien raccorder ou de réparer.</p>
+
+  <h2>Les unités et les diamètres</h2>
+  <div class="box retenir"><span class="tag">La règle des unités</span>
+    <p>Tous les tuyaux s'expriment en <b>millimètres</b> (ex. Ø 15, Ø 22)… <b>sauf l'acier</b>, qui s'exprime en <b>pouces</b> (ex. 1/2", 3/4", 1").</p>
+  </div>
+  <div class="figure">
+    <svg viewBox="0 0 640 200" role="img" aria-label="Diamètre extérieur, diamètre intérieur et épaisseur d'un tube">
+      <circle cx="140" cy="100" r="80" fill="#b9c3cf"/>
+      <circle cx="140" cy="100" r="60" fill="#e7f0fb"/>
+      <path d="M60 100 H220" stroke="#1c2230" stroke-width="1.5" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+      <path d="M80 130 H200" stroke="#2563b8" stroke-width="1.5" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+      <defs><marker id="ar3" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="context-stroke"/></marker></defs>
+      <text x="140" y="94" text-anchor="middle" font-size="12" font-weight="700">Ø extérieur</text>
+      <text x="140" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#2563b8">Ø intérieur</text>
+      <text x="140" y="34" text-anchor="middle" font-size="11">paroi</text>
+      <g font-size="13">
+        <text x="270" y="50"><tspan font-weight="700">Cuivre « 13/15 »</tspan> = 13 mm dedans / 15 mm dehors</text>
+        <text x="270" y="80"><tspan font-weight="700">Multicouche « 16 x 2 »</tspan> = 16 mm dehors, paroi 2 mm</text>
+        <text x="270" y="100" fill="#4a5263">→ intérieur = 16 − 2 − 2 = 12 mm</text>
+        <text x="270" y="130"><tspan font-weight="700">DN</tspan> (diamètre nominal) = un numéro commun</text>
+        <text x="270" y="150" fill="#4a5263">pour désigner un tuyau, quel que soit le matériau</text>
+        <text x="270" y="180"><tspan font-weight="700">1 pouce (1")</tspan> = 25,4 mm</text>
+      </g>
+    </svg>
+  </div>
+  <div class="box piege"><span class="tag">Piège</span><p>Le « nom » d'un tuyau en acier (1/2", 3/4"…) <b>ne correspond pas</b> exactement à une mesure : un tube 1/2" mesure 21,3 mm à l'extérieur et environ 15 mm à l'intérieur (d'où l'écriture « 15/21 »). L'outil plus bas te montre toutes les correspondances.</p></div>
+
+  <h2>Les 5 matériaux, un par un</h2>
+  <div class="tabs" id="matTabs"></div>
+  <div id="mats"></div>
+
+  <h2>Comparer les 5 matériaux</h2>
+  <div class="tbl"><table>
+    <tr><th>Matériau</th><th>Souple ?</th><th>Corrosion</th><th>Calcaire</th><th>Dilatation</th><th>Coût</th></tr>
+    <tr><td><b>Cuivre</b></td><td>Non (oui si recuit)</td><td>Bonne</td><td>Moyenne</td><td>Faible</td><td>€€€€ élevé</td></tr>
+    <tr><td><b>Acier galvanisé</b></td><td>Non</td><td>Moyenne</td><td>Faible (s'entartre)</td><td>Faible</td><td>€€ moyen</td></tr>
+    <tr><td><b>Acier noir</b></td><td>Non</td><td>Faible (rouille)</td><td>Faible</td><td>Faible</td><td>€ économique</td></tr>
+    <tr><td><b>PER</b></td><td>Oui</td><td>Excellente</td><td>Excellente (parois lisses)</td><td><b>Très forte</b></td><td>€ économique</td></tr>
+    <tr><td><b>Multicouche</b></td><td>Oui (garde sa forme)</td><td>Excellente</td><td>Excellente (parois lisses)</td><td>Faible (âme alu)</td><td>€€€ moyen</td></tr>
+  </table></div>
+
+  <div class="tool"><span class="tag">Outil · quel tuyau pour quel usage ?</span>
+    <h4>Clique une ligne pour lire l'explication</h4>
+    <div class="tbl" style="margin:8px 0"><table class="matrix" id="matrix"></table></div>
+    <div class="steptext" id="matrixInfo">Le tableau vient de la page 55 du cours (règles Belgaqua pour l'eau potable, Cerga pour le gaz).</div>
+  </div>
+
+  <div class="tool"><span class="tag">Outil · le décodeur de tailles</span>
+    <h4>Choisis un matériau et une taille</h4>
+    <div class="seg" id="dimMat"></div>
+    <div class="seg" id="dimSize" style="margin-top:8px"></div>
+    <div class="grid2" style="margin-top:12px;align-items:center">
+      <svg id="dimSvg" viewBox="0 0 200 200" style="max-width:200px;margin:auto;display:block"></svg>
+      <div class="kv" id="dimInfo"></div>
+    </div>
+  </div>
+
+  <h2>Fixer les tuyaux : les règles communes</h2>
+  <div class="grid2">
+    <div class="mini"><h4>Le bon collier</h4><ul style="padding-left:1.1em;margin:.2em 0"><li><b>Colliers métalliques lourds</b> pour l'acier.</li><li><b>Colliers isophoniques</b> (garniture caoutchouc EPDM) : moins de bruit et de vibrations.</li><li><b>Colliers clipsables</b> pour le PER et le multicouche.</li></ul></div>
+    <div class="mini"><h4>Points fixes et points glissants</h4>Un tuyau s'allonge quand il chauffe (<b>dilatation</b>). On alterne des colliers qui <b>bloquent</b> (points fixes) et des colliers qui <b>guident librement</b> (points glissants). Sinon le tuyau force, claque ou se déforme.</div>
+  </div>
+  <div class="box retenir"><span class="tag">À retenir — l'essentiel du chapitre 4</span>
+    <ul>
+      <li>Tout en <b>mm</b>, sauf l'<b>acier en pouces</b>.</li>
+      <li><b>Cuivre</b> : rouge-orangé, eau + chauffage + gaz. Recuit avant cintrage. Brasage tendre &lt; 450 °C, fort &gt; 450 °C.</li>
+      <li><b>Acier galvanisé</b> : <b>jamais cintrer ni souder</b> en eau potable, <b>jamais après du cuivre</b> (règle de l'aval).</li>
+      <li><b>Acier noir</b> : chauffage et gaz seulement. <b>Interdit pour l'eau potable.</b></li>
+      <li><b>PER</b> : souple, en couronnes, <b>dilate beaucoup</b>. Fourreau obligatoire quand il est encastré.</li>
+      <li><b>Multicouche</b> : âme alu, faible dilatation. <b>Calibrer et chanfreiner</b> obligatoirement après la coupe.</li>
+    </ul>
+  </div>
+  <div id="quiz-ch4"></div>
+  <div class="endnav"><a class="btn light" href="#ch3">◀ Chapitre 3</a><button class="btn markbtn" data-mark="4">J'ai compris ce chapitre</button><a class="btn acc" href="#ch5">Chapitre 5 ▶</a></div>
+</section>
+
+<!-- ================= CHAPITRE 5 ================= -->
+<section class="view" id="v-ch5">
+  <div class="kicker">Chapitre 5</div>
+  <h1>Les tuyaux d'évacuation des eaux usées</h1>
+  <div class="oneliner">Trois plastiques à connaître : le <b>PVC</b> (gris, collé), le <b>PEHD</b> (noir, soudé) et le <b>PP</b> (silencieux, emboîté avec un joint). Le diamètre dépend de l'appareil : plus il évacue d'eau, plus le tuyau est gros.</div>
+
+  <p>Contrairement à l'alimentation (eau potable <b>sous pression</b>), l'évacuation transporte les <b>eaux usées et les eaux-vannes</b> vers l'égout, <b>par gravité</b>. Une mauvaise évacuation provoque des <b>fuites, des bouchons, des odeurs, des dégâts au bâtiment et des problèmes d'hygiène</b>.</p>
+  <div class="mini"><h4>Ce qu'on attend d'un tuyau d'évacuation</h4>Étanche · résistant aux eaux usées · résistant à la corrosion · facile à assembler · simple à entretenir.</div>
+
+  <h2>Les 3 matériaux</h2>
+  <div class="tabs" id="evTabs"></div>
+  <div id="evMats"></div>
+
+  <h2>Synthèse des tuyaux d'évacuation</h2>
+  <div class="tbl"><table>
+    <tr><th>Matériau</th><th>Aspect &amp; propriétés</th><th>Ø extérieurs courants</th><th>Assemblage</th><th>Où ?</th></tr>
+    <tr><td><b>PVC-U</b> (ex. Nicoll)</td><td>Gris, rigide, parois très lisses, léger, économique</td><td>32, 40, 50, 75, 90, 110, 125 mm</td><td>Collage à froid (décapant + colle) ou emboîtement à joint à lèvres</td><td>Évacuation domestique : EU, EV et pluviales</td></tr>
+    <tr><td><b>PEHD</b> (ex. Geberit PE)</td><td>Noir, rigide, très robuste : chocs, gel, produits chimiques</td><td>40, 50, 56, 63, 75, 90, 110, 125, 160 mm</td><td>Soudure bout à bout au miroir, manchons électrosoudables</td><td>Colonnes collectives, hôpitaux, labos, coulé dans le béton</td></tr>
+    <tr><td><b>PP</b> (ex. Silent-PP)</td><td>Insonorisé, résiste à 90 °C et aux produits ménagers</td><td>32, 40, 50, 75, 90, 110, 125, 160 mm</td><td>Emboîtement manchon + joint EPDM lubrifié, <b>sans colle</b></td><td>Évacuations silencieuses, colonnes techniques</td></tr>
+  </table></div>
+
+  <h2>Quel diamètre pour quel appareil ?</h2>
+  <div class="figure">
+    <svg viewBox="0 0 640 250" role="img" aria-label="Diamètres d'évacuation par appareil">
+      <g font-size="13">
+        <text x="10" y="40" font-weight="700">Lavabo / lave-mains</text><rect x="210" y="26" width="128" height="20" rx="10" fill="#b8b4ab"/><text x="348" y="41">Ø 32 à 40 mm</text>
+        <text x="10" y="80" font-weight="700">Évier</text><rect x="210" y="66" width="160" height="20" rx="10" fill="#9c988e"/><text x="380" y="81">Ø 40 à 50 mm</text>
+        <text x="10" y="120" font-weight="700">Douche</text><rect x="210" y="106" width="160" height="20" rx="10" fill="#9c988e"/><text x="380" y="121">Ø 40 à 50 mm</text>
+        <text x="10" y="160" font-weight="700">Baignoire</text><rect x="210" y="146" width="160" height="20" rx="10" fill="#9c988e"/><text x="380" y="161">Ø 40 à 50 mm</text>
+        <text x="10" y="200" font-weight="700">Machine à laver</text><rect x="210" y="186" width="160" height="20" rx="10" fill="#9c988e"/><text x="380" y="201">Ø 40 à 50 mm</text>
+        <text x="10" y="240" font-weight="700">WC (eaux-vannes)</text><rect x="210" y="222" width="352" height="24" rx="12" fill="#6d6a63"/><text x="572" y="240" font-weight="700">Ø 90 à 110</text>
+      </g>
+    </svg>
+    <div class="cap">Plus le débit à évacuer est important, plus le diamètre est grand. Le WC est de loin le plus gros.</div>
+  </div>
+
+  <h2>Les 5 étapes du façonnage (valables pour tous les tuyaux)</h2>
+  <ol class="steps">
+    <li><b>Mesurer et tracer</b> avec précision, en tenant compte de la place prise par les raccords.</li>
+    <li><b>Couper droit</b>, perpendiculairement à l'axe (coupe-tube à molette, ou scie + boîte à onglets).</li>
+    <li><b>Ébavurer</b> l'intérieur et l'extérieur pour enlever les bavures et les copeaux.</li>
+    <li><b>Chanfreiner</b> (tube plastique) ou <b>calibrer</b> (tube multicouche) pour ne pas déchirer les joints.</li>
+    <li><b>Cintrer</b> en respectant le rayon de courbure, sans écraser ni pincer le tube (ressort, pince ou cintreuse).</li>
+  </ol>
+  <h3>Les règles de fixation au mur et au plafond</h3>
+  <ul>
+    <li>Le bon collier : métallique lourd pour l'acier, <b>isophonique</b> (EPDM) contre le bruit, clipsable pour PER et multicouche.</li>
+    <li>Gérer la <b>dilatation</b> : alterner points fixes (bloqués) et points glissants (guidés).</li>
+    <li>Garder l'<b>alignement</b> et la <b>pente</b> (1 à 3 cm/m) avec des supports et des tiges filetées bien réglés.</li>
+  </ul>
+  <div class="box piege"><span class="tag">Pièges d'examen</span>
+    <ul>
+      <li><b>Jamais de flamme</b> sur un tuyau plastique : on chauffe au <b>décapeur thermique</b> (air chaud).</li>
+      <li>PVC = <b>collé</b>. PEHD = <b>soudé</b>. PP = <b>emboîté avec joint, sans colle</b>.</li>
+      <li>Colle PVC : on emboîte <b>sans tourner</b>.</li>
+      <li>Pour ajouter une évacuation sur un tube existant : une <b>selle de branchement</b> collée.</li>
+    </ul>
+  </div>
+  <div class="box retenir"><span class="tag">À retenir — l'essentiel du chapitre 5</span>
+    <ul>
+      <li>Évacuation : PVC-U (gris), PEHD (noir), PP (insonorisé).</li>
+      <li>Lavabo 32–40 · évier / douche / baignoire / lave-linge 40–50 · WC 90–110 mm.</li>
+      <li>5 étapes : mesurer, couper droit, ébavurer, chanfreiner/calibrer, cintrer.</li>
+      <li>Tout tube coupé doit être ébavuré et chanfreiné/calibré avant assemblage, sinon fuite au joint.</li>
+    </ul>
+  </div>
+  <div id="quiz-ch5"></div>
+  <div class="endnav"><a class="btn light" href="#ch4">◀ Chapitre 4</a><button class="btn markbtn" data-mark="5">J'ai compris ce chapitre</button><a class="btn acc" href="#resume">Résumé express ▶</a></div>
+</section>
+
+<!-- ================= RÉSUMÉ ================= -->
+<section class="view" id="v-resume">
+  <div class="kicker">Révision</div>
+  <h1>Résumé express</h1>
+  <p class="lead">Tout le cours sur une page. À relire la veille et le matin de l'examen.</p>
+
+  <h2>Les chiffres à connaître par cœur</h2>
+  <div class="numgrid">
+    <div class="n"><div class="big">2,5–3,5 bar</div><div>pression idéale dans une maison</div></div>
+    <div class="n"><div class="big">1 bar</div><div>= 10 mCE = 100 000 Pa (l'eau monte de 10 m)</div></div>
+    <div class="n"><div class="big">&gt; 4 bar</div><div>réducteur de pression après le compteur, réglé ≈ 3 bars</div></div>
+    <div class="n"><div class="big">1 bar</div><div>minimum au robinet le plus haut</div></div>
+    <div class="n"><div class="big">7 bar</div><div>tarage du groupe de sécurité du chauffe-eau</div></div>
+    <div class="n"><div class="big">1,5 m/s</div><div>vitesse max dans les pièces de vie (2 m/s en colonne / cave)</div></div>
+    <div class="n"><div class="big">1–3 cm/m</div><div>pente des tuyaux d'évacuation (1 à 3 %)</div></div>
+    <div class="n"><div class="big">50 mm</div><div>garde d'eau minimale d'un siphon</div></div>
+    <div class="n"><div class="big">150 mm</div><div>entraxe standard chaud / froid d'un mitigeur</div></div>
+    <div class="n"><div class="big">+1,00 m</div><div>trait de niveau au-dessus du sol fini</div></div>
+    <div class="n"><div class="big">25,4 mm</div><div>= 1 pouce (")</div></div>
+    <div class="n"><div class="big">450 °C</div><div>limite brasage tendre / brasage fort</div></div>
+    <div class="n"><div class="big">10–12 L/min</div><div>débit d'une douche (lave-mains 4–6, baignoire 15–20)</div></div>
+    <div class="n"><div class="big">1 m³</div><div>= 1000 litres</div></div>
+    <div class="n"><div class="big">90–110 mm</div><div>Ø d'évacuation d'un WC (lavabo 32–40, autres 40–50)</div></div>
+    <div class="n"><div class="big">5 à 8 × Ø</div><div>rayon de courbure minimal du PER</div></div>
+  </div>
+
+  <h2>Les règles absolues</h2>
+  <div class="grid2">
+    <div class="mini"><h4>Raccordement</h4>Face à l'appareil : <span class="ec">chaude à GAUCHE</span>, <span class="ef">froide à DROITE</span>. Superposés : chaude en HAUT, froide en BAS.</div>
+    <div class="mini"><h4>Deux réseaux</h4><span class="ef">Alimentation sous pression</span> · <span class="evac">évacuation par gravité</span>. Jamais mélangés.</div>
+    <div class="mini"><h4>Évacuation</h4>Siphon (garde d'eau) + pente (1–3 cm/m) + ventilation (primaire jusqu'au toit, secondaire en parallèle).</div>
+    <div class="mini"><h4>Notice</h4>Toujours la lire. Vérifier diamètres, entraxes, hauteurs. Tester l'étanchéité <b>avant</b> de fermer les murs.</div>
+    <div class="mini"><h4>Hydraulique</h4>Plus étroit → plus vite → pression locale plus basse. Long + étroit + coudes → pertes de charge.</div>
+    <div class="mini"><h4>Unités</h4>Tout en mm. Seul l'acier est en pouces.</div>
+  </div>
+
+  <h2>Les interdits à connaître</h2>
+  <div class="ban"><b>✗</b> Cintrer ou souder de l'<b>acier galvanisé</b> en eau potable (ça détruit le zinc et dégage des vapeurs toxiques).</div>
+  <div class="ban"><b>✗</b> Poser de l'acier galvanisé <b>après du cuivre</b> dans le sens de l'eau (règle de l'aval : corrosion galvanique).</div>
+  <div class="ban"><b>✗</b> Utiliser de l'<b>acier noir pour l'eau potable</b>.</div>
+  <div class="ban"><b>✗</b> Chauffer à la <b>flamme</b> du PER, du multicouche, du PVC, du PEHD.</div>
+  <div class="ban"><b>✗</b> Couper du PER ou du multicouche à la <b>scie à métaux</b> (copeaux qui abîment les joints).</div>
+  <div class="ban"><b>✗</b> Assembler un tube coupé <b>sans l'ébavurer</b> et sans le chanfreiner/calibrer.</div>
+  <div class="ban"><b>✗</b> Encastrer du PER <b>sans fourreau</b> (gaine annelée).</div>
+  <div class="ban"><b>✗</b> Utiliser du <b>PER pour le gaz</b>.</div>
+
+  <h2>Fiche « matériaux » en un coup d'œil</h2>
+  <div class="tbl"><table>
+    <tr><th>Matériau</th><th>Couleur</th><th>Usage</th><th>Assemblage</th><th>À ne pas oublier</th></tr>
+    <tr><td><b>Cuivre</b></td><td>rouge-orangé</td><td>eau, chauffage, gaz</td><td>brasage, sertissage, compression, collet battu</td><td>recuit avant cintrage</td></tr>
+    <tr><td><b>Acier galva</b></td><td>gris clair</td><td>eau (anciennes install.), industrie, gaz</td><td>filetage conique + raccords fonte</td><td>pas de cintrage / soudure ; pas après le cuivre</td></tr>
+    <tr><td><b>Acier noir</b></td><td>noir / sombre</td><td>chauffage (circuit fermé), gaz</td><td>soudure, filetage, sertissage</td><td>jamais d'eau potable</td></tr>
+    <tr><td><b>PER</b></td><td>rouge (EC) / bleu (EF)</td><td>eau, chauffage (si BAO)</td><td>glissement, sertissage, Q&amp;E, compression</td><td>forte dilatation ; fourreau</td></tr>
+    <tr><td><b>Multicouche</b></td><td>blanc</td><td>eau, chauffage, gaz (marquage jaune)</td><td>sertissage (TH, V, H), compression</td><td>calibrer + chanfreiner</td></tr>
+    <tr><td><b>PVC-U</b></td><td>gris clair (pluvial : gris foncé)</td><td>évacuation</td><td>collage à froid, joint</td><td>chanfrein, emboîter sans tourner</td></tr>
+    <tr><td><b>PEHD</b></td><td>noir</td><td>évacuation, enterré, béton</td><td>soudure bout à bout, électrosoudage</td><td>gratter la couche oxydée</td></tr>
+    <tr><td><b>PP</b></td><td>—</td><td>évacuation silencieuse</td><td>emboîtement joint EPDM, sans colle</td><td>résiste à 90 °C</td></tr>
+  </table></div>
+
+  <h2>Les pannes à reconnaître</h2>
+  <div class="tbl"><table>
+    <tr><th>Symptôme</th><th>Cause</th><th>Solution</th></tr>
+    <tr><td>Débit faible alors que la pression est bonne (3,5 bars)</td><td>Mousseur entartré ou flexible écrasé</td><td>Détartrer / remplacer</td></tr>
+    <tr><td>Sifflement fort à l'ouverture d'un robinet</td><td>Vitesse trop élevée</td><td>Tuyau plus gros, ouvrir complètement la vanne</td></tr>
+    <tr><td>Tuyaux qui claquent, soupape du chauffe-eau qui goutte</td><td>Pression réseau trop forte</td><td>Réducteur de pression réglé à 3 bars</td></tr>
+    <tr><td>Odeurs d'égout</td><td>Siphon vide ou absent</td><td>Siphon avec garde d'eau ≥ 50 mm</td></tr>
+    <tr><td>« Glouglou », siphons vidés</td><td>Manque de ventilation</td><td>Ventilation primaire / secondaire</td></tr>
+    <tr><td>Évacuation qui se bouche</td><td>Pente trop faible (ou trop forte)</td><td>Reprendre la pente : 1 à 3 cm/m</td></tr>
+  </table></div>
+
+  <h2>Les valeurs qui changent selon la page du cours</h2>
+  <div class="box note"><span class="tag">Vérifie avec ton professeur</span>
+    <p>Ton syllabus donne parfois des chiffres un peu différents. Dans ce cours interactif j'ai pris ceux de la synthèse (chapitre 6). Si une question d'examen tombe dessus, c'est bien de connaître les deux :</p>
+    <div class="tbl"><table>
+      <tr><th>Sujet</th><th>Synthèse (utilisée ici)</th><th>Ailleurs dans le cours</th></tr>
+      <tr><td>Pente d'évacuation</td><td>1 à 3 cm/m</td><td>1 à 2 cm/m (« À retenir » du ch. 1)</td></tr>
+      <tr><td>Pression normale en maison</td><td>2,5 à 4 bars (idéal 2,5–3,5)</td><td>« 8-10 bars » (ch. 1), « 2 à 8 bars » (tableau 1.4) : ce sont des pressions de réseau</td></tr>
+      <tr><td>Seuil du réducteur de pression</td><td>&gt; 4,5 bars</td><td>&gt; 4 bars (ch. 3), &gt; 5 bars (cas n°3)</td></tr>
+      <tr><td>Vitesse max en maison</td><td>1,0 à 1,5 m/s</td><td>1,2 m/s (exemple du glossaire)</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= FLASHCARDS ================= -->
+<section class="view" id="v-flashcards">
+  <div class="kicker">Révision</div>
+  <h1>Flashcards</h1>
+  <p class="lead">Lis le mot, essaie de donner la définition dans ta tête, puis retourne la carte. Les cartes « À revoir » reviennent plus tard dans le paquet.</p>
+  <div class="row"><div class="seg" id="fcDeck"><button data-d="all" class="on">Tout</button><button data-d="num">Chiffres clés</button><button data-d="voc">Vocabulaire</button></div><span class="spacer"></span><span id="fcCount" style="font-weight:700"></span></div>
+  <div class="fc-wrap"><div class="fc" id="fc"><div class="face front"><div class="t" id="fcF"></div><div class="hint">clique pour retourner</div></div><div class="face back"><div id="fcB"></div><div class="hint">clique pour revenir</div></div></div></div>
+  <div class="row" style="justify-content:center"><button class="btn light" id="fcNo">↺ À revoir</button><button class="btn acc" id="fcYes">✓ Je savais</button></div>
+  <p class="hist" style="text-align:center" id="fcDone"></p>
+</section>
+
+<!-- ================= QCM ================= -->
+<section class="view" id="v-qcm">
+  <div class="kicker">Révision</div>
+  <h1>QCM &amp; examen blanc</h1>
+  <p class="lead">Chaque réponse est corrigée et expliquée. Tes erreurs sont listées à la fin pour que tu puisses les retravailler.</p>
+  <div class="card">
+    <h4 style="margin-top:0">Choisis ton entraînement</h4>
+    <div class="row" style="gap:8px">
+      <button class="btn acc" data-qm="exam">Examen blanc · 20 questions au hasard</button>
+      <button class="btn light" data-qm="all">Toutes les questions</button>
+    </div>
+    <div class="row" style="gap:8px;margin-top:10px" id="qcmCh"></div>
+    <p class="hist" id="qcmHist"></p>
+  </div>
+  <div id="qcmBox"></div>
+</section>
+
+<!-- ================= GLOSSAIRE ================= -->
+<section class="view" id="v-glossaire">
+  <div class="kicker">Référence</div>
+  <h1>Glossaire</h1>
+  <p class="lead">Les mots techniques du cours, expliqués simplement. Tape un mot pour filtrer.</p>
+  <input class="search" id="glSearch" placeholder="Chercher un mot… (ex. siphon, sertissage, DN)">
+  <div class="gl" id="gl"></div>
+</section>
+
+</div></main>
+</div>
+<script>
+/* ====== Données du cours (tirées du syllabus TPBS CT 26-27, E. Pesce) ====== */
+
+const APPLIANCES = [
+  {n:"Lavabo / vasque", ico:"🚰", room:"Salle de bains", ali:"EF+EC", ev:"Ø 32 à 40 mm", d:"Hygiène quotidienne. Mitigeur posé sur le lavabo (sur gorge) ou au mur. Siphon visible ou encastré."},
+  {n:"Douche", ico:"🚿", room:"Salle de bains", ali:"EF+EC", ev:"Ø 40 à 50 mm", d:"Souvent un mitigeur thermostatique. Bonde siphoïde extra-plate à grand débit."},
+  {n:"Baignoire", ico:"🛁", room:"Salle de bains", ali:"EF+EC", ev:"Ø 40 à 50 mm", d:"Mitigeur bain-douche avec inverseur. Vidage avec trop-plein intégré (évite le débordement)."},
+  {n:"Bidet", ico:"🪣", room:"Salle de bains", ali:"EF+EC", ev:"—", d:"Robinet spécifique sur gorge, évacuation basse avec siphon."},
+  {n:"WC", ico:"🚽", room:"Toilettes", ali:"EF", ev:"Ø 90 à 110 mm", d:"Évacue les eaux-vannes. Réservoir de chasse 3/6 L ou mécanisme encastré (bâti-support). Raccordement rigide direct."},
+  {n:"Lave-mains", ico:"🤲", room:"Toilettes", ali:"EF", ev:"Ø 32 à 40 mm", d:"Eau froide seule, ou EF + EC si on veut plus de confort. Format compact pour petits espaces."},
+  {n:"Évier", ico:"🍽️", room:"Cuisine", ali:"EF+EC", ev:"Ø 40 à 50 mm", d:"Préparation des repas et vaisselle (eaux grasses). Mitigeur à bec haut ou douchette extractible."},
+  {n:"Lave-vaisselle", ico:"🫧", room:"Cuisine", ali:"EF", ev:"—", d:"Eau froide seule (parfois chaude selon le modèle). Robinet d'arrêt avec clapet anti-retour, évacuation avec embout conique."},
+  {n:"Lave-linge", ico:"👕", room:"Buanderie", ali:"EF", ev:"Ø 40 à 50 mm", d:"Robinet dédié en 3/4\". Tube d'évacuation vertical ventilé pour éviter que l'eau savonneuse ne refoule."},
+  {n:"Évier de service", ico:"🧹", room:"Buanderie", ali:"EF+EC", ev:"—", d:"Gros bac pour l'entretien et le nettoyage, avec grille de filtration."},
+  {n:"Robinet extérieur", ico:"🌱", room:"Jardin / garage", ali:"EF", ev:"—", d:"Arrosage et nettoyage. Avec disconnecteur ou clapet de purge pour le protéger du gel."}
+];
+
+const NOTICE_PARTS = [
+  ["Désignation du produit","Savoir exactement de quel produit il s'agit.","Bâti-support autoportant pour WC suspendu"],
+  ["Référence commerciale","Le code du produit, pour le commander ou appeler le service après-vente.","Réf. Geberit : 111.300.00.5"],
+  ["Caractéristiques techniques","Les limites : pression, température, débit.","Pression d'eau 0,5 à 10 bars · température max 70 °C"],
+  ["Plan coté & dimensions","Hauteur, largeur, profondeur et position des axes.","Largeur 500 mm · hauteur réglable 1120 à 1300 mm"],
+  ["Vue éclatée","Toutes les pièces séparées et le sens des joints.","Position de la bague, du joint torique et de l'écrou"],
+  ["Séquence de montage","Les étapes numérotées à suivre dans l'ordre.","1. Régler les pieds → 2. Fixer au mur → 3. Raccorder"],
+  ["Pictogrammes","Des consignes en image, sans texte.","Port de lunettes, interdiction de graisser, « clic » sonore"]
+];
+
+const PICTOS = [
+  {n:"Triangle « Attention »", m:"<b>Risque d'erreur grave ou de fuite.</b> Vérifie deux fois avant de serrer ou de couper.",
+   s:'<svg viewBox="0 0 60 60"><path d="M30 6 L56 52 H4 Z" fill="#fde68a" stroke="#1c2230" stroke-width="3" stroke-linejoin="round"/><path d="M30 22 v14" stroke="#1c2230" stroke-width="5" stroke-linecap="round"/><circle cx="30" cy="44" r="3" fill="#1c2230"/></svg>'},
+  {n:"Livre ouvert", m:"<b>Obligation de lire la notice.</b> Lis la page indiquée avant de continuer.",
+   s:'<svg viewBox="0 0 60 60"><path d="M6 14 q12 -6 24 2 v34 q-12 -8 -24 -2 z M54 14 q-12 -6 -24 2 v34 q12 -8 24 -2 z" fill="#e7f0fb" stroke="#2563b8" stroke-width="3" stroke-linejoin="round"/></svg>'},
+  {n:"Clé avec « 19 »", m:"<b>Outil et taille imposés.</b> Utilise une clé plate de 19 mm, pas une pince.",
+   s:'<svg viewBox="0 0 60 60"><path d="M14 46 L36 24" stroke="#4a5263" stroke-width="7" stroke-linecap="round"/><path d="M34 14 a10 10 0 1 0 12 12 l-6 -2 -4 -4 z" fill="#4a5263"/><text x="10" y="24" font-size="13" font-weight="800" fill="#1c2230">19</text></svg>'},
+  {n:"« CLIC »", m:"<b>Verrouillage mécanique.</b> Pousse la pièce jusqu'à entendre le clic.",
+   s:'<svg viewBox="0 0 60 60"><rect x="6" y="18" width="48" height="24" rx="12" fill="#e2f2f1" stroke="#0e6f73" stroke-width="3"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="800" fill="#0e6f73">CLIC</text></svg>'},
+  {n:"Goutte barrée", m:"<b>Interdiction de lubrifier.</b> Ne mets ni graisse ni pâte sur ce joint.",
+   s:'<svg viewBox="0 0 60 60"><path d="M30 8 C22 22 16 30 16 38 a14 14 0 0 0 28 0 C44 30 38 22 30 8z" fill="#f6d365" stroke="#1c2230" stroke-width="2.5"/><circle cx="30" cy="32" r="25" fill="none" stroke="#c53030" stroke-width="4"/><path d="M12 14 L48 50" stroke="#c53030" stroke-width="4"/></svg>'},
+  {n:"Niveau à bulle", m:"<b>Contrôle d'aplomb obligatoire.</b> Vérifie l'horizontale et la verticale.",
+   s:'<svg viewBox="0 0 60 60"><rect x="4" y="22" width="52" height="16" rx="4" fill="#fde68a" stroke="#1c2230" stroke-width="2.5"/><rect x="22" y="25" width="16" height="10" rx="5" fill="#bfe3cc" stroke="#1c2230" stroke-width="1.5"/><circle cx="30" cy="30" r="3" fill="#fff"/></svg>'},
+  {n:"Lunettes / gants (EPI)", m:"<b>Sécurité de la personne.</b> Porte gants, lunettes ou protections auditives.",
+   s:'<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="#2563b8"/><circle cx="20" cy="30" r="8" fill="#fff"/><circle cx="40" cy="30" r="8" fill="#fff"/><path d="M28 30 h4" stroke="#fff" stroke-width="3"/></svg>'}
+];
+
+/* Matériaux d'alimentation */
+const MATS = [
+ {id:"cu", n:"Cuivre", col:"#c46a3a", col2:"#e9a77b",
+  props:[["Couleur","Rouge-orangé (brillant)"],["Formes","Barres rigides (cuivre « écroui »), couronnes recuites, tubes prégainés"],["Dimensions (int/ext)","8/10 · 10/12 · 13/15 · 16/18 · 20/22 · 26/28 · 32/35 mm"],["Qualités","Très résistant, longue durée de vie, supporte l'eau chaude et les hautes températures, recyclable"],["Usages","Eau froide et chaude, chauffage, gaz"]],
+  four:[
+   ["✂️ Coupe & préparation",["Coupe au <b>coupe-tube</b> (ou scie à métaux), bien perpendiculaire.","Molette adaptée pour ne pas écraser le tube.","<b>Ébavurer</b> l'intérieur et l'extérieur, à chaque fois.","Décaper / poncer (tampon abrasif ou toile émeri)."]],
+   ["↪️ Cintrage",["Le cuivre en barre (« écroui ») est dur : il casse si on le plie tel quel.","<b>Recuit</b> : on le chauffe au chalumeau jusqu'au <b>rouge sombre</b>, puis on le laisse refroidir → il redevient souple.","On cintre ensuite <b>à froid</b> à la pince ou à l'arbalète, sans descendre sous le rayon minimal.","Autres formages : emboîtures (mandrin), collets battus."]],
+   ["🔗 Assemblage",["<b>Brasage tendre</b> (&lt; 450 °C) : étain-cuivre / étain-argent → eau et chauffage.","<b>Brasage fort</b> (&gt; 450 °C) : cuivre-phosphore / argent → <b>gaz</b> et fortes contraintes.","<b>Sertissage</b> : raccords métal à joint torique, serrés à la pince.","Démontables : raccords <b>bicônes à compression</b>, raccords à <b>collet battu</b> (écrou + joint)."]],
+   ["📌 Fixation",["Colliers métalliques simples ou doubles (type Atlas).","Colliers <b>isophoniques</b> (caoutchouc) : moins de bruit, le tube peut se dilater.","Pattes à vis, tiges filetées (M7/M8) avec chevilles, pattes à scellement.","<b>Alterner points fixes et points glissants</b> (dilatation)."]]
+  ],
+  ban:null},
+ {id:"ga", n:"Acier galvanisé", col:"#9aa3ad", col2:"#cfd5db",
+  props:[["Couleur","Gris clair (couche de zinc contre la rouille)"],["Formes","Tubes rigides filetés ou à fileter, longueur 6 m"],["Dimensions","En <b>pouces</b> : 3/8\" · 1/2\" · 3/4\" · 1\" · 5/4\" · 6/4\""],["Qualités","Robuste, bonne résistance mécanique. Mais lourd, s'entartre, mise en œuvre exigeante"],["Usages","Distribution d'eau (surtout <b>anciennes installations</b>), industrie, gaz"]],
+  four:[
+   ["✂️ Coupe & filetage",["Coupe au coupe-tube pour acier ou à la scie mécanique.","Ébavurer l'intérieur au cône / alésoir (enlever le bourrelet).","<b>Filetage conique au pas du gaz</b> (norme EN 10226-1 / BSPT), à la filière manuelle ou électrique, avec huile de coupe."]],
+   ["⛔ Cintrage & chauffe",["<b>Interdit de cintrer en eau potable</b> : la couche de zinc intérieure se fissure et s'arrache.","<b>Interdit de chauffer ou de souder</b> : ça détruit le zinc et dégage des vapeurs toxiques d'oxyde de zinc.","Pour changer de direction : <b>raccords filetés</b> obligatoirement."]],
+   ["🔗 Assemblage",["Raccords filetés en <b>fonte malléable galvanisée</b> (coudes, tés, manchons).","Étanchéité : <b>filasse + pâte agréée Belgaqua</b>, ruban <b>PTFE</b>, ou résine anaérobie.","Sertissage possible avec des raccords galva spécifiques."]],
+   ["📌 Fixation",["Colliers métalliques lourds, colliers isophoniques EPDM.","Pattes à vis, tiges filetées M8/M10 avec chevilles métalliques à expansion, consoles et rails.","Tube très rigide → supports parfaitement alignés."]]
+  ],
+  ban:"<b>Règle de l'aval :</b> ne <b>jamais</b> poser de l'acier galvanisé <b>après du cuivre</b> dans le sens de l'eau. Les deux métaux forment une pile (couple galvanique) et le zinc est rongé : corrosion par piqûres, puis rouille."},
+ {id:"no", n:"Acier noir", col:"#3b3f46", col2:"#6a6f78",
+  props:[["Couleur","Sombre, brut (pas de zinc) → il rouille s'il y a de l'oxygène"],["Formes","Barres rigides, tubes filetés ou à fileter"],["Dimensions","En <b>pouces</b> : 3/8\" · 1/2\" · 3/4\" · 1\" · 5/4\" · 6/4\""],["Qualités","Très robuste, bonne résistance mécanique, bon marché. Doit être protégé contre la corrosion"],["Usages","<b>Chauffage</b> (circuit fermé), <b>gaz</b>, eau non potable"]],
+  four:[
+   ["✂️ Coupe & filetage",["Coupe au coupe-tube acier, à la tronçonneuse ou à la scie sabre.","Ébavurer ; chanfreiner les tubes à souder.","Filetage conique au pas du gaz à la filière, avec huile de coupe."]],
+   ["↪️ Cintrage",["<b>À froid</b> : cintreuse hydraulique (jusqu'à DN 50 / 2\"). La soudure du tube se place à 90° du plan de cintrage.","<b>À chaud</b> : chalumeau oxyacétylénique jusqu'au <b>rouge cerise</b> (850-950 °C).","Gros diamètres : remplir de <b>sable sec tassé</b> pour que le tube ne s'ovalise pas."]],
+   ["🔗 Assemblage",["<b>Soudage</b> autogène oxyacétylénique ou à l'arc (TIG / MMA), avec courbes et tés à souder.","<b>Vissage</b> : raccords fonte noire + filasse / pâte ou résine.","<b>Sertissage</b> : raccords acier carbone.","<b>Brides</b> boulonnées pour les gros diamètres et les chaudières."]],
+   ["📌 Fixation",["Colliers métalliques pour charges lourdes, colliers isophoniques EPDM.","Pattes à vis, tiges filetées M8/M10, consoles et rails (type Strut).","Prévoir la dilatation : points fixes et supports coulissants."]]
+  ],
+  ban:"<b>Interdit pour l'eau potable.</b> On ne boit jamais l'eau qui passe dans de l'acier noir : il sert au chauffage et au gaz."},
+ {id:"per", n:"PER", col:"#c8372d", col2:"#2563b8",
+  props:[["Nom complet","Polyéthylène réticulé (PE-X, PEX)"],["Couleur","Rouge (eau chaude) ou bleu (eau froide)"],["Formes","Couronnes, tubes prégainés (dans une gaine annelée de protection)"],["Dimensions (Ø ext)","12 · 16 · 20 · 25 mm"],["Qualités","Léger, flexible, facile à transporter, ne rouille pas, ne s'entartre pas, simple à poser, économique. <b>Dilate énormément</b>"],["Usages","Eau froide, eau chaude sanitaire, distribution dans les logements, chauffage (si barrière anti-oxygène). <b>Pas le gaz</b>"]],
+  four:[
+   ["✂️ Coupe & préparation",["Coupe à la <b>pince coupe-tube plastique</b> (coupe nette et droite).","<b>Interdit : scie à métaux</b> (bavures et copeaux).","Évasement de l'extrémité à la pince à expansion, selon le raccord."]],
+   ["↪️ Cintrage",["À la main, à froid (le tube est très souple).","Rayon de courbure minimal : <b>5 à 8 fois le diamètre extérieur</b>.","Coudes de guidage (plastique ou métal) pour tenir les angles à 90°.","<b>Interdit : flamme directe.</b>"]],
+   ["🔗 Assemblage",["Indémontables (peuvent être encastrés) : raccords <b>à glissement</b> (bague poussée à la pince), à sertir radiaux, axiaux à <b>mémoire de forme</b> (Quick &amp; Easy : le tube élargi se resserre tout seul sur le raccord).","Démontables (doivent rester accessibles) : raccords à compression à visser, raccords instantanés (push-fit)."]],
+   ["📌 Fixation",["Apparent : colliers clipsables en plastique, colliers métalliques avec garniture.","Au sol / encastré : cavaliers et crochets, bandes perforées.","<b>Fourreau obligatoire</b> (gaine annelée) pour tout passage encastré."]]
+  ],
+  ban:"Le PER <b>dilate beaucoup</b> avec la chaleur : il faut le fixer en lui laissant la place de bouger. Et il est <b>interdit pour le gaz</b>."},
+ {id:"mc", n:"Multicouche", col:"#f4f4f2", col2:"#b9c0c9",
+  props:[["Composition","5 couches : plastique (PE-RT) / <b>aluminium</b> / plastique (PE-RT)"],["Couleur","Blanc"],["Formes","Barres droites, couronnes, tubes prégainés"],["Dimensions (Ø ext x paroi)","16x2 · 20x2 · 26x3 · 32x3 mm"],["Qualités","Léger, résistant, <b>faible dilatation</b>, garde sa forme une fois plié (grâce à l'alu), ne rouille pas. Très utilisé dans les installations neuves"],["Usages","Eau froide, eau chaude, chauffage, gaz (avec marquage jaune Cerga)"]],
+  four:[
+   ["✂️ Coupe & calibrage",["Coupe à la pince coupe-tube adaptée, bien perpendiculaire.","<b>Interdit : scie à métaux</b> (copeaux qui abîment les joints).","<b>Calibrage obligatoire</b> avec un calibreur / ébarbeur : redonne au tube une forme bien ronde et fait un <b>chanfrein intérieur</b>. Sinon les joints toriques s'arrachent quand on enfonce le raccord."]],
+   ["↪️ Cintrage",["À la main sur les petits diamètres (Ø 16 et 20).","<b>Ressort à cintrer</b> (intérieur ou extérieur) pour éviter les plis.","<b>Cintreuse arbalète</b> pour les rayons courts et les Ø ≥ 26 mm.","<b>Interdit de chauffer</b> le tube."]],
+   ["🔗 Assemblage",["<b>Sertissage</b> (indémontable, encastrable) : raccords à sertir avec profils agréés <b>TH, V ou H</b>. La bague a une <b>fenêtre de contrôle</b> pour voir si le tube est bien enfoncé.","Pince à sertir manuelle ou électroportative.","Démontables : raccords à compression (doivent rester accessibles), raccords instantanés."]],
+   ["📌 Fixation",["Apparent : colliers clipsables ou colliers métalliques avec EPDM ; pattes à vis, tiges M7/M8.","Encastré / au sol : cavaliers et clips ; tube prégainé ou gaine de protection obligatoire.","Faible dilatation → facile à aligner."]]
+  ],
+  ban:"Après chaque coupe : <b>calibrer et chanfreiner l'intérieur</b>. C'est l'oubli n°1 qui provoque des fuites."}
+];
+
+/* Matériaux d'évacuation */
+const EVMATS = [
+ {id:"pvc", n:"PVC-U", col:"#a9adb3", col2:"#d4d7db",
+  props:[["Nom complet","Polychlorure de vinyle non plastifié (ex. marque Nicoll)"],["Couleur","Gris clair (le PVC pluvial est gris foncé / anthracite)"],["Formes","Tubes droits de 2 à 4 m (à coller ou à joint), raccords injectés : coudes, culottes, tés, manchons, réductions. Gamme insonorisée (Chutunic, dBlue)"],["Dimensions (Ø ext)","32 · 40 · 50 · 75 · 90 · 110 · 125 mm (pluvial : 80 · 100)"],["Qualités","Le plus répandu. Léger, très facile à couper et assembler, parois lisses (l'eau coule bien), ne rouille pas, ne pourrit pas, résiste aux produits ménagers, économique"],["Usages","Eaux usées (EU), eaux-vannes (EV), eaux pluviales (EP), colonnes de chute, collecteurs, ventilations primaire et secondaire"]],
+  four:[
+   ["✂️ Coupe & chanfrein",["Scie à métaux, scie à denture fine ou coupe-tube PVC.","<b>Boîte à onglets obligatoire</b> pour couper bien droit.","Ébavurer l'intérieur au cutter ou au grattoir.","<b>Chanfrein extérieur de 15° à 30°</b> (lime ou rabot) : il évite de racler la colle ou d'abîmer le joint à lèvres."]],
+   ["🔥 Formage & piquage",["Chauffe modérée au <b>décapeur thermique</b> (air chaud), <b>jamais de flamme</b>.","<b>Tulipage</b> : on élargit le bout d'un tube pour y emboîter un autre tube.","Cintrer à chaud : déconseillé → on utilise des coudes du commerce.","Nouveau branchement sur un tube existant : <b>selle de branchement</b> collée."]],
+   ["🔗 Assemblage",["<b>Collage à froid</b> (soudure chimique) : 1. dépolir au papier abrasif fin, 2. nettoyer au <b>décapant PVC</b>, 3. mettre la colle dans le sens de la longueur, 4. <b>emboîter sans tourner</b>.","<b>À joint</b> : emboîtement avec joint en caoutchouc lubrifié (silicone ou savon neutre).","<b>Manchons de dilatation</b> obligatoires sur les collecteurs et les longues colonnes."]],
+   ["📌 Fixation",["Colliers PVC rigides ou métalliques avec garniture isophonique ; colliers à bride articulée.","Pattes à vis, tiges filetées M7/M8, consoles pour garder la pente.","Ne pas trop serrer les colliers intermédiaires : le tube doit pouvoir glisser."]]
+  ]},
+ {id:"pehd", n:"PEHD", col:"#2b2d31", col2:"#55585e",
+  props:[["Nom complet","Polyéthylène haute densité (ex. Geberit PE)"],["Couleur","Noir"],["Formes","Barres rigides de 5 m, raccords à souder (coudes, embranchements), manchons électrosoudables et de dilatation"],["Dimensions (Ø ext)","40 · 50 · 56 · 63 · 75 · 90 · 110 · 125 · 160 mm"],["Qualités","Très résistant aux chocs et à l'écrasement, aux produits chimiques et acides, au gel ; ne rouille pas ; de −20 °C à +80 °C"],["Usages","Eaux usées et eaux-vannes, <b>coulé directement dans le béton</b>, enterré, colonnes d'immeubles, pluvial par dépression, hôpitaux, laboratoires, cuisines collectives"]],
+  four:[
+   ["✂️ Coupe & préparation",["Scie égoïne à denture fine, coupe-tube plastique ou scie circulaire d'atelier.","Coupe <b>parfaitement droite</b> : indispensable pour une bonne soudure.","Ébavurer au grattoir ; dresser les faces au rabot électrique avant la soudure bout à bout.","<b>Gratter la couche oxydée</b> (obligatoire) avant l'électrosoudage."]],
+   ["🏭 Préfabrication",["Tronçons assemblés en atelier (« pieuvres ») pour gagner du temps sur chantier.","Raccords manufacturés (coudes, culottes, tés).","Cintrage à chaud possible en atelier (air chaud + gabarit).","<b>Interdiction absolue de la flamme.</b>"]],
+   ["🔗 Assemblage",["<b>Soudure bout à bout au miroir chauffant</b> : on chauffe les deux faces puis on les presse.","<b>Manchons électrosoudables</b> : une résistance intégrée chauffe, pilotée par un automate.","Résultat : liaison <b>100 % étanche</b>, résistante à la traction, <b>indémontable</b>.","Démontables : raccords à bride, raccords filetés laiton ou inox."]],
+   ["📌 Fixation",["Colliers métalliques (avec ou sans isophonique).","Colliers d'ancrage fixes Geberit : ils reprennent les poussées dues à la dilatation.","Rails, consoles, tiges filetées M8/M10 avec guidage coulissant.","Répartir strictement points fixes et points de guidage (ou manchons de dilatation)."]]
+  ]},
+ {id:"pp", n:"PP", col:"#7d8a98", col2:"#a8b4c1",
+  props:[["Nom complet","Polypropylène (ex. Geberit Silent-PP)"],["Particularité","Système multicouche <b>insonorisé</b> : excellente isolation contre le bruit d'écoulement"],["Formes","Tubes droits avec 1 ou 2 manchons à joint (0,15 à 3 m), coudes de 15° à 87,5°, tés, réductions, manchons doubles et coulissants, culottes"],["Dimensions (Ø ext)","32 · 40 · 50 · 75 · 90 · 110 · 125 · 160 mm"],["Qualités","Léger, résiste jusqu'à <b>90 °C</b> (par intermittence), bonne résistance chimique (produits ménagers), peu d'entretien"],["Usages","Évacuations intérieures, colonnes techniques et de chute, habitat et bureaux, réseaux où le bruit compte"]],
+  four:[
+   ["🔗 Assemblage",["<b>Emboîtement</b> dans un manchon muni d'un <b>joint EPDM</b> lubrifié.","<b>Sans colle.</b>"]],
+   ["📌 Fixation",["Colliers <b>isophoniques</b> (garniture caoutchouc) pour garder l'avantage du silence."]],
+   ["✂️ Préparation",["Comme tous les tubes : coupe droite, ébavurage, <b>chanfrein</b> pour ne pas abîmer le joint à l'emboîtement."]],
+   ["💡 Pour s'en souvenir",["PP = « <b>P</b>as de <b>P</b>ollution sonore » : c'est le tuyau silencieux."]]
+  ]}
+];
+
+/* Tableau d'usage (page 55) : [nom, potable, chauffage, gaz, explication]  1=oui 0=non 2=sous condition */
+const MATRIX = [
+ ["Cuivre",1,1,1,"Le cuivre fait tout : eau potable chaude et froide, chauffage et gaz (pour le gaz, on l'assemble par brasage fort)."],
+ ["Acier galvanisé",2,0,1,"Eau potable : oui mais rare (anciennes installations). Chauffage : <b>non</b>, il crée de la boue dans le circuit. Gaz : oui."],
+ ["Acier noir",0,1,1,"<b>Jamais d'eau potable.</b> Chauffage et gaz : oui, soudé ou fileté."],
+ ["Acier électrozingué",0,1,0,"Pour le chauffage en circuit fermé (système à sertir). Pas d'eau potable, pas de gaz (sauf cas très rare)."],
+ ["Acier inoxydable (inox)",1,1,1,"Utilisé pour le sanitaire et les grosses chaufferies : tout est permis."],
+ ["PER",1,2,0,"Eau potable : oui. Chauffage : seulement s'il a une <b>barrière anti-oxygène (BAO)</b>. Gaz : <b>non</b>."],
+ ["Multicouche",1,1,2,"Eau potable et chauffage : oui. Gaz : oui, mais uniquement le multicouche avec <b>marquage jaune Cerga</b>."],
+ ["PE / PEHD",0,0,0,"Tuyau d'<b>évacuation</b> des eaux usées : ni eau potable, ni chauffage, ni gaz."],
+ ["PVC",0,0,0,"Tuyau d'<b>évacuation</b> des eaux usées : ni eau potable, ni chauffage, ni gaz."]
+];
+
+/* Tableau des dimensions (pages 56-57) : [nom, Ø int, Ø ext, DN, L/m] */
+const DIMS = {
+ "Acier":[["1/4\"",8,13.7,"DN 8",0.050],["3/8\"",12,17.2,"DN 10",0.113],["1/2\"",15,21.3,"DN 15",0.177],["3/4\"",20,26.9,"DN 20",0.314],["1\"",26,33.7,"DN 25",0.531],["5/4\"",33,42.4,"DN 32",0.855],["6/4\"",40,48.3,"DN 40",1.257]],
+ "Cuivre":[["Ø 10",8,10,"DN 8",0.050],["Ø 12",10,12,"DN 10",0.079],["Ø 15",13,15,"DN 12",0.133],["Ø 18",16,18,"DN 15",0.201],["Ø 22",20,22,"DN 20",0.314],["Ø 28",26,28,"DN 25",0.531],["Ø 35",32,35,"DN 32",0.804]],
+ "Multicouche":[["16x2",12,16,"DN 12",0.113],["20x2",16,20,"DN 15",0.201],["26x3",20,26,"DN 20",0.314],["32x3",26,32,"DN 25",0.531]],
+ "PER":[["Ø 12",10,12,"DN 10",0.079],["Ø 16",13,16,"DN 12",0.133],["Ø 20",16,20,"DN 15",0.201],["Ø 25",20,25,"DN 20",0.314]]
+};
+const DIMCOL = {"Acier":"#8f979f","Cuivre":"#c46a3a","Multicouche":"#e9e9e6","PER":"#c8372d"};
+
+/* Glossaire (définitions simplifiées) */
+const GLOSSARY = [
+ ["Acier galvanisé","Acier recouvert de zinc contre la rouille. Eau potable dans les anciennes installations, industrie, gaz. Interdit de le cintrer ou de le souder."],
+ ["Acier noir","Acier brut sans zinc, très robuste. Chauffage (circuit fermé) et gaz uniquement. Interdit pour l'eau potable."],
+ ["Alimentation (réseau d')","Les tuyaux qui amènent l'eau potable sous pression du réseau public jusqu'aux robinets."],
+ ["Arbalète (cintreuse)","Outil pour plier un tube rigide ou semi-rigide sans l'écraser."],
+ ["Bâti-support","Cadre métallique caché dans le mur qui porte un WC suspendu ou un lavabo."],
+ ["Bavure","Petit morceau de matière qui reste au bord d'un tube après la coupe. On l'enlève en ébavurant."],
+ ["Bernoulli (théorème de)","Dans un tuyau, l'énergie de l'eau se conserve : si le tuyau rétrécit, la vitesse augmente et la pression baisse."],
+ ["Boîte à onglets","Guide en U pour scier un tube bien droit (90°) ou à 45°."],
+ ["Bonde","Pièce fixée au trou d'évacuation d'un appareil (lavabo, douche) qui reçoit l'eau et se visse sur le siphon."],
+ ["Brasage tendre / fort","Assemblage de deux métaux en faisant fondre un métal d'apport. Tendre : moins de 450 °C. Fort : plus de 450 °C (gaz)."],
+ ["Calibrage","Sur le multicouche, après la coupe : redonner au tube une forme bien ronde et chanfreiner l'intérieur. Obligatoire."],
+ ["Cavalier (clip)","Petite fixation qui chevauche un tube pour le tenir sur un support (ex. PER sur isolant)."],
+ ["Chanfreinage","Biseauter le bord extérieur d'un tube plastique pour l'emboîter facilement sans abîmer le joint ou la colle."],
+ ["Cintrage","Courber un tube (à froid ou à chaud) sans utiliser de coude."],
+ ["Clapet anti-retour","Pièce qui laisse passer l'eau dans un seul sens. Placé juste après le compteur, il empêche l'eau polluée de repartir vers le réseau public."],
+ ["Collecteur (nourrice)","Tube avec plusieurs sorties qui alimente chaque appareil séparément depuis un point central."],
+ ["Collet battu","Bord aplati au bout d'un tube cuivre, serré par un écrou avec un joint (raccord démontable)."],
+ ["Collier isophonique","Collier avec une garniture en caoutchouc (EPDM) qui absorbe le bruit et les vibrations."],
+ ["Colonne de chute","Gros tuyau vertical d'évacuation qui traverse les étages."],
+ ["Compteur d'eau","Appareil à l'entrée du bâtiment qui mesure l'eau consommée (en m³)."],
+ ["Corrosion","Destruction lente d'un métal par l'eau, l'oxygène ou un courant galvanique (rouille)."],
+ ["Coup de bélier","Choc et bruit dans les tuyaux quand l'eau est arrêtée trop brutalement (robinet fermé d'un coup)."],
+ ["Couple de serrage (Nm)","Force maximale conseillée pour serrer un écrou sans casser la pièce ni écraser le joint."],
+ ["Coupe-tube","Outil à molette qui coupe un tube net et droit."],
+ ["Couronne","Tube souple vendu enroulé, en grande longueur (ex. 50 m)."],
+ ["Culotte","Raccord d'évacuation en Y (45° ou 87°) qui relie une décharge à la colonne."],
+ ["Débit (Q)","Quantité d'eau qui passe pendant un temps donné. Q = V/t, en L/min ou m³/h."],
+ ["Décapeur thermique","Appareil qui souffle de l'air très chaud, sans flamme, pour ramollir les plastiques."],
+ ["Diamètre nominal (DN)","Numéro normalisé qui sert de repère commun pour désigner un tuyau ou un raccord."],
+ ["Dilatation thermique","Un tube s'allonge quand il chauffe et raccourcit quand il refroidit."],
+ ["Eau chaude sanitaire (ECS)","Eau potable chauffée (boiler, chaudière) pour la douche, le bain, la vaisselle. Toujours à gauche."],
+ ["Eau froide (EF)","Eau potable du réseau, à température ambiante. Toujours à droite."],
+ ["Eaux ménagères (EU)","Eaux savonneuses : évier, lavabo, douche, baignoire, machines à laver."],
+ ["Eaux-vannes (EV)","Eaux qui contiennent des matières fécales : uniquement les WC."],
+ ["Ébavurage","Enlever les bavures coupantes après chaque coupe."],
+ ["Écroui (cuivre)","Cuivre en barre, rigide et dur. Il casse si on le plie sans l'avoir recuit."],
+ ["Électrosoudage","Soudage du PEHD avec des manchons qui contiennent une résistance chauffante."],
+ ["Emboîtement à joint","Assemblage en enfonçant un tube dans une tulipe munie d'un joint en caoutchouc."],
+ ["Entraxe","Distance entre le centre de deux tuyaux ou de deux trous. Mitigeur : 150 mm."],
+ ["Évacuation (réseau d')","Les tuyaux qui emmènent les eaux usées vers l'égout, par gravité (avec une pente)."],
+ ["Évasement","Élargir le bout d'un tube PER pour y enfoncer le raccord."],
+ ["Façonnage","Tout le travail de préparation d'un tube : coupe, ébavurage, cintrage, filetage."],
+ ["Filetage conique (gaz)","Pas de vis conique taillé sur un tube acier pour un assemblage vissé étanche."],
+ ["Filière","Outil qui taille un filetage extérieur sur un tube acier."],
+ ["Flexible de raccordement","Tuyau souple tressé inox qui relie un robinet à l'arrivée d'eau du mur."],
+ ["Fourreau","Gaine annelée en plastique qui entoure obligatoirement un tube encastré (mur ou dalle)."],
+ ["Gabarit de pose","Patron fourni avec un appareil pour marquer les trous au mur."],
+ ["Garde d'eau","L'eau qui reste toujours au fond du siphon (au moins 50 mm) et bloque les odeurs."],
+ ["Glissement (raccord à)","Raccord PER : une bague est glissée et serrée sur le tube élargi, avec une pince."],
+ ["Gravitaire (écoulement)","L'eau s'écoule toute seule, par son poids, le long d'une pente."],
+ ["Groupe de sécurité","Dispositif obligatoire sur le chauffe-eau : protège contre la surpression (taré à 7 bars), permet la vidange, l'arrêt et le non-retour."],
+ ["Hauteur manométrique (mCE)","Pression exprimée en mètres de colonne d'eau. 1 bar = 10 mCE."],
+ ["Joint d'étanchéité","Rondelle souple (caoutchouc, EPDM, fibre) écrasée entre deux pièces pour éviter les fuites."],
+ ["Manomètre","Appareil à aiguille qui affiche la pression en bars."],
+ ["Mitigeur","Robinet à une seule commande qui règle à la fois le débit et le mélange chaud/froid."],
+ ["Mousseur (aérateur)","Petite grille au bout du robinet qui mélange l'eau et l'air. Entartré, il réduit le débit."],
+ ["Multicouche","Tube à 5 couches (plastique / aluminium / plastique) : souple comme le plastique, garde sa forme grâce à l'alu."],
+ ["Notice technique","Document officiel du fabricant : caractéristiques, cotes, étapes de pose."],
+ ["Patte à vis","Vis avec un côté à cheviller dans le mur et un côté fileté (M7/M8) pour fixer un collier."],
+ ["PEHD","Polyéthylène haute densité : plastique noir très résistant, soudé, pour l'évacuation."],
+ ["Pente d'évacuation","Inclinaison obligatoire des tuyaux horizontaux d'évacuation : 1 à 3 cm par mètre."],
+ ["PER","Polyéthylène réticulé : tube plastique souple et bon marché, en couronnes, pour l'eau chaude et froide."],
+ ["Pertes de charge","Perte de pression due aux frottements de l'eau contre les parois, les coudes et les vannes."],
+ ["Pictogramme","Petit dessin normalisé qui donne une consigne de montage ou de sécurité."],
+ ["Pile galvanique","Corrosion quand un métal moins noble (zinc de l'acier galva) est placé après un métal noble (cuivre)."],
+ ["Piquage","Branchement d'une conduite secondaire sur une conduite principale existante."],
+ ["Points fixes / glissants","Alternance de colliers qui bloquent le tube et de colliers qui le guident, pour laisser la dilatation se faire."],
+ ["Polypropylène (PP)","Plastique insonorisé, résiste à 90 °C, assemblé par emboîtement à joint : l'évacuation silencieuse."],
+ ["Pouce (\")","Unité anglo-saxonne des tubes acier et des filetages. 1\" = 25,4 mm."],
+ ["Pression (P)","Force de l'eau sur les parois. P = F/S, mesurée en bar."],
+ ["Pression dynamique","Pression mesurée pendant que l'eau coule (robinets ouverts)."],
+ ["Pression statique","Pression mesurée quand tous les robinets sont fermés (la plus élevée)."],
+ ["PVC-U","Plastique rigide gris, collé, le plus utilisé pour l'évacuation domestique."],
+ ["Quick & Easy (Q&E)","Raccord PER axial : le tube élargi se resserre tout seul sur l'embout grâce à sa mémoire de forme."],
+ ["Raccord à compression","Raccord démontable : une bague conique est écrasée quand on serre l'écrou."],
+ ["Recuit (cuivre)","Chauffer le cuivre au rouge sombre puis le laisser refroidir pour le rendre souple."],
+ ["Réducteur de pression","Appareil placé après le compteur qui abaisse et stabilise la pression (sous 4 bars)."],
+ ["Règle de l'aval","Interdiction de poser de l'acier galvanisé après du cuivre dans le sens de l'eau (corrosion)."],
+ ["Ressort à cintrer","Ressort glissé dans ou sur un tube pour le plier à la main sans l'écraser."],
+ ["Robinet d'arrêt d'équerre","Petit robinet sous l'appareil (1/2\" x 3/8\") pour couper l'eau localement."],
+ ["Section (S)","Surface du « trou » intérieur du tuyau. Plus elle est grande, plus l'eau va lentement."],
+ ["Selle de branchement","Raccord collé sur le côté d'un tube existant pour créer un nouveau branchement."],
+ ["Sertissage","Assemblage rapide et indémontable : une bague est écrasée avec une pince spéciale."],
+ ["Siphon","Tuyau coudé qui garde de l'eau en permanence pour bloquer les odeurs d'égout."],
+ ["Sol brut","Dessus de la dalle béton, avant isolant, chape et carrelage. 10 à 20 cm sous le sol fini."],
+ ["Sol fini","Niveau du sol une fois tout posé (carrelage, parquet). C'est le 0,00 m."],
+ ["Soudage autogène","Souder l'acier en faisant fondre directement les bords au chalumeau oxyacétylénique."],
+ ["Soudure bout à bout","Soudage du PEHD : on chauffe les deux bouts au miroir puis on les presse ensemble."],
+ ["Trait de niveau (+1,00 m)","Ligne tracée sur les murs à exactement 1 m au-dessus du sol fini, pour caler toutes les hauteurs."],
+ ["Trop-plein","Petit conduit dans un lavabo ou une baignoire qui évite le débordement."],
+ ["Tulipage (emboîture)","Élargir à chaud le bout d'un tube PVC pour y emboîter un autre tube."],
+ ["Vanne d'arrêt","Robinet manuel (quart de tour ou à volant) pour ouvrir ou couper l'eau."],
+ ["Ventilation primaire","Prolongement de la colonne de chute jusqu'au toit : fait entrer l'air, protège les siphons."],
+ ["Ventilation secondaire","Tuyau d'air supplémentaire, en parallèle, pour les grands réseaux."],
+ ["Vitesse (v)","Rapidité de l'eau dans le tuyau. v = Q/S, en m/s."],
+ ["Vue éclatée","Dessin de l'appareil démonté, toutes les pièces alignées dans l'ordre de montage."]
+];
+
+/* Cartes « chiffres clés » */
+const NUMCARDS = [
+ ["Pression idéale dans une maison ?","2,5 à 3,5 bars"],
+ ["1 bar = combien de mètres de colonne d'eau ?","10 mCE (l'eau monte de 10 m)<br>1 bar = 100 000 Pa"],
+ ["Pression minimale au robinet le plus haut ?","1 bar"],
+ ["Où et à combien règle-t-on le réducteur de pression ?","Juste après le compteur, réglé à environ 3 bars"],
+ ["Tarage du groupe de sécurité du chauffe-eau ?","7 bars"],
+ ["Vitesse max de l'eau dans les pièces de vie ?","1,0 à 1,5 m/s<br>(2 m/s en colonne montante / sous-sol)"],
+ ["Pente des tuyaux d'évacuation ?","1 à 3 cm par mètre<br>(1 à 3 %)"],
+ ["Garde d'eau minimale d'un siphon ?","50 mm"],
+ ["Entraxe standard EC / EF d'un mitigeur ?","150 mm"],
+ ["Trait de niveau ?","+1,00 m au-dessus du sol fini"],
+ ["1 pouce = ?","25,4 mm"],
+ ["Limite entre brasage tendre et brasage fort ?","450 °C"],
+ ["Débit d'une douche classique ?","10 à 12 L/min<br>(lave-mains 4–6, baignoire 15–20)"],
+ ["Ø d'évacuation d'un WC ?","90 à 110 mm"],
+ ["Ø d'évacuation d'un lavabo ?","32 à 40 mm"],
+ ["Ø d'évacuation évier / douche / baignoire / lave-linge ?","40 à 50 mm"],
+ ["Rayon de courbure minimal du PER ?","5 à 8 fois le diamètre extérieur"],
+ ["Chanfrein d'un tube PVC ?","15° à 30°"],
+ ["Les tailles du multicouche ?","16x2 · 20x2 · 26x3 · 32x3 mm"],
+ ["Face à l'appareil : où est l'eau chaude ?","À GAUCHE (rouge)<br>l'eau froide à DROITE (bleu)"]
+];
+
+/* ====== Banque de QCM — la 1re option est la bonne (mélangées à l'affichage) ====== */
+const QUESTIONS = [
+/* ---- Chapitre 1 ---- */
+{c:1,q:"Quels sont les deux grands réseaux d'une installation sanitaire ?",o:["L'alimentation (sous pression) et l'évacuation (par gravité)","L'eau chaude et l'eau froide","Le gaz et le chauffage","Le réseau public et le compteur"],e:"Une installation sanitaire repose sur deux circuits séparés : l'alimentation en eau potable, sous pression, et l'évacuation des eaux usées, gravitaire."},
+{c:1,q:"Comment l'eau avance-t-elle dans les tuyaux d'évacuation ?",o:["Par gravité, grâce à la pente","Grâce à la pression du réseau public","Grâce à une pompe dans la cave","Grâce à la ventilation primaire"],e:"L'eau d'évacuation n'a pas de moteur : elle coule par son propre poids. C'est pour ça que les tuyaux horizontaux ont une pente."},
+{c:1,q:"À quoi sert un siphon ?",o:["À garder une réserve d'eau qui bloque les odeurs d'égout","À augmenter la pression de l'eau","À filtrer l'eau potable","À ralentir l'eau d'évacuation"],e:"Le siphon garde toujours un peu d'eau (la garde d'eau). Cette eau forme un bouchon contre les gaz et les odeurs de l'égout."},
+{c:1,q:"Quelle est la hauteur minimale de la garde d'eau d'un siphon ?",o:["50 mm","5 mm","15 mm","150 mm"],e:"Le cours indique une garde d'eau d'au moins 50 mm."},
+{c:1,q:"Quelle pente donne-t-on aux tuyaux horizontaux d'évacuation ?",o:["1 à 3 cm par mètre (1 à 3 %)","10 à 30 cm par mètre","Aucune, ils doivent être parfaitement horizontaux","1 à 3 mm par mètre"],e:"La synthèse du cours donne 1 à 3 cm par mètre courant, soit 1 à 3 %. (Le chapitre 1 dit aussi 1 à 2 cm/m.)"},
+{c:1,q:"Que se passe-t-il si la pente d'un tuyau d'évacuation est trop forte ?",o:["L'eau part trop vite et laisse les matières solides derrière elle","L'eau stagne et le tuyau se bouche","Le siphon se remplit trop","La pression augmente dans le réseau d'eau potable"],e:"Trop de pente : l'eau file sans emporter les solides. Pas assez : l'eau stagne et ça bouche."},
+{c:1,q:"Qu'est-ce que la ventilation primaire ?",o:["Le prolongement de la colonne de chute jusqu'au toit, à l'air libre","Un ventilateur dans la salle de bains","Un deuxième tuyau d'air en parallèle sur les longs réseaux","Une grille d'aération sous l'évier"],e:"La ventilation primaire, c'est la colonne de chute prolongée jusqu'au toit. La secondaire est un tuyau d'air supplémentaire en parallèle."},
+{c:1,q:"On entend des « glouglous » et les siphons se vident quand on tire la chasse. Que manque-t-il ?",o:["De la ventilation (de l'air dans les tuyaux)","De la pente","De la pression","Un clapet anti-retour"],e:"L'eau qui descend fait un effet piston et aspire l'eau des siphons s'il n'y a pas assez d'air : c'est le désiphonnage. La ventilation résout ça."},
+{c:1,q:"Quand utilise-t-on une ventilation secondaire ?",o:["Sur les longues canalisations ou dans les grands bâtiments","Dans toutes les maisons, à la place de la primaire","Uniquement pour les WC suspendus","Uniquement pour l'eau chaude"],e:"La ventilation secondaire est un tuyau d'air en parallèle, ajouté sur les longs parcours et les grands réseaux."},
+{c:1,q:"Face à un lavabo, où se raccorde l'eau chaude ?",o:["À gauche (repère rouge)","À droite (repère rouge)","En bas","Peu importe, le mitigeur s'adapte"],e:"Règle universelle (NBN EN 806-2 / Belgaqua) : eau chaude à GAUCHE, eau froide à DROITE."},
+{c:1,q:"Deux tuyaux d'eau courent l'un au-dessus de l'autre. Comment les place-t-on ?",o:["Eau chaude en haut, eau froide en bas","Eau froide en haut, eau chaude en bas","Côte à côte uniquement","Peu importe"],e:"La chaleur monte : en mettant l'eau chaude en haut, on ne réchauffe pas l'eau froide (ce qui favoriserait les légionelles)."},
+{c:1,q:"Pourquoi est-il si important de ne pas inverser l'eau chaude et l'eau froide ?",o:["Un mitigeur thermostatique ne fonctionne plus et l'usager risque de se brûler","Ça augmente la facture d'eau","Le compteur tourne à l'envers","Ça bouche l'évacuation"],e:"Les cartouches thermostatiques ne fonctionnent pas si l'eau chaude est inversée, avec un risque de brûlure."},
+{c:1,q:"Quel appareil est alimenté en eau froide seule ?",o:["La cuvette de WC","La douche","Le lavabo","L'évier de cuisine"],e:"Le WC (réservoir de chasse) reçoit uniquement de l'eau froide. Lavabo, douche et évier reçoivent EF + EC."},
+{c:1,q:"Que sont les « eaux-vannes » ?",o:["Les eaux des WC, qui contiennent des matières fécales","Les eaux savonneuses de la douche","Les eaux de pluie","L'eau potable qui sort des vannes"],e:"Eaux-vannes (EV) = WC. Eaux ménagères (EU) = eaux savonneuses. Eaux pluviales (EP) = pluie."},
+{c:1,q:"Quel est l'ordre du chemin de l'eau usée ?",o:["Appareil → décharge → colonne de chute → collecteur → égout","Appareil → collecteur → décharge → colonne de chute → égout","Égout → collecteur → colonne → appareil","Appareil → colonne de chute → décharge → égout → collecteur"],e:"L'eau passe par le siphon de l'appareil, le petit tuyau de décharge, la colonne verticale, le gros collecteur en cave, puis l'égout public."},
+{c:1,q:"Juste à l'entrée du bâtiment, avec le compteur, on trouve un clapet anti-retour. À quoi sert-il ?",o:["À empêcher l'eau de la maison de repartir vers le réseau public","À réduire la pression","À chauffer l'eau","À mesurer la consommation"],e:"Le clapet anti-retour laisse passer l'eau dans un seul sens : il protège le réseau public contre un retour d'eau polluée."},
+{c:1,q:"Quelles sont les trois fonctions d'une installation sanitaire ?",o:["Hygiène, confort, sécurité","Chauffage, ventilation, climatisation","Pression, débit, vitesse","Coupe, cintrage, assemblage"],e:"Hygiène (eau saine, évacuation rapide), confort (eau disponible à bonne température et débit), sécurité (protéger la potabilité)."},
+{c:1,q:"Où se trouve le collecteur principal d'évacuation ?",o:["En cave ou sous le sol","Sur le toit","Sous chaque lavabo","Dans la colonne montante"],e:"Le collecteur est le gros tuyau horizontal situé en cave ou sous le sol qui rassemble toutes les eaux avant l'égout."},
+
+/* ---- Chapitre 2 ---- */
+{c:2,q:"Tu dois poser un modèle de robinet que tu as déjà installé dix fois. Que fais-tu ?",o:["Je lis quand même la notice avant de commencer","Je monte directement, je le connais","Je lis la notice seulement en cas de problème","Je demande au client"],e:"Règle n°1 du chapitre : toujours ouvrir et lire la notice avant le montage, même pour un appareil connu (les modèles changent)."},
+{c:2,q:"Laquelle de ces conséquences peut arriver si on monte sans suivre la notice ?",o:["La perte automatique de la garantie du fabricant","Une baisse du prix du matériel","Une meilleure étanchéité","Rien, la notice est facultative"],e:"Sans notice : fuites, rupture, perte de garantie, et refus de réception du chantier (tout à refaire à tes frais)."},
+{c:2,q:"Qu'est-ce qu'une vue éclatée ?",o:["Un dessin de l'appareil démonté, pièce par pièce, dans l'ordre de montage","Une photo de l'appareil cassé","Le plan de la salle de bains","La liste des prix"],e:"La vue éclatée montre toutes les pièces séparées et alignées, avec le sens des joints."},
+{c:2,q:"Qu'est-ce que l'entraxe ?",o:["La distance entre le centre de deux tuyaux ou de deux trous","Le diamètre extérieur d'un tuyau","La hauteur d'un appareil","L'épaisseur de la paroi d'un tube"],e:"L'entraxe se mesure d'axe en axe (de centre à centre)."},
+{c:2,q:"Quel est l'entraxe standard entre l'arrivée chaude et l'arrivée froide d'un mitigeur ?",o:["150 mm","100 mm","50 mm","250 mm"],e:"L'écartement standard EC / EF d'un mitigeur est de 150 mm."},
+{c:2,q:"Le trait de niveau est tracé…",o:["À 1,00 m au-dessus du sol fini","À 1,00 m au-dessus du sol brut","Au ras du sol","À 1,00 m sous le plafond"],e:"Le trait de niveau (+1,00 m) se trouve à exactement 1 m au-dessus du sol fini (carrelage posé). Il sert à caler toutes les hauteurs."},
+{c:2,q:"Quelle est la différence entre le sol brut et le sol fini ?",o:["Le sol brut est la dalle béton, plus bas que le sol fini (souvent de 10 à 20 cm)","Le sol fini est plus bas que le sol brut","C'est la même chose","Le sol brut est le carrelage"],e:"Le sol fini = niveau 0,00 avec tous les revêtements. Le sol brut = la dalle avant chape et carrelage, plus bas."},
+{c:2,q:"Sur une notice, « 16 x 2 mm » pour un tube multicouche signifie…",o:["Diamètre extérieur 16 mm, paroi de 2 mm","Diamètre intérieur 16 mm, longueur 2 m","16 tubes de 2 mm","Diamètre 16 mm, pression 2 bars"],e:"16 = diamètre extérieur, 2 = épaisseur de paroi. L'intérieur fait donc 16 − 2 − 2 = 12 mm."},
+{c:2,q:"En quelle unité sont donnés les filetages sur les notices ?",o:["En pouces (\")","En millimètres","En centimètres","En bars"],e:"Les longueurs et diamètres sont en mm, mais les filetages sont en pouces (ex. 1/2\", 3/4\")."},
+{c:2,q:"Quel filetage est standard pour raccorder un lavabo, une douche ou un bidet ?",o:["1/2\" (15/21)","3/4\" (20/27)","1\"","3/8\""],e:"1/2\" (15/21) pour lavabo, douche, bidet. 3/4\" (20/27) pour machine à laver, compteur, robinet de jardin."},
+{c:2,q:"Quel filetage utilise-t-on typiquement pour une machine à laver ou un robinet de jardin ?",o:["3/4\" (20/27)","1/2\" (15/21)","1/4\"","6/4\""],e:"Le 3/4\" (20/27) sert pour la machine à laver, le compteur et le robinet de jardin."},
+{c:2,q:"Sur une notice, tu vois une goutte barrée. Que dois-tu faire ?",o:["Ne mettre ni graisse ni pâte sur ce joint","Ne pas utiliser d'eau","Couper l'eau générale","Mettre de la graisse"],e:"La goutte barrée = interdiction de lubrifier."},
+{c:2,q:"Un pictogramme montre une clé avec le chiffre 19. Cela veut dire…",o:["Utiliser une clé plate de 19 mm, pas une pince","Serrer 19 fois","Serrer à 19 bars","L'étape n°19"],e:"Clé avec chiffre = outil et taille imposés : clé plate de 19 mm."},
+{c:2,q:"Quelles sont les 3 étapes universelles d'installation d'un équipement ?",o:["Préparation, pose mécanique, raccordement & contrôle","Achat, livraison, facture","Coupe, cintrage, soudure","Mesure, perçage, peinture"],e:"1. Préparation (pièces, cotes) 2. Pose mécanique (de niveau, couple de serrage) 3. Raccordement et contrôle d'étanchéité."},
+{c:2,q:"Quand doit-on faire le test d'étanchéité ?",o:["Avant de fermer les cloisons ou de carreler","Après avoir carrelé","Une semaine après la mise en service","Seulement si le client le demande"],e:"On teste sous pression avant de fermer : après, une fuite cachée coûte très cher."},
+{c:2,q:"Qu'est-ce que le couple de serrage ?",o:["La force maximale recommandée pour serrer un écrou sans casser la pièce ni écraser le joint","Le nombre de tours de clé","La pression de l'eau dans le raccord","Deux écrous serrés ensemble"],e:"Il s'exprime en Nm (newton-mètre) et est indiqué par le fabricant."},
+{c:2,q:"Le gabarit de pose, c'est…",o:["Un patron fourni avec l'appareil pour marquer les trous au mur","Un niveau à bulle","Une pince à sertir","Le plan de l'architecte"],e:"Le gabarit (carton, plastique ou tôle) indique précisément où percer."},
+
+/* ---- Chapitre 3 ---- */
+{c:3,q:"Quelle est la formule du débit ?",o:["Q = V / t","Q = F / S","Q = V × t","Q = S / v"],e:"Débit = volume ÷ temps. (P = F/S est la pression, v = Q/S la vitesse.)"},
+{c:3,q:"Un seau de 12 litres se remplit en 1 minute. Quel est le débit ?",o:["12 L/min","1 L/min","720 L/min","0,2 L/min"],e:"Q = V/t = 12 L ÷ 1 min = 12 L/min, soit le débit d'une douche classique."},
+{c:3,q:"Quel est le débit approximatif d'une douche classique ?",o:["10 à 12 L/min","1 à 2 L/min","15 à 20 L/min","40 à 50 L/min"],e:"Lave-mains 4–6 L/min, douche 10–12 L/min, remplissage de baignoire 15–20 L/min."},
+{c:3,q:"Quelle unité de débit trouve-t-on sur un compteur d'eau général ?",o:["m³/h","bar","m/s","L/min"],e:"Le compteur affiche des mètres cubes (m³/h). 1 m³ = 1000 litres."},
+{c:3,q:"Combien de litres y a-t-il dans 1 m³ ?",o:["1000 L","100 L","10 L","10 000 L"],e:"1 m³ = 1000 litres."},
+{c:3,q:"Quelle unité utilise le plombier sur chantier pour la pression ?",o:["Le bar","Le Pascal","Le m/s","Le L/min"],e:"L'unité officielle est le Pascal, mais sur chantier et sur les manomètres on parle en bar."},
+{c:3,q:"1 bar correspond à…",o:["10 mètres de colonne d'eau (10 mCE)","1 mètre de colonne d'eau","100 mètres de colonne d'eau","1000 Pa"],e:"1 bar = 10 mCE = 100 000 Pa : une pression de 1 bar peut faire monter l'eau de 10 m."},
+{c:3,q:"Une pression de 3 bars peut faire monter l'eau à environ…",o:["30 mètres","3 mètres","300 mètres","13 mètres"],e:"1 bar = 10 m, donc 3 bars = 30 m."},
+{c:3,q:"Quelle est la pression idéale dans une maison ?",o:["2,5 à 3,5 bars","0,5 à 1 bar","8 à 10 bars","15 bars"],e:"Le cours donne 2,5 à 3,5 bars comme valeur idéale (2,5 à 4 bars comme pression normale)."},
+{c:3,q:"Quelle est la pression minimale au robinet le plus haut pour un fonctionnement correct ?",o:["1 bar","0,1 bar","5 bars","3 bars"],e:"Il faut au moins 1 bar au point de puisage le plus haut."},
+{c:3,q:"La pression de la rue est trop forte. Quelle est la solution ?",o:["Installer un réducteur de pression juste après le compteur","Installer un réducteur juste avant chaque robinet","Mettre des tuyaux plus petits","Fermer à moitié la vanne générale"],e:"La solution obligatoire est un réducteur de pression placé après le compteur, réglé autour de 3 bars."},
+{c:3,q:"Lequel de ces symptômes indique une pression trop forte ?",o:["Coups de bélier et fuites aux raccords","Un filet d'eau à la douche","Un WC très long à se remplir","Une eau trop froide"],e:"Trop de pression (> 4,5 bars) : coups de bélier, fuites, groupe de sécurité du chauffe-eau abîmé. Un filet d'eau = pression trop faible."},
+{c:3,q:"Quelle est la formule de la vitesse de l'eau ?",o:["v = Q / S","v = S / Q","v = Q × S","v = F / S"],e:"Vitesse = débit ÷ section."},
+{c:3,q:"Pour un même débit, que se passe-t-il si on réduit le diamètre du tuyau ?",o:["La vitesse de l'eau augmente","La vitesse de l'eau diminue","Rien ne change","Le débit double"],e:"Plus le passage est étroit, plus l'eau doit aller vite pour passer (comme le pouce sur le tuyau d'arrosage)."},
+{c:3,q:"Quelle vitesse maximale recommande-t-on dans les pièces de vie ?",o:["1,0 à 1,5 m/s","5 m/s","0,1 m/s","3 à 4 m/s"],e:"1,0 à 1,5 m/s en distribution intérieure, jusqu'à 2 m/s en colonnes montantes et sous-sols."},
+{c:3,q:"Que provoque une vitesse d'eau trop élevée (plus de 2 m/s) ?",o:["Sifflements, usure des coudes en cuivre, coups de bélier","Une eau plus chaude","Un débit nul","Le gel des tuyaux"],e:"Trop de vitesse = bruit, érosion des coudes et coups de bélier à la fermeture."},
+{c:3,q:"D'après Bernoulli, que se passe-t-il quand un tuyau rétrécit ?",o:["La vitesse augmente et la pression locale diminue","La vitesse diminue et la pression augmente","Les deux augmentent","Les deux diminuent"],e:"L'énergie se conserve : au rétrécissement, l'eau accélère et la pression baisse (effet Venturi)."},
+{c:3,q:"La pression statique est mesurée…",o:["Quand tous les robinets sont fermés","Quand tous les robinets sont ouverts","Uniquement au toit","Pendant un coup de bélier"],e:"Statique = eau au repos, pression maximale. Dynamique = pendant que l'eau coule."},
+{c:3,q:"Qu'est-ce que les pertes de charge ?",o:["La perte de pression due aux frottements de l'eau contre les parois, coudes et vannes","Une fuite d'eau","Le prix de l'eau","La charge électrique d'une pompe"],e:"Plus le tuyau est long, étroit et plein de coudes, plus la pression baisse au bout."},
+{c:3,q:"Le client manque d'eau à la douche, mais le manomètre affiche 3,5 bars. Cause probable ?",o:["Un mousseur entartré ou un flexible de douche écrasé","Une pression du réseau trop faible","Un siphon vide","Une pente trop forte"],e:"La pression est bonne, donc c'est un bouchon local : mousseur entartré ou flexible écrasé."},
+{c:3,q:"Les tuyaux sifflent fort quand on ouvre le robinet de l'évier. Cause probable ?",o:["Tuyau trop petit ou vanne à moitié fermée : l'eau va trop vite","Pression trop faible","Siphon bouché","Manque de ventilation primaire"],e:"Le sifflement vient d'une vitesse excessive (> 2,5 m/s)."},
+{c:3,q:"La soupape du chauffe-eau goutte en permanence et les tuyaux claquent. Que faire ?",o:["Installer un réducteur de pression réglé à 3 bars après le compteur","Remplacer le chauffe-eau","Augmenter la pente","Ajouter une ventilation secondaire"],e:"C'est le signe d'une pression réseau trop forte : réducteur de pression réglé à 3 bars."},
+{c:3,q:"Qu'est-ce qu'un coup de bélier ?",o:["Un choc et un bruit causés par l'arrêt brutal de l'eau","Une fuite au compteur","Un tuyau qui gèle","Une baisse de débit"],e:"Fermer un mitigeur ou une électrovanne trop vite provoque une onde de choc : le coup de bélier."},
+{c:3,q:"Avec quel appareil mesure-t-on la pression ?",o:["Le manomètre","Le compteur d'eau","Le niveau à bulle","Le chronomètre"],e:"Le manomètre affiche la pression en bars sur un cadran."},
+{c:3,q:"Le groupe de sécurité d'un chauffe-eau est taré à…",o:["7 bars","3 bars","1 bar","15 bars"],e:"Il protège le chauffe-eau contre les surpressions en s'ouvrant à 7 bars."},
+
+/* ---- Chapitre 4 ---- */
+{c:4,q:"Quel matériau s'exprime en pouces et pas en millimètres ?",o:["L'acier","Le cuivre","Le PER","Le multicouche"],e:"Règle générale : tout en mm. Seule exception : les tubes et raccords en acier (1/2\", 3/4\", 1\"…)."},
+{c:4,q:"1 pouce vaut…",o:["25,4 mm","10 mm","2,54 mm","12,7 mm"],e:"1\" = 25,4 mm."},
+{c:4,q:"Un tube cuivre « 13/15 » a…",o:["13 mm de diamètre intérieur et 15 mm extérieur","13 mm extérieur et 15 mm intérieur","13 m de long et 15 mm de diamètre","13 mm de diamètre et 1,5 mm de paroi"],e:"Pour le cuivre, on écrit intérieur/extérieur : 13/15."},
+{c:4,q:"Qu'est-ce que le recuit du cuivre ?",o:["Le chauffer au rouge sombre puis le laisser refroidir pour le rendre souple","Le peindre pour éviter la corrosion","Le souder deux fois","Le refroidir dans de la glace pour le durcir"],e:"Le cuivre écroui (en barre) est dur. Le recuit le rend malléable pour pouvoir le cintrer."},
+{c:4,q:"Quelle est la limite de température entre brasage tendre et brasage fort ?",o:["450 °C","100 °C","850 °C","1000 °C"],e:"Tendre : moins de 450 °C. Fort : plus de 450 °C."},
+{c:4,q:"Pour une conduite de gaz en cuivre, quel assemblage utilise-t-on ?",o:["Le brasage fort","Le brasage tendre","Le collage","L'emboîtement à joint"],e:"Le brasage fort (> 450 °C, cuivre-phosphore ou argent) est réservé au gaz et aux fortes contraintes."},
+{c:4,q:"Quelle est la couleur naturelle du cuivre ?",o:["Rouge-orangé","Gris clair","Noir","Blanc"],e:"Le cuivre est rouge-orangé et brillant."},
+{c:4,q:"Que doit-on faire systématiquement après avoir coupé un tube en cuivre ?",o:["L'ébavurer à l'intérieur et à l'extérieur","Le recuire","Le peindre","Le remplir de sable"],e:"L'ébavurage est systématique après chaque coupe."},
+{c:4,q:"Qu'est-il interdit de faire avec de l'acier galvanisé en eau potable ?",o:["Le cintrer ou le souder","Le fileter","Le couper au coupe-tube","Le fixer avec des colliers"],e:"Cintrer fissure et arrache la couche de zinc ; chauffer ou souder la détruit et dégage des vapeurs toxiques."},
+{c:4,q:"Comment change-t-on de direction avec un tube en acier galvanisé ?",o:["Avec des raccords filetés (coudes, tés…)","En le cintrant à chaud","En le soudant","En le collant"],e:"Puisqu'on ne peut ni le cintrer ni le souder, tout changement de direction se fait par raccords filetés."},
+{c:4,q:"Que dit la « règle de l'aval » ?",o:["Ne jamais poser d'acier galvanisé après du cuivre dans le sens de l'eau","Toujours poser le cuivre après l'acier","L'eau chaude doit toujours être en aval de l'eau froide","Le compteur doit être en aval du réducteur"],e:"Cuivre puis galva = pile galvanique : le zinc est rongé (corrosion par piqûres)."},
+{c:4,q:"Comment rend-on étanche un assemblage fileté en acier ?",o:["Filasse + pâte agréée, ruban PTFE ou résine","Colle PVC","Joint torique uniquement","Soudure à l'étain"],e:"Filasse + pâte agréée Belgaqua, ruban PTFE ou résines anaérobies."},
+{c:4,q:"Quel type de filetage réalise-t-on sur un tube en acier ?",o:["Un filetage conique au pas du gaz","Un filetage métrique droit","Un filetage à gauche","Aucun, l'acier se colle"],e:"Filetage conique au pas du gaz (EN 10226-1 / BSPT), à la filière avec huile de coupe."},
+{c:4,q:"L'acier noir est interdit pour…",o:["L'eau potable","Le chauffage","Le gaz","Les circuits fermés"],e:"L'acier noir sert au chauffage (circuit fermé) et au gaz. Jamais pour l'eau potable."},
+{c:4,q:"Comment assemble-t-on de façon indémontable un tube en acier noir ?",o:["Par soudage (oxyacétylénique ou à l'arc)","Par collage","Par emboîtement à joint","Par raccord à glissement"],e:"Soudage autogène oxyacétylénique ou à l'arc (TIG / MMA)."},
+{c:4,q:"Quelle est la grande faiblesse du PER par rapport aux autres tuyaux ?",o:["Il dilate énormément avec la chaleur","Il rouille","Il est très lourd","Il s'entartre vite"],e:"Le PER a une très forte dilatation thermique. Il ne rouille pas et ne s'entartre pas."},
+{c:4,q:"Un tube PER passe dans un mur (encastré). Qu'est-ce qui est obligatoire ?",o:["Un fourreau (gaine annelée de protection)","Un collier isophonique","Une soudure","Un ressort à cintrer"],e:"Tout passage encastré du PER doit être fourreauté."},
+{c:4,q:"Avec quoi coupe-t-on un tube PER ?",o:["Une pince coupe-tube plastique","Une scie à métaux","Un chalumeau","Une filière"],e:"La scie à métaux est interdite : elle laisse des bavures et des copeaux."},
+{c:4,q:"Quel est le rayon de courbure minimal du PER ?",o:["5 à 8 fois son diamètre extérieur","1 fois son diamètre","20 fois son diamètre","Il n'y en a pas"],e:"En dessous, le tube risque de se plier (de « marquer »)."},
+{c:4,q:"Le raccord PER « Quick & Easy » fonctionne grâce à…",o:["La mémoire de forme : le tube élargi se resserre tout seul","Une colle spéciale","Une soudure électrique","Un filetage conique"],e:"Système axial à mémoire de forme : le tube expansé se resserre sur l'embout."},
+{c:4,q:"Le PER peut-il être utilisé pour le gaz ?",o:["Non","Oui, toujours","Oui, s'il est rouge","Oui, s'il est prégainé"],e:"Le tableau des usages indique : PER, gaz = non."},
+{c:4,q:"Que contient un tube multicouche ?",o:["Des couches de plastique et une couche d'aluminium","Uniquement du cuivre","Du plastique et de l'acier","Du zinc et du cuivre"],e:"5 couches : PE-RT / aluminium / PE-RT. L'alu lui donne sa rigidité et sa faible dilatation."},
+{c:4,q:"Pourquoi le multicouche dilate-t-il peu ?",o:["Grâce à son âme en aluminium","Parce qu'il est blanc","Parce qu'il est épais","Parce qu'il est vendu en couronnes"],e:"L'aluminium limite l'allongement et permet au tube de garder sa forme après cintrage."},
+{c:4,q:"Quelle opération est obligatoire après la coupe d'un tube multicouche ?",o:["Le calibrage et le chanfrein intérieur","Le recuit","Le filetage","Le tulipage"],e:"Le calibreur redonne la rondeur et chanfreine l'intérieur : sinon les joints toriques s'arrachent."},
+{c:4,q:"Laquelle de ces tailles est une dimension commerciale de multicouche ?",o:["16 x 2 mm","13/15 mm","1/2\"","Ø 110 mm"],e:"Multicouche : 16x2, 20x2, 26x3, 32x3. 13/15 = cuivre, 1/2\" = acier, Ø 110 = évacuation."},
+{c:4,q:"Pour cintrer un multicouche de Ø 26 mm ou plus, on utilise…",o:["Une cintreuse arbalète","Un chalumeau","Une simple pince","On ne peut pas le cintrer"],e:"À la main pour Ø 16 et 20 (avec ressort), à l'arbalète pour les rayons courts et Ø ≥ 26. Jamais de chauffe."},
+{c:4,q:"Sur un raccord multicouche à sertir, à quoi sert la petite fenêtre de la bague ?",o:["À vérifier que le tube est bien enfoncé","À laisser passer l'air","À mettre de la colle","À lire la pression"],e:"C'est une fenêtre de contrôle visuel de bonne insertion."},
+{c:4,q:"Quel tuyau d'alimentation est le moins cher ?",o:["Le PER (ou l'acier noir)","Le cuivre","Le multicouche","L'inox"],e:"PER et acier noir : €. Galva : €€. Multicouche : €€€. Cuivre : €€€€."},
+{c:4,q:"À quoi sert un collier isophonique ?",o:["À réduire le bruit et les vibrations grâce à sa garniture en caoutchouc","À bloquer complètement le tube","À chauffer le tube","À mesurer la pression"],e:"La garniture EPDM absorbe bruits, vibrations et frottements."},
+{c:4,q:"Pourquoi alterne-t-on points fixes et points glissants ?",o:["Pour absorber la dilatation thermique des tuyaux","Pour économiser des colliers","Pour faire une pente","Pour éviter les coups de bélier"],e:"Le tube s'allonge en chauffant : les points glissants le laissent bouger, les points fixes le tiennent."},
+{c:4,q:"Le multicouche peut-il transporter du gaz ?",o:["Oui, s'il porte le marquage jaune Cerga","Non, jamais","Oui, n'importe lequel","Seulement en extérieur"],e:"Le tableau des usages indique : multicouche, gaz = oui avec marquage jaune Cerga."},
+
+/* ---- Chapitre 5 ---- */
+{c:5,q:"Quel est le matériau d'évacuation le plus répandu dans les maisons ?",o:["Le PVC-U (gris)","Le cuivre","L'acier noir","Le PER"],e:"Le PVC-U est le plus fréquent pour l'évacuation domestique."},
+{c:5,q:"Comment assemble-t-on le plus souvent deux tubes PVC d'évacuation ?",o:["Par collage à froid avec décapant et colle PVC","Par soudure au chalumeau","Par sertissage","Par filetage"],e:"Collage à froid (soudure chimique) ; on peut aussi emboîter avec un joint à lèvres."},
+{c:5,q:"Quel est le bon ordre pour coller du PVC ?",o:["Dépolir, nettoyer au décapant, encoller, emboîter sans tourner","Encoller, emboîter en tournant, nettoyer","Chauffer au chalumeau, encoller, emboîter","Emboîter, puis mettre la colle autour"],e:"Dépolir au papier fin → décapant PVC → colle dans la longueur → emboîter sans tourner."},
+{c:5,q:"Pourquoi fait-on un chanfrein sur un tube PVC ?",o:["Pour ne pas racler la colle ni abîmer le joint à l'emboîtement","Pour le rendre plus solide","Pour qu'il soit plus joli","Pour augmenter la pente"],e:"Un chanfrein de 15° à 30° évite de pousser la colle ou de couper le joint à lèvres."},
+{c:5,q:"Quel outil garantit une coupe bien droite d'un tube PVC à la scie ?",o:["La boîte à onglets","Le décapeur thermique","Le calibreur","La filière"],e:"La boîte à onglets est obligatoire pour une coupe perpendiculaire."},
+{c:5,q:"Pour faire une tulipe (emboîture) sur un tube PVC, on chauffe avec…",o:["Un décapeur thermique (air chaud), jamais de flamme","Un chalumeau","Un fer à souder","Un miroir chauffant"],e:"Chauffe modérée à l'air chaud. Pas de flamme sur les plastiques."},
+{c:5,q:"Comment ajoute-t-on une évacuation (ex. lave-linge) sur un tube PVC existant ?",o:["Avec une selle de branchement collée","En perçant et en soudant","Avec un raccord à compression","En chauffant le tube pour le déformer"],e:"La selle de branchement se colle sur le flanc du tube pour créer un piquage."},
+{c:5,q:"Où met-on obligatoirement des manchons de dilatation en PVC ?",o:["Sur les collecteurs et les longues colonnes de chute","Sur chaque siphon","Sur les tuyaux d'eau potable","Nulle part"],e:"Les longues longueurs de PVC se dilatent : manchons de dilatation obligatoires."},
+{c:5,q:"De quelle couleur est le PEHD ?",o:["Noir","Gris clair","Blanc","Rouge"],e:"PEHD = noir. PVC = gris. Multicouche = blanc."},
+{c:5,q:"Comment assemble-t-on le PEHD ?",o:["Soudure bout à bout au miroir chauffant ou manchons électrosoudables","Collage à froid","Emboîtement à joint sans colle uniquement","Filetage conique"],e:"Le PEHD se soude : bout à bout (miroir) ou électrosoudage. Liaison 100 % étanche et indémontable."},
+{c:5,q:"Avant d'électrosouder du PEHD, que faut-il faire ?",o:["Gratter mécaniquement la couche oxydée","Mettre de la colle","Chauffer à la flamme","Recuire le tube"],e:"Le grattage de la couche oxydée est obligatoire pour une bonne soudure."},
+{c:5,q:"Quel tuyau d'évacuation peut être coulé directement dans le béton ?",o:["Le PEHD","Le PER","Le cuivre","Le multicouche"],e:"Le PEHD, très résistant aux chocs, sert au coulage dans le béton et à la pose enterrée."},
+{c:5,q:"Quelle est la qualité principale du PP (Silent-PP) ?",o:["Il est insonorisé (évacuation silencieuse)","Il est le moins cher","Il peut transporter du gaz","Il se soude au chalumeau"],e:"Le PP est le tuyau d'évacuation silencieux, qui résiste aussi à 90 °C."},
+{c:5,q:"Comment s'assemble le PP Silent ?",o:["Par emboîtement avec un joint EPDM, sans colle","Par collage","Par soudure bout à bout","Par sertissage"],e:"Emboîtement dans un manchon avec joint EPDM lubrifié, sans colle."},
+{c:5,q:"Quel diamètre d'évacuation pour un WC ?",o:["90 à 110 mm","32 à 40 mm","40 à 50 mm","16 à 20 mm"],e:"Le WC évacue les eaux-vannes : Ø 90 à 110 mm."},
+{c:5,q:"Quel diamètre d'évacuation pour un lavabo ?",o:["32 à 40 mm","90 à 110 mm","125 mm","12 mm"],e:"Lavabo / lave-mains : Ø 32 à 40 mm."},
+{c:5,q:"Quel diamètre d'évacuation pour une douche ?",o:["40 à 50 mm","32 mm maximum","90 à 110 mm","160 mm"],e:"Évier, douche, baignoire, machine à laver : Ø 40 à 50 mm."},
+{c:5,q:"Quelle règle relie le débit à évacuer et le diamètre ?",o:["Plus le débit est important, plus le diamètre est grand","Plus le débit est important, plus le diamètre est petit","Le diamètre est toujours de 110 mm","Le diamètre dépend uniquement de la couleur"],e:"C'est pour ça que le WC a le plus gros diamètre."},
+{c:5,q:"De quelle couleur est le PVC pour l'eau de pluie ?",o:["Gris foncé (anthracite)","Gris clair","Noir","Bleu"],e:"PVC évacuation : gris clair. PVC pluvial : gris foncé."},
+{c:5,q:"Quelles sont les 5 étapes du façonnage dans l'ordre ?",o:["Mesurer, couper droit, ébavurer, chanfreiner/calibrer, cintrer","Couper, mesurer, cintrer, ébavurer, coller","Cintrer, couper, mesurer, chanfreiner, ébavurer","Ébavurer, couper, mesurer, cintrer, calibrer"],e:"Mesurer et tracer → couper perpendiculairement → ébavurer → chanfreiner ou calibrer → cintrer sans écraser."},
+{c:5,q:"Lequel de ces gestes est interdit sur un tuyau plastique (PVC, PEHD) ?",o:["Le chauffer à la flamme directe","Le couper avec une boîte à onglets","L'ébavurer","Le fixer avec des colliers isophoniques"],e:"Jamais de flamme sur les plastiques : on utilise l'air chaud (décapeur)."},
+{c:5,q:"Pourquoi ne faut-il pas trop serrer les colliers intermédiaires d'une évacuation PVC ?",o:["Le tube doit pouvoir glisser librement (dilatation)","Pour faire moins de bruit","Pour garder la pente nulle","Pour économiser des vis"],e:"Le tube doit être guidé, pas bloqué, pour se dilater sans forcer."}
+];
+
+</script>
+<script>
+(function(){
+"use strict";
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const fmt = (x, d=1) => Number(x).toFixed(d).replace('.', ',');
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+
+/* ---------------- routing ---------------- */
+const VIEWS = ["accueil","ch1","ch2","ch3","ch4","ch5","resume","flashcards","qcm","glossaire"];
+function route(){
+  let h = (location.hash || "#accueil").slice(1);
+  if (!VIEWS.includes(h)) h = "accueil";
+  $$(".view").forEach(v => v.classList.toggle("on", v.id === "v-"+h));
+  $$("#nav a").forEach(a => a.classList.toggle("on", a.dataset.v === h));
+  const a = $('#nav a[data-v="'+h+'"]');
+  $("#topTitle").textContent = a ? a.textContent.replace(/^[^A-Za-zÀ-ÿ]+/, '') : "";
+  window.scrollTo(0,0);
+  $("#side").classList.remove("open"); $("#scrim").classList.remove("on");
+}
+window.addEventListener("hashchange", route);
+$("#menuBtn").onclick = () => { $("#side").classList.add("open"); $("#scrim").classList.add("on"); };
+$("#scrim").onclick = () => { $("#side").classList.remove("open"); $("#scrim").classList.remove("on"); };
+
+/* ---------------- progress ---------------- */
+let done = store.get("tpbs-done", []);
+function paintProgress(){
+  $$("#nav a[data-ch]").forEach(a => a.classList.toggle("done", done.includes(a.dataset.ch)));
+  $$("#homegrid a[data-ch]").forEach(a => a.classList.toggle("done", done.includes(a.dataset.ch)));
+  $$(".markbtn").forEach(b => { const d = done.includes(b.dataset.mark); b.classList.toggle("done", d); b.textContent = d ? "✓ Chapitre compris" : "J'ai compris ce chapitre"; });
+  $("#progBar").style.width = (done.length/5*100) + "%";
+  $("#progLbl").textContent = done.length + " / 5 chapitres compris";
+}
+$$(".markbtn").forEach(b => b.onclick = () => {
+  const c = b.dataset.mark;
+  done = done.includes(c) ? done.filter(x => x !== c) : done.concat(c);
+  store.set("tpbs-done", done); paintProgress();
+});
+
+/* ---------------- ch1 : maison ---------------- */
+const HOUSE = {
+  alim: [
+    ["Le réseau public","L'eau potable arrive sous la rue. Elle a été <b>traitée et contrôlée</b>, et elle est <b>poussée sous pression</b> par la compagnie des eaux."],
+    ["Compteur, clapet, réducteur","Elle entre dans le bâtiment par le <b>compteur</b> (C), puis le <b>clapet anti-retour</b> (▶) qui l'empêche de repartir vers la rue. Si la pression est trop forte, un <b>réducteur de pression</b> (R) la ramène à environ 3 bars."],
+    ["La distribution intérieure","L'eau froide <span class='ef'>(bleu)</span> monte par la <b>colonne montante</b> vers chaque étage. Une partie passe par le <b>chauffe-eau</b> et repart en eau chaude sanitaire <span class='ec'>(rouge)</span>."],
+    ["Les points de puisage","L'eau arrive aux appareils : lavabo, douche, évier… Remarque : le <b>WC ne reçoit que de l'eau froide</b>. Tout ce trajet se fait <b>sous pression</b> : l'eau peut monter."]
+  ],
+  evac: [
+    ["Les appareils et leur siphon","L'eau sale quitte la baignoire, le WC ou l'évier par la <b>bonde</b>, puis traverse le <b>siphon</b> qui garde un bouchon d'eau contre les odeurs."],
+    ["Les décharges (avec pente)","Le petit tuyau sous chaque appareil emmène l'eau vers la colonne. Il descend avec une <b>pente de 1 à 3 cm par mètre</b>."],
+    ["La colonne de chute","Le gros tuyau <b>vertical</b> qui traverse tous les étages. L'eau tombe par gravité."],
+    ["Le collecteur","Le gros tuyau horizontal en <b>cave ou sous le sol</b> rassemble toutes les eaux."],
+    ["L'égout public","L'eau quitte la maison vers l'égout sous la rue. Aucune pompe : <b>tout se fait par gravité</b>."],
+    ["La ventilation primaire","La colonne de chute est <b>prolongée jusqu'au toit</b>, ouverte à l'air libre. L'air peut entrer : l'eau qui descend n'aspire plus l'eau des siphons."]
+  ]
+};
+let hMode = "alim", hStep = 1;
+function paintHouse(){
+  const steps = HOUSE[hMode];
+  $$("#house [data-net]").forEach(g => {
+    g.classList.remove("dim","later","now");
+    if (g.dataset.net !== hMode) g.classList.add("dim");
+    else { const s = +g.dataset.step; if (s > hStep) g.classList.add("later"); else if (s === hStep) g.classList.add("now"); }
+  });
+  $("#hCount").textContent = hStep + " / " + steps.length;
+  $("#hText").innerHTML = "<b>Étape " + hStep + " · " + steps[hStep-1][0] + "</b><br>" + steps[hStep-1][1];
+  $("#hPrev").disabled = hStep === 1;
+  $("#hNext").textContent = hStep === steps.length ? "↺ Recommencer" : "Étape suivante ▶";
+}
+$$("#houseMode button").forEach(b => b.onclick = () => { $$("#houseMode button").forEach(x => x.classList.toggle("on", x === b)); hMode = b.dataset.m; hStep = 1; paintHouse(); });
+$("#hPrev").onclick = () => { if (hStep > 1){ hStep--; paintHouse(); } };
+$("#hNext").onclick = () => { hStep = hStep >= HOUSE[hMode].length ? 1 : hStep + 1; paintHouse(); };
+paintHouse();
+
+/* appareils */
+const appl = $("#appl");
+APPLIANCES.forEach((a, i) => {
+  const b = document.createElement("button");
+  b.innerHTML = a.ico + " " + a.n;
+  b.onclick = () => {
+    $$("#appl button").forEach(x => x.classList.toggle("on", x === b));
+    const ali = a.ali === "EF" ? '<span class="pill ef">EF seule</span>' : '<span class="pill ef">EF</span> + <span class="pill ec">EC</span>';
+    $("#appinfo").innerHTML = "<h4 style='margin-top:0'>" + a.ico + " " + a.n + " <span style='font-weight:400;color:var(--muted);font-size:.9rem'>· " + a.room + "</span></h4>" +
+      "<p><b>Alimentation :</b> " + ali + (a.ev !== "—" ? " &nbsp; <b>Évacuation :</b> " + a.ev : "") + "</p><p style='margin-bottom:0'>" + a.d + "</p>";
+  };
+  appl.appendChild(b);
+});
+
+/* pente */
+function paintSlope(){
+  const L = +$("#slLen").value, p = +$("#slPct").value;
+  $("#slL").textContent = fmt(L, L % 1 ? 1 : 0) + " m";
+  $("#slP").textContent = fmt(p, p % 1 ? 1 : 0) + " cm/m (" + fmt(p, p % 1 ? 1 : 0) + " %)";
+  const drop = L * p;
+  $("#slDrop").textContent = fmt(drop, drop % 1 ? 1 : 0) + " cm";
+  const dy = Math.min(90, p * 15);
+  const x1 = 40, y1 = 25, x2 = 560, y2 = 25 + dy;
+  let state = p < 1 ? "flat" : (p > 3 ? "steep" : "ok");
+  const waterAnim = state === "flat" ? "" : ' class="flow" style="animation-duration:' + (state === "steep" ? 0.25 : 0.9) + 's"';
+  const dirtAnim = state === "ok" ? ' class="flow" style="animation-duration:0.9s"' : "";
+  const dirtDash = state === "flat" ? "2 6" : "2 18";
+  const svg = '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#9c988e" stroke-width="26" stroke-linecap="round"/>' +
+    '<line x1="'+x1+'" y1="'+(y1+6)+'" x2="'+x2+'" y2="'+(y2+6)+'" stroke="#7fb3ea" stroke-width="'+(state==="flat"?12:7)+'" stroke-dasharray="10 6" stroke-linecap="round"'+waterAnim+'/>' +
+    '<line x1="'+x1+'" y1="'+(y1+9)+'" x2="'+x2+'" y2="'+(y2+9)+'" stroke="#8a5a2b" stroke-width="5" stroke-dasharray="'+dirtDash+'" stroke-linecap="round"'+dirtAnim+'/>' +
+    '<line x1="'+x1+'" y1="'+(y2+30)+'" x2="'+x2+'" y2="'+(y2+30)+'" stroke="#cfc6b3" stroke-dasharray="4 4"/>' +
+    '<text x="'+x1+'" y="'+(y2+48 > 138 ? 138 : y2+48)+'" font-size="12" fill="#4a5263">départ (appareil)</text>' +
+    '<text x="'+x2+'" y="'+(y2+48 > 138 ? 138 : y2+48)+'" font-size="12" fill="#4a5263" text-anchor="end">vers la colonne · pente exagérée sur le dessin</text>';
+  $("#slopeSvg").innerHTML = svg;
+  const v = $("#slV");
+  if (state === "flat"){ v.className = "verdict bad"; v.textContent = p === 0 ? "Aucune pente : l'eau ne s'écoule pas, elle stagne. Bouchon assuré." : "Pente trop faible (moins de 1 cm/m) : l'eau stagne et les saletés finissent par boucher le tuyau."; }
+  else if (state === "steep"){ v.className = "verdict bad"; v.textContent = "Pente trop forte (plus de 3 cm/m) : l'eau file trop vite et laisse les déchets solides derrière elle."; }
+  else { v.className = "verdict ok"; v.textContent = "Bonne pente (1 à 3 cm/m) : l'eau emporte bien les déchets."; }
+}
+["#slLen","#slPct"].forEach(s => $(s).addEventListener("input", paintSlope));
+paintSlope();
+
+/* ---------------- ch2 ---------------- */
+$("#noticeParts").innerHTML = NOTICE_PARTS.map(p =>
+  '<div class="reveal"><div class="q"><b>' + p[0] + '</b></div><div class="a"><b>À quoi ça sert :</b> ' + p[1] + '<br><b>Exemple :</b> ' + p[2] + '</div></div>').join("");
+$("#picto").innerHTML = PICTOS.map(p => '<div class="p">' + p.s + '<div class="n">' + p.n + '</div><div class="m">' + p.m + '</div></div>').join("");
+$$("#picto .p").forEach(el => el.onclick = () => el.classList.toggle("open"));
+document.addEventListener("click", e => { const r = e.target.closest(".reveal"); if (r) r.classList.toggle("open"); });
+
+/* ---------------- ch3 ---------------- */
+function paintBucket(){
+  const V = +$("#bkVol").value, s = +$("#bkSec").value;
+  $("#bkV").textContent = V + " L"; $("#bkT").textContent = s + " s (" + fmt(s/60, s % 60 ? 2 : 0) + " min)";
+  const q = V / (s/60);
+  $("#bkQ").textContent = fmt(q, 1) + " L/min";
+  let c;
+  if (q < 4) c = "Moins qu'un robinet de lave-mains (4 à 6 L/min).";
+  else if (q <= 6) c = "Comme un robinet de lave-mains (4 à 6 L/min).";
+  else if (q < 10) c = "Entre un lave-mains et une douche.";
+  else if (q <= 12) c = "Comme une douche classique (10 à 12 L/min).";
+  else if (q < 15) c = "Entre une douche et un remplissage de baignoire.";
+  else if (q <= 20) c = "Comme un remplissage de baignoire (15 à 20 L/min).";
+  else c = "Plus qu'un remplissage de baignoire : c'est beaucoup !";
+  $("#bkCmp").textContent = "Calcul : " + V + " L ÷ " + fmt(s/60, s % 60 ? 2 : 0) + " min = " + fmt(q,1) + " L/min. " + c;
+}
+["#bkVol","#bkSec"].forEach(s => $(s).addEventListener("input", paintBucket));
+paintBucket();
+
+/* manomètre */
+function arc(cx, cy, r, a0, a1){ // angles en degrés, 180 = gauche, 0 = droite
+  const p = a => [cx + r*Math.cos(a*Math.PI/180), cy - r*Math.sin(a*Math.PI/180)];
+  const [x0,y0] = p(a0), [x1,y1] = p(a1);
+  return "M"+x0.toFixed(1)+" "+y0.toFixed(1)+" A"+r+" "+r+" 0 0 1 "+x1.toFixed(1)+" "+y1.toFixed(1);
+}
+const MAXB = 8, ang = b => 180 - b/MAXB*180;
+function paintGauge(){
+  const b = +$("#pBar").value;
+  const zones = [[0,1.5,"#e05a4f"],[1.5,2.5,"#e5a634"],[2.5,3.5,"#2e9e5b"],[3.5,4,"#86c79b"],[4,8,"#e05a4f"]];
+  let s = zones.map(z => '<path d="'+arc(120,125,92,ang(z[0]),ang(z[1]))+'" stroke="'+z[2]+'" stroke-width="16" fill="none"/>').join("");
+  for (let i=0;i<=8;i++){ const a = ang(i)*Math.PI/180; const x = 120 + 70*Math.cos(a), y = 125 - 70*Math.sin(a);
+    s += '<text x="'+x.toFixed(1)+'" y="'+(y+4).toFixed(1)+'" font-size="11" text-anchor="middle" fill="#4a5263">'+i+'</text>'; }
+  const a = ang(b)*Math.PI/180;
+  s += '<line x1="120" y1="125" x2="'+(120+82*Math.cos(a)).toFixed(1)+'" y2="'+(125-82*Math.sin(a)).toFixed(1)+'" stroke="#1c2230" stroke-width="4" stroke-linecap="round"/><circle cx="120" cy="125" r="8" fill="#1c2230"/>';
+  s += '<text x="120" y="147" text-anchor="middle" font-size="12" font-weight="700">bar</text>';
+  $("#gauge").innerHTML = s;
+  $("#pbV").textContent = fmt(b) + " bar";
+  $("#pH").textContent = fmt(b*10, 0) + " m";
+  const v = $("#pVerdict");
+  if (b < 1){ v.className = "verdict bad"; v.textContent = "Insuffisant : sous 1 bar, le robinet le plus haut ne fonctionne pas correctement."; }
+  else if (b < 1.5){ v.className = "verdict bad"; v.textContent = "Trop faible (moins de 1,5 bar) : filet d'eau à la douche, WC très lent à se remplir."; }
+  else if (b < 2.5){ v.className = "verdict warn"; v.textContent = "Un peu faible : ça fonctionne, mais c'est sous l'idéal (2,5 à 3,5 bars)."; }
+  else if (b <= 3.5){ v.className = "verdict ok"; v.textContent = "Idéal pour une maison (2,5 à 3,5 bars)."; }
+  else if (b <= 4){ v.className = "verdict ok"; v.textContent = "Encore correct (normal jusqu'à 4 bars), mais un peu fort."; }
+  else { v.className = "verdict bad"; v.textContent = "Trop forte : risque de coups de bélier, de fuites aux raccords et d'usure du groupe de sécurité. → Réducteur de pression juste après le compteur, réglé à environ 3 bars."; }
+}
+$("#pBar").addEventListener("input", paintGauge); paintGauge();
+
+/* vitesse */
+const DIAS = [8,10,12,13,16,20,26,32];
+let vD = 12;
+$("#vD").innerHTML = DIAS.map(d => '<button data-d="'+d+'"'+(d===vD?' class="on"':'')+'>'+d+' mm</button>').join("");
+$$("#vD button").forEach(b => b.onclick = () => { vD = +b.dataset.d; $$("#vD button").forEach(x => x.classList.toggle("on", x===b)); paintSpeed(); });
+function paintSpeed(){
+  const q = +$("#vQ").value;
+  $("#vqV").textContent = q + " L/min";
+  const S = Math.PI * Math.pow(vD/2000, 2);
+  const v = (q/60000) / S;
+  $("#vOut").textContent = fmt(v, 2) + " m/s";
+  const h = vD * 2;
+  const y0 = 45 - h/2;
+  const dur = Math.max(0.12, 1.4 / Math.max(v, 0.05));
+  $("#pipeSvg").innerHTML =
+    '<rect x="20" y="'+(y0-6)+'" width="560" height="'+(h+12)+'" rx="6" fill="#b9c3cf"/>' +
+    '<rect x="20" y="'+y0+'" width="560" height="'+h+'" fill="#e7f0fb"/>' +
+    '<line x1="20" y1="45" x2="580" y2="45" stroke="#2563b8" stroke-width="'+Math.max(2, h*0.45)+'" stroke-dasharray="14 12" class="flow" style="animation-duration:'+dur.toFixed(2)+'s"/>' +
+    '<text x="590" y="49" font-size="11" fill="#4a5263" text-anchor="end"></text>';
+  const el = $("#vVerdict");
+  if (v <= 1.5){ el.className = "verdict ok"; el.textContent = "OK pour les pièces de vie (max 1,0 à 1,5 m/s) : pas de bruit."; }
+  else if (v <= 2){ el.className = "verdict warn"; el.textContent = "Trop rapide pour une pièce de vie. Toléré seulement en colonne montante ou au sous-sol (max 2 m/s)."; }
+  else { el.className = "verdict bad"; el.textContent = "Trop rapide (plus de 2 m/s) : sifflements, usure des coudes, coups de bélier. → Prends un tuyau plus gros."; }
+}
+$("#vQ").addEventListener("input", paintSpeed); paintSpeed();
+
+/* venturi */
+function paintVenturi(){
+  const r = +$("#vtR").value / 100;
+  $("#vtL").textContent = Math.round(r*100) + " % du diamètre d'entrée";
+  const H1 = 80, H2 = H1 * r, cy = 150;
+  const t1 = cy - H1/2, b1 = cy + H1/2, t2 = cy - H2/2, b2 = cy + H2/2;
+  const top = "M20 "+t1+" L220 "+t1+" L300 "+t2+" L360 "+t2+" L440 "+t1+" L620 "+t1;
+  const bot = "L620 "+b1+" L440 "+b1+" L360 "+b2+" L300 "+b2+" L220 "+b1+" L20 "+b1+" Z";
+  const ratio = 1 / (r*r);
+  const h1 = 80, h2 = Math.max(6, h1 - 9*(ratio - 1));
+  const d1 = 1.0, d2 = Math.max(0.12, 1.0/ratio);
+  let s = '<path d="'+top+' '+bot+'" fill="#e7f0fb" stroke="#4a5263" stroke-width="3"/>';
+  s += '<line x1="30" y1="'+cy+'" x2="215" y2="'+cy+'" stroke="#2563b8" stroke-width="6" stroke-dasharray="12 10" class="flow" style="animation-duration:'+d1+'s"/>';
+  s += '<line x1="300" y1="'+cy+'" x2="360" y2="'+cy+'" stroke="#2563b8" stroke-width="'+Math.max(3,6*r)+'" stroke-dasharray="12 10" class="flow" style="animation-duration:'+d2.toFixed(2)+'s"/>';
+  s += '<line x1="445" y1="'+cy+'" x2="610" y2="'+cy+'" stroke="#2563b8" stroke-width="6" stroke-dasharray="12 10" class="flow" style="animation-duration:'+d1+'s"/>';
+  [[110,t1,h1,"P1 : pression haute"],[330,t2,h2,"P2 : pression "+(ratio>1.05?"plus basse":"égale")]].forEach(([x,yt,h,lab]) => {
+    s += '<rect x="'+(x-7)+'" y="'+(yt-100)+'" width="14" height="100" fill="#fff" stroke="#4a5263" stroke-width="2"/>';
+    s += '<rect x="'+(x-5)+'" y="'+(yt-h)+'" width="10" height="'+h+'" fill="#7fb3ea"/>';
+    s += '<text x="'+(x+14)+'" y="'+(yt-h+4)+'" font-size="12" font-weight="700" fill="#1c2230">'+lab+'</text>';
+  });
+  s += '<text x="110" y="'+(b1+20)+'" text-anchor="middle" font-size="12" fill="#4a5263">entrée : vitesse v1</text>';
+  s += '<text x="330" y="'+(b1+20)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#c8372d">vitesse × '+fmt(ratio,1)+'</text>';
+  s += '<text x="530" y="'+(b1+20)+'" text-anchor="middle" font-size="12" fill="#4a5263">sortie : la vitesse redescend, la pression remonte</text>';
+  $("#venturi").setAttribute("viewBox","0 0 640 "+(b1+30));
+  $("#venturi").innerHTML = s;
+}
+$("#vtR").addEventListener("input", paintVenturi); paintVenturi();
+
+/* ---------------- ch4 / ch5 : matériaux ---------------- */
+function swatch(m){
+  if (m.id === "per") return '<svg viewBox="0 0 100 100"><circle cx="38" cy="50" r="26" fill="'+m.col+'"/><circle cx="38" cy="50" r="18" fill="#fff"/><circle cx="70" cy="50" r="26" fill="'+m.col2+'" opacity=".95"/><circle cx="70" cy="50" r="18" fill="#fff"/></svg>';
+  if (m.id === "mc") return '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#f4f4f2" stroke="#cfd5db" stroke-width="2"/><circle cx="50" cy="50" r="36" fill="#b9c0c9"/><circle cx="50" cy="50" r="33" fill="#f4f4f2"/><circle cx="50" cy="50" r="28" fill="#fff" stroke="#e1e4e8"/><text x="50" y="54" font-size="10" text-anchor="middle" fill="#6b7383">alu</text></svg>';
+  return '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="'+m.col+'"/><circle cx="50" cy="50" r="'+(m.id==="pehd"||m.id==="pvc"||m.id==="pp"?39:36)+'" fill="#fff"/><circle cx="50" cy="50" r="44" fill="none" stroke="'+m.col2+'" stroke-width="3"/></svg>';
+}
+function renderMats(list, tabsSel, boxSel){
+  $(tabsSel).innerHTML = list.map((m,i) => '<button data-i="'+i+'"'+(i===0?' class="on"':'')+'>'+m.n+'</button>').join("");
+  $(boxSel).innerHTML = list.map((m,i) =>
+    '<div class="card mat'+(i===0?' on':'')+'" data-i="'+i+'">' +
+      '<div class="idcard"><div style="max-width:110px">'+swatch(m)+'</div><div><h3 style="margin:0 0 .4em">'+m.n+'</h3><div class="kv">'+m.props.map(p => '<b>'+p[0]+'</b><span>'+p[1]+'</span>').join("")+'</div></div></div>' +
+      '<div class="four">'+m.four.map(f => '<div class="mini"><h4>'+f[0]+'</h4><ul>'+f[1].map(x => '<li>'+x+'</li>').join("")+'</ul></div>').join("")+'</div>' +
+      (m.ban ? '<div class="ban">⚠️ '+m.ban+'</div>' : '') +
+    '</div>').join("");
+  $$(tabsSel+" button").forEach(b => b.onclick = () => {
+    $$(tabsSel+" button").forEach(x => x.classList.toggle("on", x===b));
+    $$(boxSel+" .mat").forEach(x => x.classList.toggle("on", x.dataset.i === b.dataset.i));
+  });
+}
+renderMats(MATS, "#matTabs", "#mats");
+renderMats(EVMATS, "#evTabs", "#evMats");
+
+/* matrice */
+const cell = v => v===1 ? '<span class="pill ok">✓ Oui</span>' : v===0 ? '<span class="pill no">✗ Non</span>' : '<span class="pill mid">~ Sous condition</span>';
+$("#matrix").innerHTML = '<tr><th>Matériau</th><th>Eau potable</th><th>Chauffage</th><th>Gaz</th></tr>' +
+  MATRIX.map((r,i) => '<tr data-i="'+i+'"><td><b>'+r[0]+'</b></td><td>'+cell(r[1])+'</td><td>'+cell(r[2])+'</td><td>'+cell(r[3])+'</td></tr>').join("");
+$$("#matrix tr[data-i]").forEach(tr => tr.onclick = () => {
+  $$("#matrix tr").forEach(x => x.classList.toggle("sel", x===tr));
+  const r = MATRIX[+tr.dataset.i];
+  $("#matrixInfo").innerHTML = "<b>"+r[0]+" :</b> "+r[4];
+});
+
+/* décodeur de tailles */
+let dMat = "Cuivre", dIdx = 2;
+function paintDims(){
+  $("#dimMat").innerHTML = Object.keys(DIMS).map(k => '<button data-k="'+k+'"'+(k===dMat?' class="on"':'')+'>'+k+'</button>').join("");
+  $("#dimSize").innerHTML = DIMS[dMat].map((d,i) => '<button data-i="'+i+'"'+(i===dIdx?' class="on"':'')+'>'+d[0]+'</button>').join("");
+  $$("#dimMat button").forEach(b => b.onclick = () => { dMat = b.dataset.k; dIdx = Math.min(2, DIMS[dMat].length-1); paintDims(); });
+  $$("#dimSize button").forEach(b => b.onclick = () => { dIdx = +b.dataset.i; paintDims(); });
+  const d = DIMS[dMat][dIdx];
+  const k = 1.9, re = d[2]/2*k*2, ri = d[1]/2*k*2;
+  const col = DIMCOL[dMat];
+  $("#dimSvg").innerHTML = '<circle cx="100" cy="100" r="'+re.toFixed(1)+'" fill="'+col+'" stroke="#8f979f" stroke-width="1.5"/>' +
+    '<circle cx="100" cy="100" r="'+ri.toFixed(1)+'" fill="#e7f0fb"/>' +
+    '<text x="100" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2563b8">'+d[0]+'</text>';
+  const ep = (d[2]-d[1])/2;
+  $("#dimInfo").innerHTML =
+    "<b>Appellation</b><span>"+d[0]+"</span>" +
+    "<b>Ø intérieur</b><span>"+fmt(d[1], d[1]%1?1:0)+" mm</span>" +
+    "<b>Ø extérieur</b><span>"+fmt(d[2], d[2]%1?1:0)+" mm</span>" +
+    "<b>Épaisseur de paroi</b><span>"+fmt(ep, ep%1?(ep*100%10?2:1):0)+" mm</span>" +
+    "<b>Diamètre nominal</b><span>"+d[3]+"</span>" +
+    "<b>Eau par mètre</b><span>"+fmt(d[4],3)+" L/m → 10 m de tuyau = "+fmt(d[4]*10,2)+" L</span>";
+}
+paintDims();
+
+/* ---------------- quiz engine ---------------- */
+const CHNAMES = {1:"Vue d'ensemble",2:"Notices",3:"Hydraulique",4:"Alimentation",5:"Évacuation"};
+function prep(q){ const opts = shuffle(q.o.map((t,i) => ({t, ok: i===0}))); return Object.assign({}, q, {opts}); }
+function Quiz(box, pool, opt){
+  opt = opt || {};
+  let list = [], i = 0, score = 0, wrong = [], answered = false;
+  function start(qs){ list = qs.map(prep); i = 0; score = 0; wrong = []; show(); }
+  function show(){
+    answered = false;
+    const q = list[i];
+    box.innerHTML = '<div class="quiz">' +
+      (opt.title ? '<h3 style="margin:0 0 6px">'+opt.title+'</h3>' : '') +
+      '<div class="qhead"><span>Question '+(i+1)+' / '+list.length+(opt.chTag ? ' · <span class="chtag">Ch. '+q.c+' · '+CHNAMES[q.c]+'</span>' : '')+'</span><span>Score : '+score+'</span></div>' +
+      '<div class="qbar"><i style="width:'+(i/list.length*100)+'%"></i></div>' +
+      '<div class="qtext">'+q.q+'</div><div class="opts">' +
+      q.opts.map((o,k) => '<button class="opt" data-k="'+k+'"><span class="l">'+"ABCD"[k]+'</span><span>'+o.t+'</span></button>').join("") +
+      '</div><div class="why"></div><div class="qfoot"></div></div>';
+    $$(".opt", box).forEach(b => b.onclick = () => answer(+b.dataset.k));
+  }
+  function answer(k){
+    if (answered) return; answered = true;
+    const q = list[i], good = q.opts[k].ok;
+    if (good) score++; else wrong.push(q);
+    $$(".opt", box).forEach((b, j) => { b.disabled = true; if (q.opts[j].ok) b.classList.add("good"); else if (j === k) b.classList.add("wrong"); });
+    const w = $(".why", box); w.classList.add("on");
+    w.innerHTML = (good ? '<b class="g">✓ Bonne réponse.</b> ' : '<b class="b">✗ Pas tout à fait.</b> ') + q.e;
+    const f = $(".qfoot", box);
+    const last = i === list.length - 1;
+    f.innerHTML = '<button class="btn acc">'+(last ? "Voir mon score" : "Question suivante ▶")+'</button>';
+    $("button", f).onclick = () => { if (last) end(); else { i++; show(); } };
+    $("button", f).focus({preventScroll:true});
+  }
+  function end(){
+    const pct = Math.round(score / list.length * 100);
+    const msg = pct >= 90 ? "Excellent, tu es prêt !" : pct >= 70 ? "Bien joué ! Revois les erreurs ci-dessous." : pct >= 50 ? "C'est un début. Relis les points ratés et recommence." : "Relis le chapitre concerné, puis réessaie : ça va venir.";
+    if (opt.onDone) opt.onDone(score, list.length);
+    box.innerHTML = '<div class="quiz"><div class="score"><div class="big" style="color:'+(pct>=70?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)")+'">'+score+' / '+list.length+'</div><p><b>'+pct+' %</b> · '+msg+'</p>' +
+      '<div class="row" style="justify-content:center">' + (wrong.length ? '<button class="btn" data-a="wrong">Refaire mes '+wrong.length+' erreur'+(wrong.length>1?'s':'')+'</button>' : '') +
+      '<button class="btn '+(wrong.length?'light':'acc')+'" data-a="again">'+(opt.againLabel || "Recommencer")+'</button></div></div>' +
+      (wrong.length ? '<div class="missed"><h4>À retravailler</h4>' + wrong.map(q => '<div class="mq"><b>'+q.q+'</b><br><span class="ra">✓ '+q.o[0]+'</span><br>'+q.e+'</div>').join("") + '</div>' : '') + '</div>';
+    const w = $('[data-a="wrong"]', box); if (w) { const ws = wrong.map(q => QUESTIONS.find(x => x.q === q.q)); w.onclick = () => start(shuffle(ws)); }
+    $('[data-a="again"]', box).onclick = () => start(opt.next ? opt.next() : shuffle(pool));
+  }
+  start(opt.first ? opt.first() : shuffle(pool));
+  return {start};
+}
+
+/* mini-tests de fin de chapitre */
+[1,2,3,4,5].forEach(c => {
+  const pool = QUESTIONS.filter(q => q.c === c);
+  const pick = () => shuffle(pool).slice(0, 5);
+  Quiz($("#quiz-ch"+c), pool, {title:"Teste-toi : 5 questions sur ce chapitre", first: pick, next: pick, againLabel:"5 autres questions"});
+});
+
+/* page QCM */
+$("#qcmCh").innerHTML = [1,2,3,4,5].map(c => '<button class="btn light" data-qm="'+c+'">Ch. '+c+' · '+CHNAMES[c]+' ('+QUESTIONS.filter(q=>q.c===c).length+')</button>').join("");
+$$('[data-qm="all"]').forEach(b => b.textContent = "Toutes les questions (" + QUESTIONS.length + ")");
+function paintHist(){
+  const h = store.get("tpbs-hist", {});
+  const parts = [];
+  if (h.exam) parts.push("Dernier examen blanc : " + h.exam);
+  if (h.best) parts.push("Meilleur examen blanc : " + h.best + " / 20");
+  $("#qcmHist").textContent = parts.join(" · ");
+}
+paintHist();
+$$("[data-qm]").forEach(b => b.onclick = () => {
+  const m = b.dataset.qm;
+  let pool, n;
+  if (m === "exam"){ pool = QUESTIONS; n = 20; }
+  else if (m === "all"){ pool = QUESTIONS; n = QUESTIONS.length; }
+  else { pool = QUESTIONS.filter(q => q.c === +m); n = pool.length; }
+  const pick = () => shuffle(pool).slice(0, n);
+  Quiz($("#qcmBox"), pool, {chTag: true, first: pick, next: pick, title: m==="exam" ? "Examen blanc" : m==="all" ? "Toutes les questions" : "Chapitre "+m+" · "+CHNAMES[m],
+    onDone: (s, t) => { if (m === "exam"){ const h = store.get("tpbs-hist", {}); h.exam = s + " / " + t; h.best = Math.max(h.best || 0, s); store.set("tpbs-hist", h); paintHist(); } } });
+  $("#qcmBox").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* ---------------- flashcards ---------------- */
+const DECKS = {
+  num: NUMCARDS.map(c => ({f:c[0], b:c[1]})),
+  voc: GLOSSARY.map(g => ({f:g[0], b:g[1]}))
+};
+DECKS.all = DECKS.num.concat(DECKS.voc);
+let deckName = "all", queue = [], known = 0;
+function newDeck(){ queue = shuffle(DECKS[deckName]); known = 0; showCard(); }
+function showCard(){
+  const fc = $("#fc"); fc.classList.remove("flip");
+  if (!queue.length){
+    $("#fcF").textContent = "🎉 Paquet terminé !";
+    $("#fcB").innerHTML = "Clique « Je savais » pour recommencer le paquet.";
+    $("#fcCount").textContent = "0 carte restante";
+    $("#fcDone").textContent = known + " cartes sues.";
+    return;
+  }
+  setTimeout(() => { $("#fcF").textContent = queue[0].f; $("#fcB").innerHTML = queue[0].b; }, 150);
+  $("#fcCount").textContent = queue.length + " carte" + (queue.length>1?"s":"") + " restante" + (queue.length>1?"s":"");
+  $("#fcDone").textContent = known ? known + " carte" + (known>1?"s":"") + " sue" + (known>1?"s":"") + " dans cette session." : "";
+}
+$("#fc").onclick = () => $("#fc").classList.toggle("flip");
+$("#fcYes").onclick = () => { if (!queue.length) return newDeck(); queue.shift(); known++; showCard(); };
+$("#fcNo").onclick = () => { if (!queue.length) return newDeck(); const c = queue.shift(); queue.splice(Math.min(3, queue.length), 0, c); showCard(); };
+$$("#fcDeck button").forEach(b => b.onclick = () => { $$("#fcDeck button").forEach(x => x.classList.toggle("on", x===b)); deckName = b.dataset.d; newDeck(); });
+newDeck();
+
+/* ---------------- glossaire ---------------- */
+function paintGlossary(){
+  const s = norm($("#glSearch").value.trim());
+  const items = GLOSSARY.filter(g => !s || norm(g[0]+" "+g[1]).includes(s)).sort((a,b) => norm(a[0]).localeCompare(norm(b[0])));
+  let html = "", last = "";
+  items.forEach(g => {
+    const L = norm(g[0])[0].toUpperCase();
+    if (L !== last && !s){ html += '<div class="letter">'+L+'</div>'; last = L; }
+    html += '<div class="g"><b>'+g[0]+'</b><br>'+g[1]+'</div>';
+  });
+  $("#gl").innerHTML = html || "<p>Aucun mot trouvé. Essaie un autre terme.</p>";
+}
+$("#glSearch").addEventListener("input", paintGlossary); paintGlossary();
+
+paintProgress();
+route();
+})();
+
+</script>
+</body>
+</html>
