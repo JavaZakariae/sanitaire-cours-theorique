@@ -241,6 +241,44 @@ tr:last-child td{border-bottom:0}
 .numgrid .n{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
 .numgrid .n .big{font-size:1.5rem}
 .numgrid .n div:last-child{font-size:.88rem;color:var(--ink2);margin-top:4px}
+
+/* ---------- photos ---------- */
+.phs{margin:16px 0}
+.phs .pht{font-family:var(--head);font-weight:700;font-size:.95rem;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.phs .pht::before{content:"📷";font-size:1rem}
+.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ph{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 8px 10px;cursor:zoom-in;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
+.ph:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.ph .im{height:120px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:8px;overflow:hidden}
+.ph img{max-width:100%;max-height:120px;object-fit:contain;display:block}
+.ph .n{font-weight:700;font-size:.88rem;line-height:1.25;margin-top:6px}
+.ph .nl{font-size:.78rem;color:var(--muted);font-style:italic}
+.ph .d{font-size:.8rem;color:var(--ink2);line-height:1.35;margin-top:3px}
+.credit{font-size:.74rem;color:var(--muted);margin-top:6px}
+.lb{position:fixed;inset:0;background:rgba(20,24,33,.82);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.lb.on{display:flex}
+.lb .box2{background:#fff;border-radius:16px;max-width:560px;width:100%;padding:18px;text-align:center;position:relative}
+.lb img{max-width:100%;max-height:60vh;object-fit:contain}
+.lb .n{font-family:var(--head);font-weight:800;font-size:1.3rem;margin-top:8px}
+.lb .nl{color:var(--muted);font-style:italic}
+.lb .x{position:absolute;top:8px;right:10px;border:0;background:#eee;border-radius:50%;width:34px;height:34px;font-size:1.1rem}
+.lb .nav2{display:flex;justify-content:space-between;margin-top:10px}
+.appimg{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.appimg .ph{width:150px}
+.qimg{display:flex;justify-content:center;margin:0 0 14px}
+.qimg img{max-height:190px;max-width:100%;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px}
+.fc .front img{max-height:170px;max-width:90%;object-fit:contain}
+.gl .g{display:flex;gap:12px;align-items:flex-start}
+.gl .g img{width:64px;height:64px;object-fit:contain;flex:0 0 64px;background:#fff;border:1px solid var(--line);border-radius:8px;cursor:zoom-in}
+.gl .g .gt{flex:1}
+.fsteps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}
+@media (max-width:800px){.fsteps{grid-template-columns:repeat(2,1fr)}}
+.fsteps .fs{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+.fsteps .fs svg{width:100%;height:auto;display:block}
+.fsteps .fs b{display:block;font-family:var(--head);margin-top:4px}
+.fsteps .fs span{font-size:.85rem;color:var(--ink2)}
+.fsteps .fs i{font-style:normal;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:.75rem;font-weight:700;margin-right:4px}
+.phnote{font-size:.85rem;color:var(--ink2);background:var(--paper);border-radius:8px;padding:8px 10px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -272,7 +310,7 @@ tr:last-child td{border-bottom:0}
   <div class="hero">
     <div class="kicker" style="color:#7fd1c9">Préparation à l'examen</div>
     <h1>Le sanitaire, expliqué simplement</h1>
-    <p>Tout ton cours de « Travaux pratiques en base du sanitaire », réécrit pour un débutant : des explications claires, des schémas, des petits outils pour comprendre en manipulant, puis un résumé et plus de 80 questions QCM.</p>
+    <p>Tout ton cours de « Travaux pratiques en base du sanitaire », réécrit pour un débutant : des explications claires, des schémas, des petits outils pour comprendre en manipulant, de vraies photos de pièces (catalogue Facq), puis un résumé et plus de 80 questions QCM.</p>
     <svg viewBox="0 0 260 200" aria-hidden="true"><path d="M20 40 H120 V150 H230" fill="none" stroke="#3b82d6" stroke-width="14" stroke-linecap="round"/><path d="M40 20 H140 V130 H230" fill="none" stroke="#e0574b" stroke-width="14" stroke-linecap="round"/><path d="M20 40 H120 V150 H230" fill="none" stroke="#9cc4f2" stroke-width="3" class="flow"/><path d="M40 20 H140 V130 H230" fill="none" stroke="#f7b0a8" stroke-width="3" class="flow"/></svg>
   </div>
 
@@ -428,6 +466,7 @@ tr:last-child td{border-bottom:0}
     <li><b>Distribution intérieure :</b> elle monte par les <b>colonnes montantes</b> et circule dans les conduites secondaires. Une partie passe par le chauffe-eau pour devenir de l'eau chaude sanitaire (ECS).</li>
     <li><b>Points d'utilisation :</b> robinets de cuisine, douches, baignoires, lave-mains, chasses de WC, lave-linge.</li>
   </ol>
+  <div class="phs" data-ids="compteur,arret_ea,clapet,reducteur,manometre,collecteur,chauffeeau,groupesecu" data-title="En vrai : les pièces que l'eau traverse, dans l'ordre"></div>
 
   <h2>1.5 Les appareils sanitaires</h2>
   <p>Pour chaque appareil, il faut savoir s'il reçoit <span class="pill ef">EF</span> eau froide seule ou <span class="pill ef">EF</span> + <span class="pill ec">EC</span> eau froide et chaude. <b>Tous</b> les appareils ont une évacuation. Clique sur un appareil :</p>
@@ -468,6 +507,7 @@ tr:last-child td{border-bottom:0}
       <li><b>Pourquoi c'est si important ?</b> Un mitigeur thermostatique <b>ne fonctionne pas</b> si on inverse chaude et froide, et l'usager risque de se brûler.</li>
     </ul>
   </div>
+  <div class="phs" data-ids="mitigeur_thermo,equerre,flexible" data-title="En vrai : le mitigeur et son raccordement"></div>
 
   <h2>1.6 Comment l'eau est évacuée</h2>
   <p>Après le lavabo, la douche, l'évier ou le WC, l'eau devient une <b>eau usée</b>. Elle doit quitter la maison rapidement. On distingue :</p>
@@ -528,12 +568,57 @@ tr:last-child td{border-bottom:0}
     <p><b>Calcul :</b> dénivelé = longueur × pente. Ex. 4 m à 2 cm/m → 4 × 2 = 8 cm plus bas au bout.</p>
   </div>
 
+  <div class="phs" data-ids="siphon_lav,siphon_douche,pvc_culotte" data-title="En vrai : siphons et raccordement à la colonne"></div>
   <h3>La ventilation, expliquée</h3>
   <p>Quand une grande quantité d'eau descend dans la colonne (une chasse de WC par exemple), elle agit comme un <b>piston</b> : elle pousse l'air devant elle et <b>aspire</b> l'air derrière elle. S'il n'y a pas d'air, c'est l'eau des siphons qui est aspirée (on dit que les siphons sont <b>désiphonnés</b>) : on entend des « glouglous » et les odeurs entrent.</p>
   <div class="grid2">
     <div class="mini"><h4>Ventilation primaire</h4>On <b>prolonge la colonne de chute jusqu'au toit</b>, ouverte à l'air libre. L'air entre par là et l'eau s'écoule sans vider les siphons.</div>
     <div class="mini"><h4>Ventilation secondaire</h4>Un <b>deuxième tuyau d'air, en parallèle</b>, pour les longues canalisations ou les grands bâtiments. Évite les glouglous quand plusieurs appareils se vident en même temps.</div>
   </div>
+<div class="figure">
+    <svg viewBox="0 0 640 330" role="img" aria-label="Colonne de chute avec ventilation primaire au toit et ventilation secondaire en parallèle">
+      <path d="M40 92 L320 22 L600 92" fill="#f3efe6" stroke="#4a4f5c" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="40" y="92" width="560" height="208" fill="#fbfaf6" stroke="#4a4f5c" stroke-width="3"/>
+      <line x1="40" y1="190" x2="600" y2="190" stroke="#4a4f5c" stroke-width="2"/>
+      <rect x="0" y="300" width="640" height="30" fill="#e8e1d2"/>
+      <!-- colonne -->
+      <line x1="430" y1="34" x2="430" y2="306" stroke="#6d6a63" stroke-width="12"/>
+      <rect x="416" y="24" width="28" height="9" rx="3" fill="#6d6a63"/>
+      <line x1="430" y1="306" x2="640" y2="314" stroke="#6d6a63" stroke-width="12"/>
+      <!-- ventilation secondaire -->
+      <path d="M430 122 H505 V284 H430" fill="none" stroke="#0e6f73" stroke-width="6" stroke-dasharray="9 6"/>
+      <path d="M430 222 H505" fill="none" stroke="#0e6f73" stroke-width="4" stroke-dasharray="6 5"/>
+      <!-- appareils -->
+      <rect x="120" y="130" width="70" height="14" rx="6" fill="#cfd6df"/><text x="155" y="124" text-anchor="middle" font-size="11" font-weight="700">lavabo</text>
+      <path d="M150 144 v8 q0 10 9 10 q9 0 9 -10 v-8" fill="none" stroke="#6d6a63" stroke-width="3"/>
+      <path d="M168 150 L430 160" stroke="#6d6a63" stroke-width="5"/>
+      <rect x="260" y="140" width="34" height="22" rx="4" fill="#cfd6df"/><text x="277" y="134" text-anchor="middle" font-size="11" font-weight="700">WC</text>
+      <path d="M277 162 v-0" stroke="#6d6a63"/>
+      <rect x="120" y="232" width="70" height="14" rx="3" fill="#cfd6df"/><text x="155" y="226" text-anchor="middle" font-size="11" font-weight="700">évier</text>
+      <path d="M150 246 v8 q0 10 9 10 q9 0 9 -10 v-8" fill="none" stroke="#6d6a63" stroke-width="3"/>
+      <path d="M168 252 L430 262" stroke="#6d6a63" stroke-width="5"/>
+      <!-- eau qui descend -->
+      <rect x="424" y="196" width="12" height="30" fill="#2563b8"/>
+      <path d="M450 200 v22 m-5 -6 l5 6 l5 -6" stroke="#2563b8" stroke-width="2.5" fill="none"/>
+      <!-- air -->
+      <path d="M402 4 q8 10 0 20 M458 4 q-8 10 0 20" stroke="#0e6f73" stroke-width="2.5" fill="none"/>
+      <path d="M418 70 v28 m-5 -7 l5 7 l5 -7" stroke="#0e6f73" stroke-width="2.5" fill="none"/>
+      <g font-size="11" font-weight="700">
+        <text x="470" y="22" fill="#0e6f73">ventilation PRIMAIRE :</text>
+        <text x="470" y="36" fill="#0e6f73">la colonne sort sur le toit</text>
+        <text x="514" y="160" fill="#0e6f73">ventilation</text>
+        <text x="514" y="174" fill="#0e6f73">SECONDAIRE</text>
+        <text x="514" y="188" fill="#0e6f73" font-weight="400">tuyau d'air en</text>
+        <text x="514" y="202" fill="#0e6f73" font-weight="400">parallèle</text>
+        <text x="405" y="203" fill="#2563b8" text-anchor="end">l'eau qui descend</text>
+        <text x="405" y="216" fill="#2563b8" text-anchor="end" font-weight="400">pousse l'air et l'aspire derrière elle</text>
+        <text x="418" y="290" fill="#6d6a63" text-anchor="end">colonne de chute</text>
+        <text x="560" y="326" fill="#6d6a63">vers l'égout</text>
+      </g>
+    </svg>
+    <div class="cap">L'air entre par le toit (primaire) et circule dans le tuyau parallèle (secondaire) : l'eau qui descend n'aspire plus l'eau des siphons.</div>
+  </div>
+  <div class="phs" data-ids="chapeau_vent,aerateur" data-title="En vrai : la sortie de ventilation et l'aérateur"></div>
   <div class="tbl"><table>
     <tr><th>Élément</th><th>Rôle simple</th><th>Si c'est mal fait…</th></tr>
     <tr><td>Siphon</td><td>Garder une réserve d'eau qui bloque les odeurs</td><td>Odeurs d'égout dans la pièce</td></tr>
@@ -583,6 +668,7 @@ tr:last-child td{border-bottom:0}
   <h2>2.2 Les parties d'une notice</h2>
   <p>Exemple réel du cours : un bâti-support Geberit pour WC suspendu. Clique sur chaque partie :</p>
   <div id="noticeParts"></div>
+  <div class="phs" data-ids="bati,wcsusp" data-title="Le produit de l'exemple, en vrai"></div>
 
   <h2>2.3 Les dimensions et les unités</h2>
   <div class="box retenir"><span class="tag">À retenir</span><p>Sur les plans et notices : les <b>longueurs</b> et les <b>diamètres</b> sont en <b>millimètres (mm)</b>. Les <b>filetages</b> (et les tuyaux en acier) sont en <b>pouces (")</b>. 1 pouce = 25,4 mm.</p></div>
@@ -625,6 +711,7 @@ tr:last-child td{border-bottom:0}
     <li><b>Raccordement &amp; contrôle :</b> brancher l'eau sans pincer les joints, puis faire le <b>test d'étanchéité sous pression avant de fermer les cloisons</b>.</li>
   </ol>
 
+  <div class="phs" data-ids="niveau,pompeepreuve" data-title="Les outils du contrôle : de niveau, puis étanche"></div>
   <h2>2.6 Vocabulaire du chapitre</h2>
   <div class="grid2">
     <div class="mini"><h4>Vue éclatée</h4>Dessin de l'appareil démonté, chaque pièce séparée, dans l'ordre de montage.</div>
@@ -713,6 +800,7 @@ tr:last-child td{border-bottom:0}
     <tr><td>Trop forte</td><td>&gt; 4 à 4,5 bars</td><td>Coups de bélier, fuites aux raccords, groupe de sécurité du chauffe-eau abîmé</td></tr>
   </table></div>
   <div class="box ok"><span class="tag">La solution</span><p>Pression trop forte → on installe un <b>réducteur de pression juste après le compteur</b>, réglé à environ <b>3 bars</b>. Le cours le présente comme obligatoire dès que la pression de la rue dépasse <b>4 bars</b>.</p></div>
+  <div class="phs" data-ids="manometre,reducteur,groupesecu,compteur" data-title="En vrai : les appareils de la pression"></div>
 
   <h2>3.3 La vitesse (v) : « à quelle allure l'eau avance-t-elle ? »</h2>
   <p>La vitesse, c'est la distance que l'eau parcourt <b>en une seconde</b>, en <b>mètres par seconde (m/s)</b>.</p>
@@ -829,6 +917,55 @@ tr:last-child td{border-bottom:0}
   <div class="tabs" id="matTabs"></div>
   <div id="mats"></div>
 
+  <h2>La règle de l'aval, en image</h2>
+  <div class="figure"><svg viewBox="0 0 640 200" role="img" aria-label="Règle de l'aval : jamais d'acier galvanisé après du cuivre">
+<g font-size="12" font-weight="700">
+<text x="40" y="22" fill="#2563b8">sens de l'eau →</text>
+<line x1="40" y1="55" x2="300" y2="55" stroke="#c46a3a" stroke-width="20"/><line x1="300" y1="55" x2="560" y2="55" stroke="#9aa3ad" stroke-width="20"/>
+<line x1="40" y1="55" x2="560" y2="55" stroke="#bcd6f5" stroke-width="3" class="flow"/>
+<text x="170" y="90" text-anchor="middle" fill="#c46a3a">cuivre</text><text x="430" y="90" text-anchor="middle" fill="#5f666e">acier galvanisé</text>
+<circle cx="590" cy="55" r="18" fill="#fde8e8" stroke="#c53030" stroke-width="2"/><path d="M582 47 l16 16 M598 47 l-16 16" stroke="#c53030" stroke-width="3.5"/>
+<text x="300" y="108" text-anchor="middle" fill="#c53030">INTERDIT : le zinc est rongé (pile galvanique) → rouille, fuites</text>
+<line x1="40" y1="148" x2="300" y2="148" stroke="#9aa3ad" stroke-width="20"/><line x1="300" y1="148" x2="560" y2="148" stroke="#c46a3a" stroke-width="20"/>
+<line x1="40" y1="148" x2="560" y2="148" stroke="#bcd6f5" stroke-width="3" class="flow"/>
+<text x="170" y="183" text-anchor="middle" fill="#5f666e">acier galvanisé</text><text x="430" y="183" text-anchor="middle" fill="#c46a3a">cuivre</text>
+<circle cx="590" cy="148" r="18" fill="#e4f4ea" stroke="#1f8a4c" stroke-width="2"/><path d="M581 148 l6 7 l12 -14" stroke="#1f8a4c" stroke-width="3.5" fill="none"/>
+<text x="300" y="198" text-anchor="middle" fill="#1f8a4c">Permis : le galvanisé AVANT le cuivre</text>
+</g></svg><div class="cap">On peut passer du galvanisé au cuivre, jamais du cuivre au galvanisé (dans le sens où l'eau coule).</div></div>
+  <h2>Les façons d'assembler, en un coup d'œil</h2>
+  <div class="figure"><svg viewBox="0 0 640 360" role="img" aria-label="Les huit façons d'assembler les tubes"><g transform="translate(0,0)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<rect x="18" y="44" width="72" height="32" rx="4" fill="#c46a3a"/><rect x="62" y="49" width="82" height="22" fill="#e3a07a" stroke="#c46a3a"/>
+<rect x="86" y="44" width="6" height="32" fill="#c9ccd1"/><circle cx="89" cy="40" r="4" fill="#c9ccd1"/>
+<path d="M89 30 q-9 -12 0 -24 q9 12 0 24z" fill="#f59e0b"/><path d="M89 28 q-4 -7 0 -14 q4 7 0 14z" fill="#fde68a"/></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Brasage</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">cuivre</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">tendre &lt;450 °C · fort &gt;450 °C</text></g><g transform="translate(160,0)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<rect x="10" y="50" width="70" height="20" fill="#f4f4f2" stroke="#9aa3ad"/>
+<rect x="44" y="45" width="90" height="30" rx="5" fill="#b7bec7"/><rect x="58" y="40" width="16" height="40" rx="4" fill="#8f979f"/><rect x="104" y="40" width="16" height="40" rx="4" fill="#8f979f"/>
+<circle cx="66" cy="47" r="2.5" fill="#1c2230"/><circle cx="66" cy="73" r="2.5" fill="#1c2230"/>
+<path d="M66 12 v20 m-6 -7 l6 7 l6 -7 M66 108 v-20 m-6 7 l6 -7 l6 7" stroke="#c8372d" stroke-width="3" fill="none"/></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Sertissage</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">cuivre, multicouche, PER</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">indémontable</text></g><g transform="translate(320,0)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<rect x="8" y="52" width="80" height="16" fill="#e3a07a" stroke="#c46a3a"/>
+<rect x="78" y="46" width="62" height="28" rx="3" fill="#c9a23a"/>
+<rect x="42" y="38" width="38" height="44" rx="3" fill="#e6c86e" stroke="#c9a23a" stroke-width="2"/>
+<ellipse cx="82" cy="60" rx="5" ry="12" fill="#e9e1c8" stroke="#c9a23a" stroke-width="2"/>
+<path d="M50 30 a20 20 0 0 1 24 0" fill="none" stroke="#c8372d" stroke-width="2.5"/><path d="M74 30 l-6 -3 m6 3 l-3 6" stroke="#c8372d" stroke-width="2.5"/></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Compression (bicône)</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">laiton</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">démontable, reste accessible</text></g><g transform="translate(480,0)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<rect x="8" y="50" width="86" height="20" fill="#9aa3ad"/>
+<g stroke="#5f666e" stroke-width="2"><line x1="62" y1="50" x2="67" y2="70"/><line x1="67" y1="50" x2="72" y2="70"/><line x1="72" y1="50" x2="77" y2="70"/><line x1="77" y1="50" x2="82" y2="70"/><line x1="82" y1="50" x2="87" y2="70"/><line x1="87" y1="50" x2="92" y2="70"/><line x1="92" y1="50" x2="97" y2="70"/></g>
+<path d="M60 48 q4 6 8 0 q4 6 8 0 q4 6 8 0 q4 6 8 0" stroke="#a07a3c" stroke-width="2.5" fill="none"/>
+<rect x="92" y="42" width="54" height="36" rx="4" fill="#c4cad1" stroke="#9aa3ad" stroke-width="2"/></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Filetage</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">acier galva / noir</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">chanvre + pâte, ou PTFE</text></g><g transform="translate(0,180)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<path d="M64 38 h80 v44 h-80 z" fill="#a9adb3"/><rect x="72" y="44" width="72" height="32" fill="#e7e9ec"/>
+<polygon points="8,48 100,48 108,53 108,67 100,72 8,72" fill="#c9ccd1" stroke="#a9adb3"/>
+<rect x="72" y="44" width="36" height="4" fill="#f59e0b"/><rect x="72" y="72" width="36" height="4" fill="#f59e0b"/>
+<text x="112" y="36" font-size="10" fill="#b45309" font-weight="700">colle</text></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Collage à froid</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">PVC</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">décapant + colle, sans tourner</text></g><g transform="translate(160,180)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<rect x="6" y="48" width="58" height="24" fill="#2b2d31"/><rect x="96" y="48" width="58" height="24" fill="#2b2d31"/>
+<rect x="72" y="32" width="16" height="56" rx="3" fill="#e05a4f"/>
+<path d="M68 26 q-4 -6 0 -12 M80 26 q-4 -6 0 -12 M92 26 q-4 -6 0 -12" stroke="#e05a4f" stroke-width="2" fill="none"/>
+<path d="M58 98 h-20 m6 -5 l-6 5 l6 5 M102 98 h20 m-6 -5 l6 5 l-6 5" stroke="#1c2230" stroke-width="2" fill="none"/></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Soudure</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">PEHD</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">miroir ou électrosoudage</text></g><g transform="translate(320,180)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<path d="M64 38 h80 v44 h-80 z" fill="#55585e"/><rect x="72" y="44" width="72" height="32" fill="#e7e9ec"/>
+<ellipse cx="80" cy="45" rx="4" ry="3" fill="#2b2d31"/><ellipse cx="80" cy="75" rx="4" ry="3" fill="#2b2d31"/>
+<polygon points="8,48 112,48 120,53 120,67 112,72 8,72" fill="#7d8a98" stroke="#55585e"/>
+<text x="84" y="98" font-size="10" fill="#1c2230" font-weight="700">joint EPDM</text></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Emboîtement à joint</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">PP Silent, PVC à joint</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">lubrifiant, sans colle</text></g><g transform="translate(480,180)"><rect x="3" y="3" width="154" height="174" rx="10" fill="#fff" stroke="#e3ddd0"/><g transform="translate(0,6)">
+<path d="M8 52 h62 l10 -5 h22 v26 h-22 l-10 -5 h-62 z" fill="#c8372d"/>
+<rect x="96" y="54" width="52" height="12" fill="#c9a23a"/><rect x="104" y="51" width="4" height="18" fill="#c9a23a"/><rect x="114" y="51" width="4" height="18" fill="#c9a23a"/><rect x="124" y="51" width="4" height="18" fill="#c9a23a"/>
+<rect x="56" y="42" width="14" height="36" rx="3" fill="#e6c86e" stroke="#c9a23a" stroke-width="2"/>
+<path d="M50 96 h34 m-6 -5 l6 5 l-6 5" stroke="#1c2230" stroke-width="2" fill="none"/><text x="20" y="100" font-size="10">bague</text></g><text x="80" y="140" text-anchor="middle" font-size="13" font-weight="800" fill="#1c2230">Glissement / Q&amp;E</text><text x="80" y="156" text-anchor="middle" font-size="10.5" fill="#4a5263" font-weight="700">PER</text><text x="80" y="170" text-anchor="middle" font-size="10.5" fill="#4a5263">tube évasé sur la tétine</text></g></svg><div class="cap">Chaque matériau a ses assemblages. Démontable = compression, filetage (avec raccord union), certains raccords instantanés. Tout le reste est indémontable.</div></div>
   <h2>Comparer les 5 matériaux</h2>
   <div class="tbl"><table>
     <tr><th>Matériau</th><th>Souple ?</th><th>Corrosion</th><th>Calcaire</th><th>Dilatation</th><th>Coût</th></tr>
@@ -860,6 +997,16 @@ tr:last-child td{border-bottom:0}
     <div class="mini"><h4>Le bon collier</h4><ul style="padding-left:1.1em;margin:.2em 0"><li><b>Colliers métalliques lourds</b> pour l'acier.</li><li><b>Colliers isophoniques</b> (garniture caoutchouc EPDM) : moins de bruit et de vibrations.</li><li><b>Colliers clipsables</b> pour le PER et le multicouche.</li></ul></div>
     <div class="mini"><h4>Points fixes et points glissants</h4>Un tuyau s'allonge quand il chauffe (<b>dilatation</b>). On alterne des colliers qui <b>bloquent</b> (points fixes) et des colliers qui <b>guident librement</b> (points glissants). Sinon le tuyau force, claque ou se déforme.</div>
   </div>
+  <div class="figure"><svg viewBox="0 0 640 190" role="img" aria-label="Points fixes et points glissants sur un tuyau">
+<rect x="0" y="0" width="640" height="20" fill="#d8d1c2"/><text x="10" y="14" font-size="11" fill="#6b5a30">plafond</text>
+<line x1="40" y1="89" x2="600" y2="89" stroke="#c8372d" stroke-width="14" stroke-linecap="round"/>
+<g><line x1="130" y1="22" x2="130" y2="74" stroke="#6b7383" stroke-width="3"/><rect x="116" y="74" width="28" height="30" rx="8" fill="none" stroke="#1c2230" stroke-width="3"/><path d="M106 122 h48 m-42 -5 l-6 5 l6 5 m36 -10 l6 5 l-6 5" stroke="#0e6f73" stroke-width="2" fill="none"/></g><g><line x1="225" y1="22" x2="225" y2="74" stroke="#6b7383" stroke-width="3"/><rect x="211" y="74" width="28" height="30" rx="8" fill="none" stroke="#1c2230" stroke-width="3"/><path d="M201 122 h48 m-42 -5 l-6 5 l6 5 m36 -10 l6 5 l-6 5" stroke="#0e6f73" stroke-width="2" fill="none"/></g><g><line x1="415" y1="22" x2="415" y2="74" stroke="#6b7383" stroke-width="3"/><rect x="401" y="74" width="28" height="30" rx="8" fill="none" stroke="#1c2230" stroke-width="3"/><path d="M391 122 h48 m-42 -5 l-6 5 l6 5 m36 -10 l6 5 l-6 5" stroke="#0e6f73" stroke-width="2" fill="none"/></g><g><line x1="510" y1="22" x2="510" y2="74" stroke="#6b7383" stroke-width="3"/><rect x="496" y="74" width="28" height="30" rx="8" fill="none" stroke="#1c2230" stroke-width="3"/><path d="M486 122 h48 m-42 -5 l-6 5 l6 5 m36 -10 l6 5 l-6 5" stroke="#0e6f73" stroke-width="2" fill="none"/></g>
+<line x1="320" y1="22" x2="320" y2="74" stroke="#1c2230" stroke-width="5"/><rect x="304" y="72" width="32" height="34" rx="6" fill="#1c2230"/><text x="320" y="94" text-anchor="middle" font-size="12" fill="#fff" font-weight="800">FIXE</text>
+<path d="M300 150 h-240 m8 -6 l-8 6 l8 6 M340 150 h240 m-8 -6 l8 6 l-8 6" stroke="#c8372d" stroke-width="2.5" fill="none"/>
+<g font-size="12" font-weight="700"><text x="180" y="170" text-anchor="middle" fill="#c8372d">le tube s'allonge en chauffant…</text><text x="460" y="170" text-anchor="middle" fill="#c8372d">…des deux côtés du point fixe</text>
+<text x="130" y="140" text-anchor="middle" fill="#0e6f73" font-size="11">glissant</text><text x="225" y="140" text-anchor="middle" fill="#0e6f73" font-size="11">glissant</text><text x="415" y="140" text-anchor="middle" fill="#0e6f73" font-size="11">glissant</text><text x="510" y="140" text-anchor="middle" fill="#0e6f73" font-size="11">glissant</text></g>
+</svg></div>
+  <div class="phs" data-ids="rail,tige,collier_iso,collier_epdm,collier_clic,bande_perf" data-title="En vrai : le matériel de fixation"></div>
   <div class="box retenir"><span class="tag">À retenir — l'essentiel du chapitre 4</span>
     <ul>
       <li>Tout en <b>mm</b>, sauf l'<b>acier en pouces</b>.</li>
@@ -911,13 +1058,8 @@ tr:last-child td{border-bottom:0}
   </div>
 
   <h2>Les 5 étapes du façonnage (valables pour tous les tuyaux)</h2>
-  <ol class="steps">
-    <li><b>Mesurer et tracer</b> avec précision, en tenant compte de la place prise par les raccords.</li>
-    <li><b>Couper droit</b>, perpendiculairement à l'axe (coupe-tube à molette, ou scie + boîte à onglets).</li>
-    <li><b>Ébavurer</b> l'intérieur et l'extérieur pour enlever les bavures et les copeaux.</li>
-    <li><b>Chanfreiner</b> (tube plastique) ou <b>calibrer</b> (tube multicouche) pour ne pas déchirer les joints.</li>
-    <li><b>Cintrer</b> en respectant le rayon de courbure, sans écraser ni pincer le tube (ressort, pince ou cintreuse).</li>
-  </ol>
+<div class="fsteps"><div class="fs"><svg viewBox="0 0 120 90"><rect x="10" y="34" width="100" height="16" fill="#9aa3ad"/><rect x="10" y="58" width="100" height="12" fill="#fde68a" stroke="#b7791f"/><line x1="14" y1="58" x2="14" y2="64" stroke="#7a5a10"/><line x1="20" y1="58" x2="20" y2="68" stroke="#7a5a10"/><line x1="26" y1="58" x2="26" y2="64" stroke="#7a5a10"/><line x1="32" y1="58" x2="32" y2="64" stroke="#7a5a10"/><line x1="38" y1="58" x2="38" y2="64" stroke="#7a5a10"/><line x1="44" y1="58" x2="44" y2="64" stroke="#7a5a10"/><line x1="50" y1="58" x2="50" y2="64" stroke="#7a5a10"/><line x1="56" y1="58" x2="56" y2="64" stroke="#7a5a10"/><line x1="62" y1="58" x2="62" y2="64" stroke="#7a5a10"/><line x1="68" y1="58" x2="68" y2="64" stroke="#7a5a10"/><line x1="74" y1="58" x2="74" y2="64" stroke="#7a5a10"/><line x1="80" y1="58" x2="80" y2="68" stroke="#7a5a10"/><line x1="86" y1="58" x2="86" y2="64" stroke="#7a5a10"/><line x1="92" y1="58" x2="92" y2="64" stroke="#7a5a10"/><line x1="98" y1="58" x2="98" y2="64" stroke="#7a5a10"/><line x1="104" y1="58" x2="104" y2="64" stroke="#7a5a10"/><line x1="82" y1="26" x2="82" y2="56" stroke="#c8372d" stroke-width="3"/></svg><b><i>1</i>Mesurer et tracer</b><span>en comptant la place des raccords</span></div><div class="fs"><svg viewBox="0 0 120 90"><rect x="10" y="38" width="100" height="16" fill="#9aa3ad"/><line x1="70" y1="22" x2="70" y2="70" stroke="#c8372d" stroke-width="2" stroke-dasharray="4 3"/><circle cx="70" cy="30" r="8" fill="#e1e4e8" stroke="#4a5263" stroke-width="2"/><text x="76" y="84" font-size="10" fill="#c8372d">90°</text></svg><b><i>2</i>Couper droit</b><span>coupe-tube, ou scie + boîte à onglets</span></div><div class="fs"><svg viewBox="0 0 120 90"><rect x="10" y="38" width="66" height="16" fill="#9aa3ad"/><path d="M76 38 l4 3 l-4 3 l4 3 l-4 3 l4 3" stroke="#4a5263" fill="none"/><polygon points="84,46 112,32 112,60" fill="#c8372d"/><text x="40" y="76" font-size="10" fill="#4a5263">bavures ✗</text></svg><b><i>3</i>Ébavurer</b><span>intérieur et extérieur</span></div><div class="fs"><svg viewBox="0 0 120 90"><polygon points="10,36 92,36 104,44 104,48 92,56 10,56" fill="#9aa3ad"/><path d="M92 30 l14 8" stroke="#c8372d" stroke-width="2"/><text x="74" y="76" font-size="10" fill="#c8372d">15 à 30°</text></svg><b><i>4</i>Chanfreiner / calibrer</b><span>plastique : biseau · multicouche : calibre</span></div><div class="fs"><svg viewBox="0 0 120 90"><path d="M10 64 H52 Q86 64 86 30 V10" fill="none" stroke="#9aa3ad" stroke-width="14"/><path d="M14 64 l4 -6 l4 12 l4 -12 l4 12 l4 -12 l4 12 l4 -12 l4 12 l4 -6" fill="none" stroke="#1c2230" stroke-width="1.3"/></svg><b><i>5</i>Cintrer</b><span>ressort ou cintreuse, sans écraser</span></div></div>
+  <div class="phs" data-ids="coupetube,coupe_pvc,ebavureur,calibreur,cintreuse" data-title="En vrai : les outils de ces 5 étapes"></div>
   <h3>Les règles de fixation au mur et au plafond</h3>
   <ul>
     <li>Le bon collier : métallique lourd pour l'acier, <b>isophonique</b> (EPDM) contre le bruit, clipsable pour PER et multicouche.</li>
@@ -970,6 +1112,8 @@ tr:last-child td{border-bottom:0}
     <div class="n"><div class="big">5 à 8 × Ø</div><div>rayon de courbure minimal du PER</div></div>
   </div>
 
+  <h2>Reconnaître les tubes en un coup d'œil</h2>
+  <div class="phs" data-ids="cu_tube,ga_tube,noir_courbe,mc_barre,mc_gaine_r,pvc_tube,pehd_tube,pp_tube"></div>
   <h2>Les règles absolues</h2>
   <div class="grid2">
     <div class="mini"><h4>Raccordement</h4>Face à l'appareil : <span class="ec">chaude à GAUCHE</span>, <span class="ef">froide à DROITE</span>. Superposés : chaude en HAUT, froide en BAS.</div>
@@ -1032,7 +1176,7 @@ tr:last-child td{border-bottom:0}
   <div class="kicker">Révision</div>
   <h1>Flashcards</h1>
   <p class="lead">Lis le mot, essaie de donner la définition dans ta tête, puis retourne la carte. Les cartes « À revoir » reviennent plus tard dans le paquet.</p>
-  <div class="row"><div class="seg" id="fcDeck"><button data-d="all" class="on">Tout</button><button data-d="num">Chiffres clés</button><button data-d="voc">Vocabulaire</button></div><span class="spacer"></span><span id="fcCount" style="font-weight:700"></span></div>
+  <div class="row"><div class="seg" id="fcDeck"><button data-d="all" class="on">Tout</button><button data-d="num">Chiffres clés</button><button data-d="voc">Vocabulaire</button><button data-d="pho">📷 Photos</button></div><span class="spacer"></span><span id="fcCount" style="font-weight:700"></span></div>
   <div class="fc-wrap"><div class="fc" id="fc"><div class="face front"><div class="t" id="fcF"></div><div class="hint">clique pour retourner</div></div><div class="face back"><div id="fcB"></div><div class="hint">clique pour revenir</div></div></div></div>
   <div class="row" style="justify-content:center"><button class="btn light" id="fcNo">↺ À revoir</button><button class="btn acc" id="fcYes">✓ Je savais</button></div>
   <p class="hist" style="text-align:center" id="fcDone"></p>
@@ -1066,6 +1210,7 @@ tr:last-child td{border-bottom:0}
 
 </div></main>
 </div>
+<div class="lb" id="lb"><div class="box2"><button class="x" id="lbX" aria-label="Fermer">✕</button><img id="lbImg" alt=""><div class="n" id="lbN"></div><div class="nl" id="lbNl"></div><p id="lbD" style="margin:.4em 0 0"></p><div class="credit" id="lbC"></div><div class="nav2"><button class="btn light" id="lbP">◀</button><button class="btn light" id="lbNx">▶</button></div></div></div>
 <script>
 /* ====== Données du cours (tirées du syllabus TPBS CT 26-27, E. Pesce) ====== */
 
@@ -1459,6 +1604,135 @@ const QUESTIONS = [
 {c:5,q:"Pourquoi ne faut-il pas trop serrer les colliers intermédiaires d'une évacuation PVC ?",o:["Le tube doit pouvoir glisser librement (dilatation)","Pour faire moins de bruit","Pour garder la pente nulle","Pour économiser des vis"],e:"Le tube doit être guidé, pas bloqué, pour se dilater sans forcer."}
 ];
 
+/* ====== Vraies photos (catalogue Facq « Le Petit Livre Vert » 2025-2026, page indiquée) ======
+   id: [nom FR, nom NL, petite explication, page du catalogue] */
+const PHOTOS = {
+ /* alimentation & sécurité */
+ compteur:["Compteur d'eau","Watermeter","Mesure l'eau consommée, en m³. C'est le point d'entrée de l'eau dans le bâtiment.",525],
+ arret_ea:["Robinet d'arrêt avec clapet EA","Stopkraan met EA-beveiliging","Vanne d'arrêt et clapet anti-retour réunis, placés juste après le compteur.",527],
+ clapet:["Clapet anti-retour","Terugslagklep","Laisse passer l'eau dans un seul sens : elle ne peut pas repartir vers le réseau public.",528],
+ reducteur:["Réducteur de pression","Drukverminderaar","Ramène une pression trop forte à environ 3 bars. Se place juste après le compteur.",456],
+ manometre:["Manomètre 0-10 bar","Manometer","Affiche la pression en bars. 1 graduation = 1 bar = 10 m de colonne d'eau.",458],
+ groupesecu:["Groupe de sécurité (7 bar)","Veiligheidsgroep","Protège le chauffe-eau : il s'ouvre à 7 bars. S'il goutte sans arrêt, la pression du réseau est trop forte.",454],
+ chauffeeau:["Chauffe-eau électrique","Elektrische boiler","Produit l'eau chaude sanitaire (ECS). Ici un petit modèle sous évier.",437],
+ collecteur:["Collecteur (nourrice)","Verdeler","Un départ par appareil, chacun avec sa vanne : on peut couper un seul appareil.",567],
+ pompeepreuve:["Pompe d'épreuve","Testpomp","Met l'installation sous pression pour le test d'étanchéité, avant de fermer les murs.",841],
+ equerre:["Robinet d'arrêt d'équerre","Hoekstopkraan","Sous le lavabo ou le WC : coupe l'eau d'un seul appareil pour le dépannage.",501],
+ flexible:["Flexible inox","Flexibele slang in inox","Tuyau souple tressé qui relie le robinet à l'arrivée d'eau du mur.",529],
+ rob_machine:["Robinet pour machine à laver","Kraan voor wasmachine","Robinet dédié, avec clapet anti-retour, pour le lave-linge (3/4\").",415],
+ rob_antigel:["Robinet extérieur antigel","Vorstvrije gevelkraan","Il se vidange à chaque fermeture : l'eau ne reste pas dans le mur et ne gèle pas.",519],
+ /* appareils */
+ lavabo:["Lavabo","Wastafel","Avec trop-plein (le petit trou qui évite le débordement). Alimentation EF + EC.",71],
+ lavemains:["Lave-mains","Handwasbakje","Format compact pour les WC. Souvent en eau froide seule.",80],
+ wcsusp:["WC suspendu","Hangend toilet","Fixé sur un bâti-support caché dans le mur. Eau froide seule, évacuation Ø 90 à 110.",114],
+ bati:["Bâti-support de WC","WC-element","Le cadre métallique dans le mur qui porte le WC suspendu et cache le réservoir.",125],
+ bidet:["Bidet suspendu","Bidet","Alimentation EF + EC, évacuation basse avec siphon.",173],
+ receveur:["Receveur de douche","Douchebak","Le « tub » de la douche, avec sa bonde d'évacuation.",23],
+ mitigeur_thermo:["Mitigeur thermostatique","Thermostatische mengkraan","Garde la température choisie. Il ne marche pas si chaude et froide sont inversées !",268],
+ evier:["Évier inox","Spoeltafel in inox","Pour la cuisine : EF + EC, évacuation Ø 40 à 50.",389],
+ /* évacuation */
+ siphon_lav:["Siphon bouteille","Bekersifon","Sous le lavabo : il garde la garde d'eau qui bloque les odeurs.",85],
+ siphon_douche:["Siphon de douche","Douchesifon","Siphon extra-plat sous le receveur, sortie Ø 50.",51],
+ chapeau_vent:["Chapeau de ventilation","Verluchtingskap","Au sommet de la colonne de chute, sur le toit : c'est la sortie de la ventilation primaire.",657],
+ aerateur:["Aérateur à membrane","Beluchter","Laisse entrer l'air dans la conduite sans laisser sortir les odeurs (évite le désiphonnage).",657],
+ /* cuivre */
+ cu_tube:["Tube cuivre en barre (5 m)","Koperbuis (5 m)","Cuivre « écroui » (dur) : à recuire avant de le cintrer.",616],
+ cu_couronne:["Cuivre gainé en rouleau","Koperbuis met koker op rol","Cuivre recuit (souple), protégé par une gaine.",616],
+ cu_coude_sertir:["Coude à sertir (cuivre)","Perskoppeling bocht 90°","Raccord à sertir : il contient un joint torique, on l'écrase à la pince.",617],
+ cu_coude_souder:["Coude à braser (cuivre)","Lasbocht 90°","Raccord à braser : on y fait fondre la brasure au chalumeau.",622],
+ bicone:["Raccord bicône (compression)","Knelkoppeling","Raccord démontable : la bague (olive) s'écrase quand on serre l'écrou.",624],
+ coupetube:["Coupe-tube à molette","Pijpsnijder","Coupe le tube bien droit sans l'écraser. Celui-ci a aussi un ébavureur.",831],
+ ebavureur:["Ébavureur intérieur / extérieur","Ontbramer","Enlève les bavures coupantes après la coupe. À faire à chaque fois.",835],
+ cintreuse:["Cintreuse","Pijpenbuiger","Courbe le tube (cuivre recuit, multicouche) sans l'écraser.",820],
+ chalumeau:["Chalumeau","Soldeerbrander","Pour le brasage (tendre ou fort) et le recuit du cuivre.",848],
+ brasure:["Fil de brasure (étain)","Soldeerdraad","Le métal d'apport du brasage tendre (moins de 450 °C).",850],
+ flux:["Flux / pâte à braser","Soldeervloeimiddel","Nettoie le métal pendant la chauffe pour que la brasure accroche.",850],
+ abrasif:["Toile abrasive","Schuurvlies","Pour décaper / poncer le cuivre avant le brasage.",850],
+ pincesertir:["Sertisseuse (pince à sertir)","Persmachine","Écrase la bague du raccord : assemblage rapide et indémontable.",824],
+ machoire:["Mâchoire de sertissage","Persbek","Se monte sur la sertisseuse. Il en faut une par diamètre et par profil (TH, V…).",829],
+ /* acier */
+ ga_tube:["Tube en acier galvanisé (6 m)","Verzinkte stalen buis","Gris clair, protégé par une couche de zinc. Mesuré en pouces.",599],
+ ga_coude:["Coude en fonte malléable galvanisée","Knie 90° verzinkt","Pour changer de direction : on ne cintre jamais du galva en eau potable.",599],
+ filiere:["Filière électrique","Draadsnijmachine","Taille le filetage conique (pas du gaz) au bout du tube acier.",819],
+ huilecoupe:["Huile de coupe","Draadsnijolie","Lubrifie pendant le filetage et protège les peignes de la filière.",820],
+ chanvre:["Chanvre (filasse)","Stopkemp","Enroulé sur le filetage avec une pâte agréée pour le rendre étanche.",738],
+ teflon:["Ruban PTFE (téflon)","PTFE-tape","Autre façon d'étancher un filetage.",739],
+ noir_courbe:["Courbe à souder en acier noir","Lasbocht","Acier noir = chauffage et gaz : il s'assemble souvent par soudure.",606],
+ /* multicouche & PER */
+ mc_barre:["Multicouche en barre","Meerlagenbuis in lengte","Blanc, en barres droites de 5 m (pose apparente).",551],
+ mc_couronne:["Multicouche en couronne","Meerlagenbuis op rol","Le même tube vendu enroulé.",551],
+ mc_gaine_r:["Tube gainé rouge (eau chaude)","Buis met rode mantelbuis","Tube dans une gaine annelée rouge : pour l'eau chaude, encastré.",551],
+ mc_gaine_b:["Tube gainé bleu (eau froide)","Buis met blauwe mantelbuis","Gaine bleue = eau froide. La gaine sert de fourreau.",551],
+ mc_raccord:["Raccord droit à sertir","Rechte perskoppeling","Raccord multicouche à sertir, avec bague et fenêtre de contrôle.",554],
+ mc_te:["Té à sertir","T-stuk om te persen","Pour faire une dérivation sur un tube multicouche.",556],
+ calibreur:["Calibreur","Kalibreerder","Redonne la rondeur et chanfreine l'intérieur du tube multicouche. Obligatoire.",558],
+ kitcalib:["Kit de calibrage 16-20-26","Kaliberkoffer","Un calibre par diamètre de multicouche.",558],
+ raccord_meca:["Raccord mécanique (compression)","Knelkoppeling","Raccord à visser pour multicouche ou PEX : démontable, doit rester accessible.",564],
+ coupe_per:["Cisaille pour plastique et multicouche","Buizenschaar","Coupe nette du PER et du multicouche. Pas de scie à métaux !",832],
+ cintre_hydr:["Cintreuse pour multicouche","Buigtang meerlagenbuis","Pour les gros diamètres (26, 32) et les rayons courts.",838],
+ /* fixation */
+ rail:["Rail de montage","Montagerail","On y accroche les colliers des réseaux en plafond ou au mur.",711],
+ tige:["Tige filetée M8","Draadstang","Suspend les colliers au plafond, à la bonne hauteur (et à la bonne pente).",713],
+ collier_iso:["Collier isophonique","Geluidsisolerende beugel","Garniture caoutchouc (EPDM) : moins de bruit et de vibrations.",713],
+ collier_epdm:["Collier à deux vis avec EPDM","Tweeschroevenbeugel EPDM","Collier robuste avec garniture isophonique.",714],
+ collier_clic:["Collier clipsable","Clipsbeugel","Pour PER et multicouche : on clipse le tube dedans.",712],
+ bande_perf:["Bande perforée","Geperforeerde band","Fixe tubes et gaines au sol ou sur la dalle.",715],
+ /* évacuation plastique */
+ pvc_tube:["Tube PVC d'évacuation","PVC afvoerbuis","Gris, rigide, parois lisses. Se colle.",636],
+ pvc_coude:["Coude PVC 87°30","PVC bocht 87°30","Raccord injecté : on ne cintre pas le PVC, on met un coude.",636],
+ pvc_culotte:["Culotte (embranchement 45°)","T-stuk 45°","Raccorde une décharge sur la colonne.",637],
+ pvc_dilat:["Manchon de dilatation PVC","Expansiemof","Obligatoire sur les collecteurs et les longues colonnes.",636],
+ collepvc:["Colle PVC","PVC-lijm","On l'étale dans le sens de la longueur, puis on emboîte sans tourner.",659],
+ cleaner:["Décapant / nettoyant PVC","PVC-reiniger","Dégraisse avant le collage : obligatoire.",659],
+ lubrifiant:["Lubrifiant pour joints","Glijmiddel","Pour les assemblages à joint (emboîtement), pas pour le collage.",659],
+ coupe_pvc:["Coupe-tube pour PVC","Pijpsnijder voor PVC","Coupe droite des tubes d'évacuation Ø 32 à 50.",834],
+ scie:["Scie à métaux","IJzerzaag","Coupe l'acier ou le PVC (avec une boîte à onglets). Interdite sur PER et multicouche.",792],
+ pehd_tube:["Tube PEHD (Geberit PE)","PE-HD buis","Noir, très résistant. Se soude.",681],
+ pehd_coude:["Coude PEHD 45°","PE-HD bocht 45°","Raccord PEHD à souder.",682],
+ electromanchon:["Manchon électrosoudable","Elektrolasmof","Une résistance intégrée chauffe et soude le tube : liaison indémontable.",687],
+ electrosoudeuse:["Appareil d'électrosoudage","Elektrolasapparaat","Alimente le manchon électrosoudable et gère la soudure.",848],
+ miroir:["Miroir à souder","Lasspiegel","Chauffe les deux bouts du tube pour la soudure bout à bout.",848],
+ pp_tube:["Tube PP Silent (Geberit)","Silent-PP buis","Tube insonorisé avec manchon à joint : pas de colle.",662],
+ pp_coude:["Coude PP Silent","Silent-PP bocht","S'emboîte avec un joint EPDM lubrifié.",662],
+ niveau:["Niveau à bulle","Waterpas","Pour poser les appareils et régler les pentes.",823]
+};
+const PHOTO_CREDIT = "Photos : catalogue Facq « Le Petit Livre Vert » 2025-2026 · usage personnel d'étude";
+
+/* Questions « reconnais la pièce » (photo → nom) : [photo, bonne réponse, 3 mauvaises, chapitre, explication] */
+const PHOTO_Q = [
+ ["reducteur","Réducteur de pression",["Clapet anti-retour","Groupe de sécurité","Compteur d'eau"],3,"Le réducteur de pression se place juste après le compteur et ramène la pression vers 3 bars."],
+ ["groupesecu","Groupe de sécurité",["Réducteur de pression","Robinet d'équerre","Manomètre"],3,"Le groupe de sécurité protège le chauffe-eau. Il s'ouvre à 7 bars."],
+ ["manometre","Manomètre",["Compteur d'eau","Thermomètre","Réducteur de pression"],3,"Le manomètre affiche la pression en bars."],
+ ["compteur","Compteur d'eau",["Manomètre","Réducteur de pression","Clapet anti-retour"],1,"Le compteur mesure la consommation d'eau en m³."],
+ ["clapet","Clapet anti-retour",["Réducteur de pression","Vanne quart de tour","Manchon"],1,"Le clapet anti-retour ne laisse passer l'eau que dans un sens."],
+ ["calibreur","Calibreur pour multicouche",["Ébavureur pour cuivre","Coupe-tube","Pince à sertir"],4,"Le calibreur redonne la rondeur au multicouche et chanfreine l'intérieur."],
+ ["ebavureur","Ébavureur",["Calibreur","Coupe-tube","Filière"],4,"L'ébavureur enlève les bavures après la coupe."],
+ ["coupetube","Coupe-tube à molette",["Cintreuse","Filière","Ébavureur"],4,"Le coupe-tube coupe le tube bien droit, sans l'écraser."],
+ ["pincesertir","Sertisseuse",["Filière électrique","Appareil d'électrosoudage","Pompe d'épreuve"],4,"La sertisseuse écrase la bague d'un raccord à sertir."],
+ ["filiere","Filière",["Sertisseuse","Cintreuse","Coupe-tube"],4,"La filière taille le filetage conique au bout du tube acier."],
+ ["chanvre","Chanvre (filasse)",["Ruban PTFE","Fil de brasure","Colle PVC"],4,"Le chanvre s'enroule sur un filetage avec une pâte agréée."],
+ ["teflon","Ruban PTFE (téflon)",["Fil de brasure","Chanvre","Bande perforée"],4,"Le ruban PTFE sert à étancher un filetage."],
+ ["brasure","Fil de brasure (étain)",["Ruban PTFE","Chanvre","Tige filetée"],4,"C'est le métal d'apport du brasage tendre."],
+ ["cu_coude_sertir","Coude cuivre à sertir",["Coude cuivre à braser","Coude galvanisé","Coude PVC"],4,"On reconnaît le raccord à sertir à son bourrelet qui contient le joint torique."],
+ ["bicone","Raccord bicône (à compression)",["Raccord à sertir","Manchon électrosoudable","Raccord à glissement"],4,"Écrou + bague qui s'écrase : c'est un raccord à compression, démontable."],
+ ["ga_coude","Coude en fonte malléable galvanisée",["Coude cuivre à braser","Coude PEHD","Courbe acier noir à souder"],4,"Le galva se raccorde par des pièces filetées en fonte malléable."],
+ ["mc_raccord","Raccord multicouche à sertir",["Raccord bicône","Raccord galvanisé","Manchon PVC"],4,"Bague (ici verte) avec fenêtre de contrôle : raccord multicouche à sertir."],
+ ["mc_gaine_r","Tube gainé pour eau chaude",["Tube gainé pour eau froide","Tube PEHD","Tube cuivre recuit"],4,"Gaine rouge = eau chaude, gaine bleue = eau froide."],
+ ["collier_iso","Collier isophonique",["Collier clipsable","Bande perforée","Rail de montage"],4,"La garniture en caoutchouc (EPDM) absorbe les bruits et les vibrations."],
+ ["electromanchon","Manchon électrosoudable",["Manchon de dilatation PVC","Manchon PP à joint","Collier isophonique"],5,"Le manchon électrosoudable contient une résistance qui soude le PEHD."],
+ ["miroir","Miroir à souder",["Appareil d'électrosoudage","Niveau à bulle","Cintreuse"],5,"Le miroir chauffe les bouts du PEHD pour la soudure bout à bout."],
+ ["pvc_culotte","Culotte PVC (embranchement 45°)",["Coude PVC","Manchon de dilatation","Té PEHD"],5,"La culotte raccorde une décharge sur la colonne de chute."],
+ ["collepvc","Colle PVC",["Décapant PVC","Lubrifiant pour joints","Flux à braser"],5,"La colle PVC sert au collage à froid, après le décapant."],
+ ["siphon_lav","Siphon bouteille",["Bonde de douche","Clapet aérateur","Robinet d'équerre"],1,"Le siphon garde une réserve d'eau contre les odeurs."],
+ ["chapeau_vent","Chapeau de ventilation primaire",["Siphon de douche","Clapet anti-retour","Tube PVC"],1,"Il termine la colonne de chute sur le toit : c'est la ventilation primaire."],
+ ["equerre","Robinet d'arrêt d'équerre",["Robinet pour machine à laver","Groupe de sécurité","Réducteur de pression"],2,"Il coupe l'eau d'un seul appareil, sous le lavabo ou le WC."],
+ ["bati","Bâti-support de WC",["Rail de montage","Collecteur","Réservoir de chasse apparent"],2,"Le bâti-support se cache dans le mur et porte le WC suspendu."],
+ ["pompeepreuve","Pompe d'épreuve",["Réducteur de pression","Appareil d'électrosoudage","Pompe de relevage"],2,"Elle met l'installation sous pression pour le test d'étanchéité."]
+];
+
+/* Termes du glossaire → photo */
+const GLOSS_PH = {"Coupe-tube":"coupetube","Ébavurage":"ebavureur","Calibrage":"calibreur","Cintrage":"cintreuse","Brasage tendre / fort":"brasure","Sertissage":"pincesertir","Filière":"filiere","Filetage conique (gaz)":"ga_coude","Collier isophonique":"collier_iso","Clapet anti-retour":"clapet","Compteur d'eau":"compteur","Collecteur (nourrice)":"collecteur","Groupe de sécurité":"groupesecu","Manomètre":"manometre","Réducteur de pression":"reducteur","Robinet d'arrêt d'équerre":"equerre","Flexible de raccordement":"flexible","Bâti-support":"bati","Siphon":"siphon_lav","Ventilation primaire":"chapeau_vent","Électrosoudage":"electromanchon","Soudure bout à bout":"miroir","Raccord à compression":"bicone","Cavalier (clip)":"collier_clic","Bande perforée":"bande_perf","Patte à vis":"tige","PVC-U":"pvc_tube","PEHD":"pehd_tube","Polypropylène (PP)":"pp_tube","Multicouche":"mc_barre","Acier galvanisé":"ga_tube","Acier noir":"noir_courbe","Culotte":"pvc_culotte","Mitigeur":"mitigeur_thermo","Recuit (cuivre)":"chalumeau","Couronne":"mc_couronne","Barre":"cu_tube","Fourreau":"mc_gaine_b"};
+
 </script>
 <script>
 (function(){
@@ -1473,6 +1747,30 @@ const store = {
 };
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 
+const PHDIR = "photos/";
+const phCard = id => { const p = PHOTOS[id]; if (!p) return ""; return '<div class="ph" data-ph="'+id+'"><div class="im"><img src="'+PHDIR+id+'.jpg" alt="'+p[0].replace(/"/g,'&quot;')+'"></div><div class="n">'+p[0]+'</div><div class="nl">NL : '+p[1]+'</div><div class="d">'+p[2]+'</div></div>'; };
+const phGrid = ids => '<div class="phgrid">'+ids.map(phCard).join("")+'</div><div class="credit">'+PHOTO_CREDIT+'</div>';
+/* lightbox */
+let lbList = [], lbI = 0;
+function lbShow(){ const id = lbList[lbI], p = PHOTOS[id];
+  $("#lbImg").src = PHDIR+id+".jpg"; $("#lbImg").alt = p[0]; $("#lbN").textContent = p[0]; $("#lbNl").textContent = "NL : "+p[1];
+  $("#lbD").textContent = p[2]; $("#lbC").textContent = PHOTO_CREDIT + " · page " + p[3];
+  $("#lbP").style.visibility = lbList.length > 1 ? "visible" : "hidden"; $("#lbNx").style.visibility = lbList.length > 1 ? "visible" : "hidden"; }
+function lbOpen(list, id){ lbList = list; lbI = Math.max(0, list.indexOf(id)); lbShow(); $("#lb").classList.add("on"); }
+$("#lbX").onclick = () => $("#lb").classList.remove("on");
+$("#lb").addEventListener("click", e => { if (e.target.id === "lb") $("#lb").classList.remove("on"); });
+$("#lbP").onclick = () => { lbI = (lbI - 1 + lbList.length) % lbList.length; lbShow(); };
+$("#lbNx").onclick = () => { lbI = (lbI + 1) % lbList.length; lbShow(); };
+document.addEventListener("keydown", e => { if (!$("#lb").classList.contains("on")) return; if (e.key === "Escape") $("#lb").classList.remove("on"); if (e.key === "ArrowRight") $("#lbNx").click(); if (e.key === "ArrowLeft") $("#lbP").click(); });
+document.addEventListener("click", e => {
+  const c = e.target.closest("[data-ph]"); if (!c || c.closest(".lb")) return;
+  const scope = c.closest(".phgrid, .appimg, .gl") || c.parentElement;
+  const list = $$("[data-ph]", scope).map(x => x.dataset.ph);
+  lbOpen(list.length ? list : [c.dataset.ph], c.dataset.ph);
+});
+/* photo questions joined to the QCM bank */
+PHOTO_Q.forEach(r => QUESTIONS.push({c:r[3], img:r[0], q:"Quelle est cette pièce ?", o:[r[1]].concat(r[2]), e:r[4]}));
+$$(".phs").forEach(el => { const ids = el.dataset.ids.split(","); el.innerHTML = (el.dataset.title ? '<div class="pht">'+el.dataset.title+'</div>' : '') + phGrid(ids); });
 /* ---------------- routing ---------------- */
 const VIEWS = ["accueil","ch1","ch2","ch3","ch4","ch5","resume","flashcards","qcm","glossaire"];
 function route(){
@@ -1540,6 +1838,7 @@ $("#hNext").onclick = () => { hStep = hStep >= HOUSE[hMode].length ? 1 : hStep +
 paintHouse();
 
 /* appareils */
+const APPL_PH = {"Lavabo / vasque":["lavabo","siphon_lav"],"Douche":["receveur","siphon_douche","mitigeur_thermo"],"Bidet":["bidet"],"WC":["wcsusp","bati"],"Lave-mains":["lavemains"],"Évier":["evier"],"Lave-linge":["rob_machine"],"Robinet extérieur":["rob_antigel"]};
 const appl = $("#appl");
 APPLIANCES.forEach((a, i) => {
   const b = document.createElement("button");
@@ -1548,7 +1847,8 @@ APPLIANCES.forEach((a, i) => {
     $$("#appl button").forEach(x => x.classList.toggle("on", x === b));
     const ali = a.ali === "EF" ? '<span class="pill ef">EF seule</span>' : '<span class="pill ef">EF</span> + <span class="pill ec">EC</span>';
     $("#appinfo").innerHTML = "<h4 style='margin-top:0'>" + a.ico + " " + a.n + " <span style='font-weight:400;color:var(--muted);font-size:.9rem'>· " + a.room + "</span></h4>" +
-      "<p><b>Alimentation :</b> " + ali + (a.ev !== "—" ? " &nbsp; <b>Évacuation :</b> " + a.ev : "") + "</p><p style='margin-bottom:0'>" + a.d + "</p>";
+      "<p><b>Alimentation :</b> " + ali + (a.ev !== "—" ? " &nbsp; <b>Évacuation :</b> " + a.ev : "") + "</p><p style='margin-bottom:0'>" + a.d + "</p>" +
+      (APPL_PH[a.n] ? '<div class="appimg">' + APPL_PH[a.n].map(phCard).join("") + '</div>' : "");
   };
   appl.appendChild(b);
 });
@@ -1696,6 +1996,16 @@ function swatch(m){
   if (m.id === "mc") return '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#f4f4f2" stroke="#cfd5db" stroke-width="2"/><circle cx="50" cy="50" r="36" fill="#b9c0c9"/><circle cx="50" cy="50" r="33" fill="#f4f4f2"/><circle cx="50" cy="50" r="28" fill="#fff" stroke="#e1e4e8"/><text x="50" y="54" font-size="10" text-anchor="middle" fill="#6b7383">alu</text></svg>';
   return '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="'+m.col+'"/><circle cx="50" cy="50" r="'+(m.id==="pehd"||m.id==="pvc"||m.id==="pp"?39:36)+'" fill="#fff"/><circle cx="50" cy="50" r="44" fill="none" stroke="'+m.col2+'" stroke-width="3"/></svg>';
 }
+const MAT_PH = {
+  cu:{ids:["cu_tube","cu_couronne","cu_coude_sertir","cu_coude_souder","bicone","coupetube","ebavureur","cintreuse","chalumeau","brasure","flux","abrasif","pincesertir"]},
+  ga:{ids:["ga_tube","ga_coude","filiere","huilecoupe","chanvre","teflon"]},
+  no:{ids:["noir_courbe","filiere","chalumeau"],note:"Le catalogue montre l'acier noir surtout à travers ses raccords à souder. Le tube lui-même ressemble au galvanisé, mais en sombre et brut."},
+  per:{ids:["mc_gaine_r","mc_gaine_b","coupe_per","raccord_meca","collecteur","collier_clic","bande_perf"],note:"Le catalogue Facq ne propose pas de tube PER nu : les tubes gainés rouge et bleu montrés ici sont du multicouche Comap, mais un PER prégainé a exactement le même aspect (tube dans une gaine annelée). La cisaille, le raccord mécanique, le collecteur et les fixations sont les mêmes pour le PER."},
+  mc:{ids:["mc_barre","mc_couronne","mc_gaine_r","mc_raccord","mc_te","calibreur","kitcalib","coupe_per","pincesertir","machoire","cintre_hydr","raccord_meca"]},
+  pvc:{ids:["pvc_tube","pvc_coude","pvc_culotte","pvc_dilat","cleaner","collepvc","lubrifiant","coupe_pvc","scie"]},
+  pehd:{ids:["pehd_tube","pehd_coude","electromanchon","electrosoudeuse","miroir"]},
+  pp:{ids:["pp_tube","pp_coude","collier_iso"]}
+};
 function renderMats(list, tabsSel, boxSel){
   $(tabsSel).innerHTML = list.map((m,i) => '<button data-i="'+i+'"'+(i===0?' class="on"':'')+'>'+m.n+'</button>').join("");
   $(boxSel).innerHTML = list.map((m,i) =>
@@ -1703,6 +2013,7 @@ function renderMats(list, tabsSel, boxSel){
       '<div class="idcard"><div style="max-width:110px">'+swatch(m)+'</div><div><h3 style="margin:0 0 .4em">'+m.n+'</h3><div class="kv">'+m.props.map(p => '<b>'+p[0]+'</b><span>'+p[1]+'</span>').join("")+'</div></div></div>' +
       '<div class="four">'+m.four.map(f => '<div class="mini"><h4>'+f[0]+'</h4><ul>'+f[1].map(x => '<li>'+x+'</li>').join("")+'</ul></div>').join("")+'</div>' +
       (m.ban ? '<div class="ban">⚠️ '+m.ban+'</div>' : '') +
+      (MAT_PH[m.id] ? '<div class="phs"><div class="pht">'+m.n+' en vrai : le tube, les raccords, les outils</div>'+phGrid(MAT_PH[m.id].ids)+(MAT_PH[m.id].note ? '<div class="phnote">ℹ️ '+MAT_PH[m.id].note+'</div>' : '')+'</div>' : '') +
     '</div>').join("");
   $$(tabsSel+" button").forEach(b => b.onclick = () => {
     $$(tabsSel+" button").forEach(x => x.classList.toggle("on", x===b));
@@ -1760,6 +2071,7 @@ function Quiz(box, pool, opt){
       (opt.title ? '<h3 style="margin:0 0 6px">'+opt.title+'</h3>' : '') +
       '<div class="qhead"><span>Question '+(i+1)+' / '+list.length+(opt.chTag ? ' · <span class="chtag">Ch. '+q.c+' · '+CHNAMES[q.c]+'</span>' : '')+'</span><span>Score : '+score+'</span></div>' +
       '<div class="qbar"><i style="width:'+(i/list.length*100)+'%"></i></div>' +
+      (q.img ? '<div class="qimg"><img src="'+PHDIR+q.img+'.jpg" alt="pièce à reconnaître"></div>' : '') +
       '<div class="qtext">'+q.q+'</div><div class="opts">' +
       q.opts.map((o,k) => '<button class="opt" data-k="'+k+'"><span class="l">'+"ABCD"[k]+'</span><span>'+o.t+'</span></button>').join("") +
       '</div><div class="why"></div><div class="qfoot"></div></div>';
@@ -1785,8 +2097,8 @@ function Quiz(box, pool, opt){
     box.innerHTML = '<div class="quiz"><div class="score"><div class="big" style="color:'+(pct>=70?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)")+'">'+score+' / '+list.length+'</div><p><b>'+pct+' %</b> · '+msg+'</p>' +
       '<div class="row" style="justify-content:center">' + (wrong.length ? '<button class="btn" data-a="wrong">Refaire mes '+wrong.length+' erreur'+(wrong.length>1?'s':'')+'</button>' : '') +
       '<button class="btn '+(wrong.length?'light':'acc')+'" data-a="again">'+(opt.againLabel || "Recommencer")+'</button></div></div>' +
-      (wrong.length ? '<div class="missed"><h4>À retravailler</h4>' + wrong.map(q => '<div class="mq"><b>'+q.q+'</b><br><span class="ra">✓ '+q.o[0]+'</span><br>'+q.e+'</div>').join("") + '</div>' : '') + '</div>';
-    const w = $('[data-a="wrong"]', box); if (w) { const ws = wrong.map(q => QUESTIONS.find(x => x.q === q.q)); w.onclick = () => start(shuffle(ws)); }
+      (wrong.length ? '<div class="missed"><h4>À retravailler</h4>' + wrong.map(q => '<div class="mq">'+(q.img ? '<img src="'+PHDIR+q.img+'.jpg" alt="" style="height:60px;float:right;margin-left:8px">' : '')+'<b>'+q.q+'</b><br><span class="ra">✓ '+q.o[0]+'</span><br>'+q.e+'</div>').join("") + '</div>' : '') + '</div>';
+    const w = $('[data-a="wrong"]', box); if (w) { const ws = wrong.map(q => QUESTIONS.find(x => x.q === q.q && x.img === q.img)); w.onclick = () => start(shuffle(ws)); }
     $('[data-a="again"]', box).onclick = () => start(opt.next ? opt.next() : shuffle(pool));
   }
   start(opt.first ? opt.first() : shuffle(pool));
@@ -1826,7 +2138,8 @@ $$("[data-qm]").forEach(b => b.onclick = () => {
 /* ---------------- flashcards ---------------- */
 const DECKS = {
   num: NUMCARDS.map(c => ({f:c[0], b:c[1]})),
-  voc: GLOSSARY.map(g => ({f:g[0], b:g[1]}))
+  voc: GLOSSARY.map(g => ({f:g[0], b:g[1]})),
+  pho: Object.keys(PHOTOS).map(id => ({img:id, b:'<b style="font-size:1.25rem">'+PHOTOS[id][0]+'</b><br><i>NL : '+PHOTOS[id][1]+'</i><br><br>'+PHOTOS[id][2]}))
 };
 DECKS.all = DECKS.num.concat(DECKS.voc);
 let deckName = "all", queue = [], known = 0;
@@ -1840,7 +2153,7 @@ function showCard(){
     $("#fcDone").textContent = known + " cartes sues.";
     return;
   }
-  setTimeout(() => { $("#fcF").textContent = queue[0].f; $("#fcB").innerHTML = queue[0].b; }, 150);
+  setTimeout(() => { const c = queue[0]; if (c.img) $("#fcF").innerHTML = '<img src="'+PHDIR+c.img+'.jpg" alt="pièce"><div style="font-size:1rem;font-weight:400;margin-top:8px">Comment s\'appelle cette pièce ?</div>'; else $("#fcF").textContent = c.f; $("#fcB").innerHTML = c.b; }, 150);
   $("#fcCount").textContent = queue.length + " carte" + (queue.length>1?"s":"") + " restante" + (queue.length>1?"s":"");
   $("#fcDone").textContent = known ? known + " carte" + (known>1?"s":"") + " sue" + (known>1?"s":"") + " dans cette session." : "";
 }
@@ -1858,7 +2171,8 @@ function paintGlossary(){
   items.forEach(g => {
     const L = norm(g[0])[0].toUpperCase();
     if (L !== last && !s){ html += '<div class="letter">'+L+'</div>'; last = L; }
-    html += '<div class="g"><b>'+g[0]+'</b><br>'+g[1]+'</div>';
+    const ph = GLOSS_PH[g[0]];
+    html += '<div class="g">'+(ph ? '<img src="'+PHDIR+ph+'.jpg" alt="" data-ph="'+ph+'">' : '')+'<div class="gt"><b>'+g[0]+'</b><br>'+g[1]+'</div></div>';
   });
   $("#gl").innerHTML = html || "<p>Aucun mot trouvé. Essaie un autre terme.</p>";
 }
